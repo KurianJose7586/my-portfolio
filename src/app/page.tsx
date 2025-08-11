@@ -10,6 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+const subheadings = [
+    "I build AI tools for law, finance, and automation",
+    "Teaching AI to speak legal, crunch numbers, and automate the boring stuff",
+    "Turning complex AI into practical business solutions"
+  ];
+  
 export default function Portfolio() {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
@@ -19,6 +25,39 @@ export default function Portfolio() {
   const [chatInput, setChatInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesRef = useRef<HTMLDivElement | null>(null);
+
+  // --- Typewriter Effect State ---
+  
+  const [currentText, setCurrentText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const typingSpeed = isDeleting ? 40 : 80;
+    const delayBetween = 1500;
+
+    if (!isDeleting && charIndex < subheadings[currentIndex].length) {
+      const timeout = setTimeout(() => {
+        setCurrentText(subheadings[currentIndex].slice(0, charIndex + 1));
+        setCharIndex(charIndex + 1);
+      }, typingSpeed);
+      return () => clearTimeout(timeout);
+    } else if (isDeleting && charIndex > 0) {
+      const timeout = setTimeout(() => {
+        setCurrentText(subheadings[currentIndex].slice(0, charIndex - 1));
+        setCharIndex(charIndex - 1);
+      }, typingSpeed);
+      return () => clearTimeout(timeout);
+    } else if (!isDeleting && charIndex === subheadings[currentIndex].length) {
+      const timeout = setTimeout(() => setIsDeleting(true), delayBetween);
+      return () => clearTimeout(timeout);
+    } else if (isDeleting && charIndex === 0) {
+      setIsDeleting(false);
+      setCurrentIndex((prev) => (prev + 1) % subheadings.length);
+    }
+  }, [charIndex, isDeleting, currentIndex, subheadings]);
+
 
   // Avatar pop-out logic
   useEffect(() => {
@@ -97,6 +136,7 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen bg-[#121212] text-white overflow-x-hidden">
+      
       {/* Background */}
       <motion.div className="fixed inset-0 opacity-50">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-cyan-900/30 to-blue-900/30" />
@@ -124,7 +164,10 @@ export default function Portfolio() {
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
             Hi, I'm Kurian
           </h1>
-          <p className="text-xl mb-8 text-gray-300">I build AI tools for law, finance, and automation</p>
+          <p className="text-xl mb-8 text-gray-300 min-h-[2.5rem]">
+            {currentText}
+            <span className="border-r-2 border-cyan-400 animate-pulse"></span>
+          </p>
 
           {/* Social Links */}
           <div className="flex justify-center gap-4">
@@ -184,11 +227,7 @@ export default function Portfolio() {
             About Me
           </h2>
           <p className="text-lg text-gray-300">
-             I’m an AI/ML developer passionate about turning cutting-edge research into practical, real-world solutions. My expertise spans Large Language Models (LLMs), Retrieval-Augmented Generation (RAG), Natural Language Processing (NLP), and prompt engineering.
-
-I specialize in crafting legal-tech tools and automation workflows using technologies like LangChain, FAISS, and OpenAI/Groq APIs — delivering systems that are fast, accurate, and impactful.
-
-I’m driven to apply AI in high-impact domains such as law, finance, and enterprise automation, bridging the gap between complex technology and everyday problem-solving.
+             I’m an AI/ML developer passionate about transforming cutting-edge AI research into real-world impact. From building legal-tech tools that streamline case analysis to creating automation workflows that save hours of manual work, I specialize in LLMs, Retrieval-Augmented Generation, and NLP. My toolkit includes LangChain, FAISS, and APIs from OpenAI & Groq — helping me deliver solutions that are fast, accurate, and practical for high-impact domains like law, finance, and enterprise automation.
           </p>
         </div>
       </section>
