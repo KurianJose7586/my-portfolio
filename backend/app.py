@@ -123,6 +123,9 @@ def chat():
         print(f"Error during chat processing: {e}")
         return jsonify({'error': 'An error occurred while processing your request.'}), 500
 
+# Initialize the RAG chain when the application starts
+initialize_rag_chain()
+
+# This part is for local development only and will not be used by Vercel
 if __name__ == '__main__':
-    initialize_rag_chain()
     app.run(debug=True, port=5001)
