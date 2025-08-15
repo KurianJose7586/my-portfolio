@@ -11,10 +11,11 @@ This repository contains the source code for my personal portfolio, a dynamic an
 
 ### Screenshots
 
-![Portfolio Hero Section](http://googleusercontent.com/file_content/3)
+![Portfolio Hero Section](./docs/images/hero-section.png)
 *The main landing page with an animated hero section.*
 
-![KurianGPT Chatbot](http://googleusercontent.com/file_content/4)
+![KurianGPT Chatbot](./docs/images/chatbot-ui.png)
+
 *The custom AI chatbot, KurianGPT, ready to answer questions.*
 
 ---
