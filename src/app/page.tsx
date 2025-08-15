@@ -371,49 +371,72 @@ export default function Portfolio() {
       </Button>
     </div>
   ) : (
-    <Card className="w-80 h-96 bg-gray-900/95 border-gray-700">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg text-white">KurianGPT</CardTitle>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => setChatOpen(false)}
-            className="text-gray-400 hover:text-white"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-        <CardDescription className="text-gray-400">
-          Ask me anything about Kurian's work!
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col flex-1 px-3 pb-3">
-  <div ref={messagesRef} className="flex-1 overflow-y-auto space-y-3 pr-1">
-    {/* messages */}
-  </div>
-
-  {/* Chat input */}
-  <form onSubmit={handleChatSubmit} className="mt-2 flex gap-2 items-center">
-    <Input
-      value={chatInput}
-      onChange={(e) => setChatInput(e.target.value)}
-      placeholder="Ask about projects, skills..."
-      className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 text-sm"
-      disabled={isTyping}
-    />
-    <Button
-      type="submit"
-      size="sm"
-      className="bg-cyan-600 hover:bg-cyan-700"
-      disabled={isTyping}
+    <Card className="w-80 h-96 bg-gray-900/95 border-gray-700 flex flex-col">
+  <CardHeader className="pb-2">
+    <div className="flex items-center justify-between">
+      <CardTitle className="text-lg text-white">KurianGPT</CardTitle>
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={() => setChatOpen(false)}
+        className="text-gray-400 hover:text-white"
+      >
+        <X className="w-4 h-4" />
+      </Button>
+    </div>
+    <CardDescription className="text-gray-400">
+      Ask me anything about Kurian's work!
+    </CardDescription>
+  </CardHeader>
+  <CardContent className="flex flex-col flex-1 px-3 pb-3 overflow-hidden">
+    {/* Scrollable messages */}
+    <div
+      ref={messagesRef}
+      className="flex-1 flex flex-col overflow-y-auto space-y-3 pr-1"
     >
-      <Send className="w-3 h-3" />
-    </Button>
-  </form>
-</CardContent>
+      {chatMessages.map((msg, index) => (
+        <div
+          key={index}
+          className={`p-2 rounded-lg text-sm break-words ${
+            msg.role === "assistant"
+              ? "bg-gray-800 text-white self-start"
+              : "bg-cyan-600 text-white self-end"
+          } max-w-[75%]`}
+        >
+          {msg.content}
+        </div>
+      ))}
 
-    </Card>
+      {isTyping && (
+        <div className="p-2 rounded-lg text-sm bg-gray-700 text-gray-300 italic self-start max-w-[75%]">
+          KurianGPT is typing...
+        </div>
+      )}
+    </div>
+
+    {/* Fixed input */}
+    <form
+      onSubmit={handleChatSubmit}
+      className="mt-2 flex gap-2 items-center"
+    >
+      <Input
+        value={chatInput}
+        onChange={(e) => setChatInput(e.target.value)}
+        placeholder="Ask about projects, skills..."
+        className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 text-sm"
+        disabled={isTyping}
+      />
+      <Button
+        type="submit"
+        size="sm"
+        className="bg-cyan-600 hover:bg-cyan-700"
+        disabled={isTyping}
+      >
+        <Send className="w-3 h-3" />
+      </Button>
+    </form>
+  </CardContent>
+</Card>
   )}
 </motion.div>
     </div>
