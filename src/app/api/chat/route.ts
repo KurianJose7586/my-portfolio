@@ -4,7 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 const BACKEND_URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5001"
-    : "https://your-flask-backend.com";
+    : "https://joserman-kurian-portfolio-backend.hf.space";
 
 export async function POST(req: NextRequest) {
   try {

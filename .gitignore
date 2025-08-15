@@ -44,3 +44,6 @@ next-env.d.ts
 /venv
 backend/venv/
 
+#backend
+/kurian-portfolio-backend
+/backend
