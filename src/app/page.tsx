@@ -84,7 +84,7 @@ export default function Portfolio() {
 
   // Projects
   const projects = [
-    { title: "TwinlyAI", description: "TwinlyAI transforms your resume into an intelligent AI assistant that can answer questions about your career, skills, and experience", tech: ["JWT", "OAuth", "AWS", "Next.js","Custom RAG"], github: "https://github.com/KurianJose7586/Ai-lawyer-project.git" },
+    { title: "TwinlyAI", description: "TwinlyAI transforms your resume into an intelligent AI assistant that can answer questions about your career, skills, and experience", tech: ["JWT", "OAuth", "AWS", "Next.js","Custom RAG"], github: "https://github.com/KurianJose7586/Twinly-consolidated.git" },
     { title: "LLM Consolidator", description: "Compare outputs from OpenAI vs Gemini vs DeepSeek with unified interface", tech: ["OpenAI", "Gemini", "DeepSeek", "OpenRouter", "Flask"], github: "https://github.com/KurianJose7586/LLMConsolidator.git" },
     { title: "Case Text Finder", description: "Built a tool to retrieve and summarize Supreme Court of India judgments from plain-English queries using LLMs.", tech: ["LLM", "Flask", "Selenium","Docker"], github: "https://github.com/KurianJose7586/CaseTextFinder.git" },
     { title: "AI Lawyer", description: "PDF-based legal chatbot using LangChain + Groq for constitutional law queries", tech: ["Prompt Engineering", "LangChain", "FAISS", "Node.js","RAG"], github: "https://github.com/KurianJose7586/Ai-lawyer-project.git" },
