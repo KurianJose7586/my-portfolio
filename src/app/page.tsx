@@ -9,67 +9,13 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import toast from "react-hot-toast";
-import { SkillBadge } from "@/components/ui/skill-badge"; // Import the new component
 
 const subheadings = [
   "I build AI tools for law, finance, and automation",
   "Teaching AI to speak legal, crunch numbers, and automate the boring stuff",
-  "Turning complex AI into practical business solutions"
+  "Turning complex AI into practical business solutions",
+  "Building TwinlyAI: Your AI-powered resume assistant",
 ];
-
-const projects = [
-    { title: "TwinlyAI", description: "TwinlyAI transforms your resume into an intelligent AI assistant that can answer questions about your career, skills, and experience", tech: ["JWT", "OAuth", "AWS", "Next.js","Custom RAG"], github: "https://github.com/KurianJose7586/Twinly-consolidated.git" },
-    { title: "LLM Consolidator", description: "Compare outputs from OpenAI vs Gemini vs DeepSeek with unified interface", tech: ["OpenAI", "Gemini", "DeepSeek", "OpenRouter", "Flask"], github: "https://github.com/KurianJose7586/LLMConsolidator.git" },
-    { title: "Case Text Finder", description: "Built a tool to retrieve and summarize Supreme Court of India judgments from plain-English queries using LLMs.", tech: ["LLM", "Flask", "Selenium","Docker"], github: "https://github.com/KurianJose7586/CaseTextFinder.git" },
-    { title: "AI Lawyer", description: "PDF-based legal chatbot using LangChain + Groq for constitutional law queries", tech: ["Prompt Engineering", "LangChain", "FAISS", "Node.js","RAG"], github: "https://github.com/KurianJose7586/Ai-lawyer-project.git" },
-];
-
-const skills = [
- {
-    category: "Frontend",
-    skills: [
-      { name: "HTML", icon: "https://www.vectorlogo.zone/logos/w3_html5/w3_html5-icon.svg" },
-      { name: "CSS", icon: "https://www.vectorlogo.zone/logos/w3_css/w3_css-icon.svg" },
-      { name: "JavaScript", icon: "https://www.vectorlogo.zone/logos/javascript/javascript-icon.svg" },
-      { name: "TypeScript", icon: "https://www.vectorlogo.zone/logos/typescriptlang/typescriptlang-icon.svg" },
-      { name: "React", icon: "https://www.vectorlogo.zone/logos/reactjs/reactjs-icon.svg" },
-      { name: "NextJs", icon: "https://www.vectorlogo.zone/logos/nextjs/nextjs-icon.svg" },
-      { name: "Tailwind CSS", icon: "https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" },
-       { name: "Leaflet", icon: "https://www.vectorlogo.zone/logos/leafletjs/leafletjs-icon.svg" },
-    ],
-  },
-  {
-    category: "Backend",
-    skills: [
-      { name: "Node.js", icon: "https://www.vectorlogo.zone/logos/nodejs/nodejs-icon.svg" },
-      { name: "Express.js", icon: "https://www.vectorlogo.zone/logos/expressjs/expressjs-icon.svg" },
-      { name: "Python", icon: "https://www.vectorlogo.zone/logos/python/python-icon.svg" },
-      { name: "Flask", icon: "https://www.vectorlogo.zone/logos/pocoo_flask/pocoo_flask-icon.svg" },
-    ],
-  },
-  {
-    category: "Authentication",
-    skills: [
-        { name: "JWT", icon: "https://www.vectorlogo.zone/logos/jwt/jwt-icon.svg" },
-        { name: "OAuth", icon: "https://www.vectorlogo.zone/logos/oauth/oauth-icon.svg" },
-     ],
-  },
-  {
-    category: "Database",
-    skills: [
-      { name: "MongoDB", icon: "https://www.vectorlogo.zone/logos/mongodb/mongodb-icon.svg" },
-      { name: "PostgreSQL", icon: "https://www.vectorlogo.zone/logos/postgresql/postgresql-icon.svg" },
-    ],
-  },
-  {
-    category: "DevOps",
-    skills: [
-        { name: "Docker", icon: "https://www.vectorlogo.zone/logos/docker/docker-icon.svg" },
-        { name: "AWS", icon: "https://www.vectorlogo.zone/logos/amazon_aws/amazon_aws-icon.svg" },
-    ],
-  },
-];
-
 
 export default function Portfolio() {
   const [chatOpen, setChatOpen] = useState(false);
@@ -86,34 +32,6 @@ export default function Portfolio() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
-  
-  const scrollers = useRef<NodeListOf<Element> | null>(null);
-
-  // New useEffect for the scroller animation
-  useEffect(() => {
-    scrollers.current = document.querySelectorAll(".scroller");
-
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      addAnimation();
-    }
-  }, []);
-
-  function addAnimation() {
-    scrollers.current?.forEach((scroller) => {
-      scroller.setAttribute("data-animated", "true");
-
-      const scrollerInner = scroller.querySelector(".scroller__inner");
-      if (scrollerInner) {
-        const scrollerContent = Array.from(scrollerInner.children);
-        scrollerContent.forEach((item) => {
-          const duplicatedItem = item.cloneNode(true) as HTMLElement;
-          duplicatedItem.setAttribute("aria-hidden", "true");
-          scrollerInner.appendChild(duplicatedItem);
-        });
-      }
-    });
-  }
-
 
   useEffect(() => {
     const typingSpeed = isDeleting ? 40 : 80;
@@ -164,6 +82,32 @@ export default function Portfolio() {
     }));
     setDots(newDots);
   }, []);
+
+  // Projects
+  const projects = [
+    { title: "TwinlyAI", description: "TwinlyAI transforms your resume into an intelligent AI assistant that can answer questions about your career, skills, and experience", tech: ["JWT", "OAuth", "AWS", "Next.js","Custom RAG"], github: "https://github.com/KurianJose7586/Twinly-consolidated.git" },
+    { title: "LLM Consolidator", description: "Compare outputs from OpenAI vs Gemini vs DeepSeek with unified interface", tech: ["OpenAI", "Gemini", "DeepSeek", "OpenRouter", "Flask"], github: "https://github.com/KurianJose7586/LLMConsolidator.git" },
+    { title: "Case Text Finder", description: "Built a tool to retrieve and summarize Supreme Court of India judgments from plain-English queries using LLMs.", tech: ["LLM", "Flask", "Selenium","Docker"], github: "https://github.com/KurianJose7586/CaseTextFinder.git" },
+    { title: "AI Lawyer", description: "PDF-based legal chatbot using LangChain + Groq for constitutional law queries", tech: ["Prompt Engineering", "LangChain", "FAISS", "Node.js","RAG"], github: "https://github.com/KurianJose7586/Ai-lawyer-project.git" },
+  ];
+
+  // Skills
+  const skills = [
+    { name: "LangChain", icon: "🔗", category: "AI/ML" },
+    { name: "FAISS", icon: "🔍", category: "AI/ML" },
+    { name: "Groq API", icon: "⚡", category: "AI/ML" },
+    { name: "OpenAI", icon: "🤖", category: "AI/ML" },
+    { name: "Prompt Engineering", icon: "💭", category: "AI/ML" },
+    { name: "NLP", icon: "📝", category: "AI/ML" },
+    { name: "BiLSTM", icon: "🧠", category: "AI/ML" },
+    { name: "TensorFlow", icon: "🔥", category: "AI/ML" },
+    { name: "Streamlit", icon: "🚀", category: "Frontend" },
+    { name: "Flask", icon: "🌶️", category: "Backend" },
+    { name: "Selenium", icon: "🕷️", category: "Automation" },
+    { name: "Git", icon: "📚", category: "Tools" },
+    { name: "VSCode", icon: "💻", category: "Tools" },
+    { name: "Pandas", icon: "🐼", category: "Data" },
+  ];
 
   // Chat submit handler
   const handleChatSubmit = async (e: React.FormEvent) => {
@@ -304,23 +248,18 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* === NEW SKILLS SECTION === */}
-      <section id="skills" className="py-20 px-4">
+      {/* Skills */}
+      <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
             Skills & Tools
           </h2>
-          <div className="space-y-8">
-            {skills.map((skillGroup, groupIndex) => (
-              <div key={groupIndex} className="space-y-4">
-                <h3 className="text-2xl font-semibold text-center text-gray-300">{skillGroup.category}</h3>
-                <div className="scroller" data-speed={groupIndex % 2 === 0 ? "slow" : "fast"} data-direction={groupIndex % 2 === 0 ? "left" : "right"}>
-                  <div className="scroller__inner">
-                    {skillGroup.skills.map((skill, index) => (
-                      <SkillBadge key={`${groupIndex}-${index}`} skill={skill} index={index} />
-                    ))}
-                  </div>
-                </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            {skills.map((skill, index) => (
+              <div key={index} className="bg-gray-900/50 border border-gray-700 rounded-lg p-4 text-center hover:border-purple-500/50 transition-all duration-300">
+                <div className="text-2xl mb-2">{skill.icon}</div>
+                <div className="text-sm font-medium text-white">{skill.name}</div>
+                <div className="text-xs text-gray-400 mt-1">{skill.category}</div>
               </div>
             ))}
           </div>
@@ -328,170 +267,179 @@ export default function Portfolio() {
       </section>
 
       {/* Contact */}
-      <section className="py-20 px-4 bg-gray-900/30 relative z-10" id="contact">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="max-w-3xl mx-auto text-center"
-        >
-          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-            Get In Touch
-          </h2>
-          <p className="text-gray-400 mb-12">
-            Have a project in mind or just want to talk AI? Drop me a message — I’ll get back to you soon.
-          </p>
-        </motion.div>
+<section className="py-20 px-4 bg-gray-900/30 relative z-10" id="contact">
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+    viewport={{ once: true }}
+    className="max-w-3xl mx-auto text-center"
+  >
+    <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+      Get In Touch
+    </h2>
+    <p className="text-gray-400 mb-12">
+      Have a project in mind or just want to talk AI? Drop me a message — I’ll get back to you soon.
+    </p>
+  </motion.div>
 
-        <motion.form
-          onSubmit={handleContactSubmit}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          viewport={{ once: true }}
-          className="max-w-2xl mx-auto space-y-6 bg-gray-800/40 p-8 rounded-xl border border-gray-700"
-        >
-          <div className="grid md:grid-cols-2 gap-4">
-            <Input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleFormChange}
-              placeholder="Your Name *"
-              className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
-            />
-            <Input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleFormChange}
-              placeholder="Your Email *"
-              className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
-            />
-          </div>
-          <Input
-            type="text"
-            name="subject"
-            value={form.subject}
-            onChange={handleFormChange}
-            placeholder="Subject"
-            className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
-          />
-          <Textarea
-            name="message"
-            value={form.message}
-            onChange={handleFormChange}
-            placeholder="Your Message *"
-            rows={5}
-            className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
-          />
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700"
-          >
-            {loading ? "Sending..." : (
-              <>
-                <Send className="w-4 h-4 mr-2" /> Send Message
-              </>
-            )}
-          </Button>
-        </motion.form>
-      </section>
+  <motion.form
+    onSubmit={handleContactSubmit}
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.2, duration: 0.6 }}
+    viewport={{ once: true }}
+    className="max-w-2xl mx-auto space-y-6 bg-gray-800/40 p-8 rounded-xl border border-gray-700"
+  >
+    <div className="grid md:grid-cols-2 gap-4">
+      <Input
+        type="text"
+        name="name"
+        value={form.name}
+        onChange={handleFormChange}
+        placeholder="Your Name *"
+        className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
+      />
+      <Input
+        type="email"
+        name="email"
+        value={form.email}
+        onChange={handleFormChange}
+        placeholder="Your Email *"
+        className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
+      />
+    </div>
+    <Input
+      type="text"
+      name="subject"
+      value={form.subject}
+      onChange={handleFormChange}
+      placeholder="Subject"
+      className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
+    />
+    <Textarea
+      name="message"
+      value={form.message}
+      onChange={handleFormChange}
+      placeholder="Your Message *"
+      rows={5}
+      className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
+    />
+    <Button
+      type="submit"
+      disabled={loading}
+      className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700"
+    >
+      {loading ? "Sending..." : (
+        <>
+          <Send className="w-4 h-4 mr-2" /> Send Message
+        </>
+      )}
+    </Button>
+  </motion.form>
+</section>
 
       {/* Chatbot */}
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="fixed bottom-6 right-6 z-50">
-        {!chatOpen ? (
-          <div className="relative w-14 h-14 group">
-            <span className="absolute left-[-140px] top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-              Talk to KurianGPT
-            </span>
-            <div className="absolute -top-12 right-1 w-16 h-16 overflow-hidden rounded-full pointer-events-none">
-              <motion.video
-                src="/waving-avatar-final.webm"
-                autoPlay
-                muted
-                playsInline
-                loop
-                className="w-full h-full"
-                initial={{ y: "100%", opacity: 0 }}
-                animate={avatarVisible ? { y: 0, opacity: 1 } : { y: "100%", opacity: 0 }}
-                transition={{ type: "spring", stiffness: 200, damping: 18 }}
-              />
-            </div>
-            <Button
-              onClick={() => setChatOpen(true)}
-              className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-cyan-600"
-            >
-              <MessageCircle className="w-6 h-6" />
-            </Button>
-          </div>
-        ) : (
-          <Card className="w-80 h-96 bg-gray-900/95 border-gray-700 flex flex-col">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg text-white">KurianGPT</CardTitle>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setChatOpen(false)}
-                  className="text-gray-400 hover:text-white"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-              <CardDescription className="text-gray-400">
-                Ask me anything about Kurian's work!
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col flex-1 px-3 pb-3 overflow-hidden">
-              <div
-                ref={messagesRef}
-                className="flex-1 flex flex-col overflow-y-auto space-y-3 pr-1"
-              >
-                {chatMessages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`p-2 rounded-lg text-sm break-words ${
-                      msg.role === "assistant"
-                        ? "bg-gray-800 text-white self-start"
-                        : "bg-cyan-600 text-white self-end"
-                    } max-w-[75%]`}
-                  >
-                    {msg.content}
-                  </div>
-                ))}
-                {isTyping && (
-                  <div className="p-2 rounded-lg text-sm bg-gray-700 text-gray-300 italic self-start max-w-[75%]">
-                    KurianGPT is typing...
-                  </div>
-                )}
-              </div>
-              <form
-                onSubmit={handleChatSubmit}
-                className="mt-2 flex gap-2 items-center"
-              >
-                <Input
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Ask about projects, skills..."
-                  className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 text-sm"
-                  disabled={isTyping}
-                />
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="bg-cyan-600 hover:bg-cyan-700"
-                  disabled={isTyping}
-                >
-                  <Send className="w-3 h-3" />
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        )}
-      </motion.div>
+<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="fixed bottom-6 right-6 z-50">
+  {!chatOpen ? (
+    <div className="relative w-14 h-14 group">
+      {/* Tooltip */}
+      <span className="absolute left-[-140px] top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+        Talk to KurianGPT
+      </span>
+
+      {/* Animated avatar */}
+      <div className="absolute -top-12 right-1 w-16 h-16 overflow-hidden rounded-full pointer-events-none">
+        <motion.video
+          src="/waving-avatar-final.webm"
+          autoPlay
+          muted
+          playsInline
+          loop
+          className="w-full h-full"
+          initial={{ y: "100%", opacity: 0 }}
+          animate={avatarVisible ? { y: 0, opacity: 1 } : { y: "100%", opacity: 0 }}
+          transition={{ type: "spring", stiffness: 200, damping: 18 }}
+        />
+      </div>
+
+      {/* Chat open button */}
+      <Button
+        onClick={() => setChatOpen(true)}
+        className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-cyan-600"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </Button>
+    </div>
+  ) : (
+    <Card className="w-80 h-96 bg-gray-900/95 border-gray-700 flex flex-col">
+  <CardHeader className="pb-2">
+    <div className="flex items-center justify-between">
+      <CardTitle className="text-lg text-white">KurianGPT</CardTitle>
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={() => setChatOpen(false)}
+        className="text-gray-400 hover:text-white"
+      >
+        <X className="w-4 h-4" />
+      </Button>
+    </div>
+    <CardDescription className="text-gray-400">
+      Ask me anything about Kurian's work!
+    </CardDescription>
+  </CardHeader>
+  <CardContent className="flex flex-col flex-1 px-3 pb-3 overflow-hidden">
+    {/* Scrollable messages */}
+    <div
+      ref={messagesRef}
+      className="flex-1 flex flex-col overflow-y-auto space-y-3 pr-1"
+    >
+      {chatMessages.map((msg, index) => (
+        <div
+          key={index}
+          className={`p-2 rounded-lg text-sm break-words ${
+            msg.role === "assistant"
+              ? "bg-gray-800 text-white self-start"
+              : "bg-cyan-600 text-white self-end"
+          } max-w-[75%]`}
+        >
+          {msg.content}
+        </div>
+      ))}
+
+      {isTyping && (
+        <div className="p-2 rounded-lg text-sm bg-gray-700 text-gray-300 italic self-start max-w-[75%]">
+          KurianGPT is typing...
+        </div>
+      )}
+    </div>
+
+    {/* Fixed input */}
+    <form
+      onSubmit={handleChatSubmit}
+      className="mt-2 flex gap-2 items-center"
+    >
+      <Input
+        value={chatInput}
+        onChange={(e) => setChatInput(e.target.value)}
+        placeholder="Ask about projects, skills..."
+        className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 text-sm"
+        disabled={isTyping}
+      />
+      <Button
+        type="submit"
+        size="sm"
+        className="bg-cyan-600 hover:bg-cyan-700"
+        disabled={isTyping}
+      >
+        <Send className="w-3 h-3" />
+      </Button>
+    </form>
+  </CardContent>
+</Card>
+  )}
+</motion.div>
     </div>
   );
 }
