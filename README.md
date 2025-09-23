@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kurian Jose - AI Developer Portfolio
 
-## Getting Started
+![Next.js](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Vercel](https://img.shields.io/badge/Vercel-black?style=for-the-badge&logo=Vercel&logoColor=white)
 
-First, run the development server:
+This repository contains the source code for my personal portfolio, a dynamic and interactive website designed to showcase my skills and projects as an AI Developer. The standout feature is **KurianGPT**, a custom AI chatbot that provides information about my professional background by leveraging a Retrieval-Augmented Generation (RAG) pipeline.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Screenshots
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+![Portfolio Hero Section](./docs/images/hero-section.png)
+*The main landing page with an animated hero section.*
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+![KurianGPT Chatbot](./docs/images/chatbot-ui.png)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*The custom AI chatbot, KurianGPT, ready to answer questions.*
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ✨ Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-   **Interactive Hero Section**: A welcoming introduction with an animated avatar and a typewriter effect that cycles through key skills.
+-   **AI Chatbot (KurianGPT)**: An integrated chatbot that can answer questions about my skills, projects, and experience. It connects to a custom Python backend that uses a RAG chain to provide context-aware responses from a knowledge base.
+-   **Dynamic Project Showcase**: A grid of my featured projects, each with a description, tech stack badges, and a link to the GitHub repository.
+-   **Skills & Tools Overview**: A categorized display of my technical skills and the tools I frequently use.
+-   **Contact Form**: A fully functional contact form that uses Nodemailer for email submissions.
+-   **Smooth Animations**: The UI is enhanced with Framer Motion for a fluid and engaging user experience.
+-   **Responsive Design**: A mobile-first design that ensures a seamless experience across all devices.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🛠️ Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This portfolio is built with a modern, full-stack architecture, combining a Next.js frontend with a powerful Python backend for AI capabilities.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Area         | Technologies                                                                                                                                                                                                                         |
+| :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Frontend** | **Next.js** and **React** for the core framework, **TypeScript** for type safety, **Tailwind CSS** for styling, **Framer Motion** for animations, and **Shadcn/ui** for accessible components. |
+| **Backend** | The AI chatbot is powered by a **Python** backend using **Flask** and **Gunicorn**. The frontend interacts with it through **Next.js API Routes** which act as a proxy.                               |
+| **AI/ML** | The RAG (Retrieval-Augmented Generation) chain for the chatbot is built with **LangChain**. It uses **Hugging Face Transformers** for embeddings, **FAISS** for the vector store, and the **Groq API** for fast LLM inference.                                            |
+| **Deployment**| The entire application is containerized using **Docker** and deployed on **Vercel**, which handles both the Next.js frontend and the Python serverless backend seamlessly. |
