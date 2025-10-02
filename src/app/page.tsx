@@ -208,7 +208,7 @@ export default function Portfolio() {
             <a href="https://www.linkedin.com/in/kurian-jose-862b30294/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800">
               <Linkedin className="w-5 h-5" /> LinkedIn
             </a>
-            <a href="https://drive.google.com/file/d/10AiIi3VbHbNgdp2LGo0-YQ4f3Qv0BB2l/view" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700">
+            <a href="https://drive.google.com/file/d/14yJsIi4JeeR3w0hmauDle2r3LtKPbtzE/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700">
               <ExternalLink className="w-5 h-5" /> Resume
             </a>
           </div>
