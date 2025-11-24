@@ -27,7 +27,7 @@ export default function Portfolio() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesRef = useRef<HTMLDivElement | null>(null);
 
-  // --- NEW: Mouse Position State for Soft Cursor ---
+  // --- Mouse Position State for Glow Effect ---
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -198,16 +198,10 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white overflow-x-hidden font-sans cursor-none"> {/* cursor-none hides default cursor */}
+    <div className="min-h-screen bg-[#121212] text-white overflow-x-hidden font-sans">
       
-      {/* --- NEW: Soft Cursor Effect --- */}
-      {/* 1. The small precise follower */}
-      <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-cyan-400 rounded-full pointer-events-none z-[100] mix-blend-difference"
-        animate={{ x: mousePosition.x - 8, y: mousePosition.y - 8 }}
-        transition={{ type: "spring", stiffness: 500, damping: 28, mass: 0.5 }}
-      />
-      {/* 2. The large ambient glow */}
+      {/* --- Ambient Glow Effect --- */}
+      {/* Large ambient glow following mouse */}
       <motion.div
         className="fixed top-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none z-0"
         animate={{ x: mousePosition.x - 192, y: mousePosition.y - 192 }}
@@ -248,13 +242,13 @@ export default function Portfolio() {
           </p>
 
           <div className="flex justify-center gap-4">
-            <a href="https://github.com/KurianJose7586" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all border border-transparent hover:border-gray-600 cursor-none hover:scale-105">
+            <a href="https://github.com/KurianJose7586" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all border border-transparent hover:border-gray-600 hover:scale-105">
               <Github className="w-5 h-5" /> GitHub
             </a>
-            <a href="https://www.linkedin.com/in/kurian-jose-862b30294/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 transition-all shadow-lg hover:shadow-blue-900/50 cursor-none hover:scale-105">
+            <a href="https://www.linkedin.com/in/kurian-jose-862b30294/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 transition-all shadow-lg hover:shadow-blue-900/50 hover:scale-105">
               <Linkedin className="w-5 h-5" /> LinkedIn
             </a>
-            <a href="https://drive.google.com/file/d/14yJsIi4JeeR3w0hmauDle2r3LtKPbtzE/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 transition-all shadow-lg hover:shadow-purple-900/50 cursor-none hover:scale-105">
+            <a href="https://drive.google.com/file/d/14yJsIi4JeeR3w0hmauDle2r3LtKPbtzE/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 transition-all shadow-lg hover:shadow-purple-900/50 hover:scale-105">
               <ExternalLink className="w-5 h-5" /> Resume
             </a>
           </div>
@@ -271,7 +265,7 @@ export default function Portfolio() {
             {projects.map((project, index) => (
               <Card 
                 key={index} 
-                className="bg-gray-900/40 backdrop-blur-md border border-white/10 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] transition-all duration-300 group cursor-none"
+                className="bg-gray-900/40 backdrop-blur-md border border-white/10 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] transition-all duration-300 group"
               >
                 <CardHeader>
                   <CardTitle className="text-xl text-white group-hover:text-cyan-400 transition-colors">{project.title}</CardTitle>
@@ -285,8 +279,8 @@ export default function Portfolio() {
                       </Badge>
                     ))}
                   </div>
-                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="cursor-none">
-                    <Button size="sm" variant="outline" className="border-gray-600 text-gray-300 bg-transparent hover:bg-gray-800 hover:text-white cursor-none">
+                  <a href={project.github} target="_blank" rel="noopener noreferrer">
+                    <Button size="sm" variant="outline" className="border-gray-600 text-gray-300 bg-transparent hover:bg-gray-800 hover:text-white">
                       <Github className="w-3 h-3 mr-1" /> Code
                     </Button>
                   </a>
@@ -385,7 +379,7 @@ export default function Portfolio() {
               value={form.name}
               onChange={handleFormChange}
               placeholder="Your Name *"
-              className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500 cursor-none"
+              className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
             />
             <Input
               type="email"
@@ -393,7 +387,7 @@ export default function Portfolio() {
               value={form.email}
               onChange={handleFormChange}
               placeholder="Your Email *"
-              className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500 cursor-none"
+              className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
             />
           </div>
           <Input
@@ -402,7 +396,7 @@ export default function Portfolio() {
             value={form.subject}
             onChange={handleFormChange}
             placeholder="Subject"
-            className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500 cursor-none"
+            className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
           />
           <Textarea
             name="message"
@@ -410,12 +404,12 @@ export default function Portfolio() {
             onChange={handleFormChange}
             placeholder="Your Message *"
             rows={5}
-            className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500 cursor-none"
+            className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
           />
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 cursor-none"
+            className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700"
           >
             {loading ? "Sending..." : (
               <>
@@ -429,11 +423,11 @@ export default function Portfolio() {
       {/* Page Footer */}
       <footer className="py-8 text-center text-gray-500 text-sm border-t border-gray-800/50 bg-[#0a0a0a]">
         <div className="flex justify-center gap-6 mb-4">
-          <a href="https://github.com/KurianJose7586" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors cursor-none">GitHub</a>
-          <a href="https://www.linkedin.com/in/kurian-jose-862b30294/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors cursor-none">LinkedIn</a>
-          <a href="mailto:your-email@example.com" className="hover:text-white transition-colors cursor-none">Email</a>
+          <a href="https://github.com/KurianJose7586" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
+          <a href="https://www.linkedin.com/in/kurian-jose-862b30294/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
+          <a href="mailto:your-email@example.com" className="hover:text-white transition-colors">Email</a>
         </div>
-        <p>© {new Date().getFullYear()} Kurian Jose. Built with a lot of passion. Glad you could take a look 😊</p>
+        <p>© {new Date().getFullYear()} Kurian Jose. Built with love. glad you could take a look.😊 </p>
       </footer>
 
       {/* Chatbot */}
@@ -463,13 +457,13 @@ export default function Portfolio() {
             {/* Chat open button */}
             <Button
               onClick={() => setChatOpen(true)}
-              className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-cyan-600 shadow-[0_0_20px_rgba(8,145,178,0.5)] hover:shadow-[0_0_30px_rgba(8,145,178,0.7)] transition-all cursor-none"
+              className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-cyan-600 shadow-[0_0_20px_rgba(8,145,178,0.5)] hover:shadow-[0_0_30px_rgba(8,145,178,0.7)] transition-all"
             >
               <MessageCircle className="w-6 h-6" />
             </Button>
           </div>
         ) : (
-          <Card className="w-80 h-96 bg-gray-900/90 backdrop-blur-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden rounded-2xl cursor-none">
+          <Card className="w-80 h-96 bg-gray-900/90 backdrop-blur-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden rounded-2xl">
             <CardHeader className="pb-2 pt-3 border-b border-white/10">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg text-white">KurianGPT</CardTitle>
@@ -477,7 +471,7 @@ export default function Portfolio() {
                   size="sm"
                   variant="ghost"
                   onClick={() => setChatOpen(false)}
-                  className="text-gray-400 hover:text-white hover:bg-white/10 cursor-none"
+                  className="text-gray-400 hover:text-white hover:bg-white/10"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -521,13 +515,13 @@ export default function Portfolio() {
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder="Ask about projects..."
-                  className="bg-black/30 border-white/10 text-white placeholder-gray-500 text-sm focus:border-cyan-500/50 cursor-none"
+                  className="bg-black/30 border-white/10 text-white placeholder-gray-500 text-sm focus:border-cyan-500/50"
                   disabled={isTyping}
                 />
                 <Button
                   type="submit"
                   size="sm"
-                  className="bg-cyan-600 hover:bg-cyan-700 text-white px-3 cursor-none"
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white px-3"
                   disabled={isTyping}
                 >
                   <Send className="w-4 h-4" />
@@ -536,7 +530,7 @@ export default function Portfolio() {
               
               {/* Chatbot Footer */}
               <div className="mt-1 pt-1 border-t border-white/5 text-[9px] text-center text-gray-500">
-                Powered by <a href="https://twinly-ai.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline hover:text-cyan-300 transition-colors cursor-none">TwinlyAI Chat Engine</a>
+                Powered by <a href="https://twinly-ai.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline hover:text-cyan-300 transition-colors">TwinlyAI Chat Engine</a>
               </div>
             </CardContent>
           </Card>
