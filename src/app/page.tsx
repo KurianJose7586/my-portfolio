@@ -442,7 +442,7 @@ export default function Portfolio() {
           </div>
         ) : (
           <Card className="w-80 h-96 bg-gray-900/90 backdrop-blur-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden rounded-2xl">
-            <CardHeader className="pb-3 border-b border-white/5 bg-white/5">
+            <CardHeader className="pb-2 pt-3 border-b border-white/10">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg text-white">KurianGPT</CardTitle>
                 <Button
@@ -507,7 +507,7 @@ export default function Portfolio() {
               </form>
               
               {/* Chatbot Footer */}
-              <div className="mt-3 pt-2 border-t border-white/5 text-[10px] text-center text-gray-500">
+              <div className="mt-1 pt-1 border-t border-white/5 text-[9px] text-center text-gray-500">
                 Powered by <a href="https://twinly-ai.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline hover:text-cyan-300 transition-colors">TwinlyAI Chat Engine</a>
               </div>
             </CardContent>
