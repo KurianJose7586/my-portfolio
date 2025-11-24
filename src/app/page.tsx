@@ -91,7 +91,7 @@ export default function Portfolio() {
     { title: "AI Lawyer", description: "PDF-based legal chatbot using LangChain + Groq for constitutional law queries", tech: ["Prompt Engineering", "LangChain", "FAISS", "Node.js","RAG"], github: "https://github.com/KurianJose7586/Ai-lawyer-project.git" },
   ];
 
-  // REPLACED: Categorized Skills Data
+  // Categorized Skills Data
   const skillCategories = [
     {
       title: "Generative AI & NLP",
@@ -186,7 +186,7 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#121212] text-white overflow-x-hidden font-sans">
       {/* Background */}
       <motion.div className="fixed inset-0 opacity-50 pointer-events-none z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-cyan-900/30 to-blue-900/30" />
@@ -207,7 +207,7 @@ export default function Portfolio() {
       <section className="min-h-screen flex items-center justify-center relative z-10 px-4">
         <div className="text-center z-10">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 1 }} className="mb-8">
-            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-purple-500">
+            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-purple-500 shadow-[0_0_30px_rgba(168,85,247,0.5)]">
               <img src="/avatar.png" alt="Kurian Avatar" className="w-full h-full object-cover" />
             </div>
           </motion.div>
@@ -220,13 +220,13 @@ export default function Portfolio() {
           </p>
 
           <div className="flex justify-center gap-4">
-            <a href="https://github.com/KurianJose7586" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700">
+            <a href="https://github.com/KurianJose7586" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all border border-transparent hover:border-gray-600">
               <Github className="w-5 h-5" /> GitHub
             </a>
-            <a href="https://www.linkedin.com/in/kurian-jose-862b30294/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800">
+            <a href="https://www.linkedin.com/in/kurian-jose-862b30294/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 transition-all shadow-lg hover:shadow-blue-900/50">
               <Linkedin className="w-5 h-5" /> LinkedIn
             </a>
-            <a href="https://drive.google.com/file/d/14yJsIi4JeeR3w0hmauDle2r3LtKPbtzE/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700">
+            <a href="https://drive.google.com/file/d/14yJsIi4JeeR3w0hmauDle2r3LtKPbtzE/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 transition-all shadow-lg hover:shadow-purple-900/50">
               <ExternalLink className="w-5 h-5" /> Resume
             </a>
           </div>
@@ -241,21 +241,24 @@ export default function Portfolio() {
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
-              <Card key={index} className="bg-gray-900/50 border-gray-700 hover:border-purple-500/50 transition-all duration-300">
+              <Card 
+                key={index} 
+                className="bg-gray-900/40 backdrop-blur-md border border-white/10 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] transition-all duration-300 group"
+              >
                 <CardHeader>
-                  <CardTitle className="text-xl text-white">{project.title}</CardTitle>
+                  <CardTitle className="text-xl text-white group-hover:text-cyan-400 transition-colors">{project.title}</CardTitle>
                   <CardDescription className="text-gray-300">{project.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.tech.map((tech, i) => (
-                      <Badge key={i} variant="secondary" className="bg-purple-900/50 text-purple-300">
+                      <Badge key={i} variant="secondary" className="bg-purple-900/30 text-purple-200 border border-purple-500/20">
                         {tech}
                       </Badge>
                     ))}
                   </div>
                   <a href={project.github} target="_blank" rel="noopener noreferrer">
-                    <Button size="sm" variant="outline" className="border-gray-600 text-gray-300 bg-transparent">
+                    <Button size="sm" variant="outline" className="border-gray-600 text-gray-300 bg-transparent hover:bg-gray-800 hover:text-white">
                       <Github className="w-3 h-3 mr-1" /> Code
                     </Button>
                   </a>
@@ -345,7 +348,7 @@ export default function Portfolio() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
           viewport={{ once: true }}
-          className="max-w-2xl mx-auto space-y-6 bg-gray-800/40 p-8 rounded-xl border border-gray-700"
+          className="max-w-2xl mx-auto space-y-6 bg-gray-800/40 p-8 rounded-xl border border-gray-700 backdrop-blur-sm"
         >
           <div className="grid md:grid-cols-2 gap-4">
             <Input
@@ -395,6 +398,16 @@ export default function Portfolio() {
         </motion.form>
       </section>
 
+      {/* Page Footer */}
+      <footer className="py-8 text-center text-gray-500 text-sm border-t border-gray-800/50 bg-[#0a0a0a]">
+        <div className="flex justify-center gap-6 mb-4">
+          <a href="https://github.com/KurianJose7586" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
+          <a href="https://www.linkedin.com/in/kurian-jose-862b30294/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
+          <a href="mailto:your-email@example.com" className="hover:text-white transition-colors">Email</a>
+        </div>
+        <p>© {new Date().getFullYear()} Kurian Jose. Built with Next.js, Flask & LLMs.</p>
+      </footer>
+
       {/* Chatbot */}
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="fixed bottom-6 right-6 z-50">
         {!chatOpen ? (
@@ -422,50 +435,50 @@ export default function Portfolio() {
             {/* Chat open button */}
             <Button
               onClick={() => setChatOpen(true)}
-              className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-cyan-600"
+              className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-cyan-600 shadow-[0_0_20px_rgba(8,145,178,0.5)] hover:shadow-[0_0_30px_rgba(8,145,178,0.7)] transition-all"
             >
               <MessageCircle className="w-6 h-6" />
             </Button>
           </div>
         ) : (
-          <Card className="w-80 h-96 bg-gray-900/95 border-gray-700 flex flex-col">
-            <CardHeader className="pb-2">
+          <Card className="w-80 h-96 bg-gray-900/90 backdrop-blur-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden rounded-2xl">
+            <CardHeader className="pb-3 border-b border-white/5 bg-white/5">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg text-white">KurianGPT</CardTitle>
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => setChatOpen(false)}
-                  className="text-gray-400 hover:text-white"
+                  className="text-gray-400 hover:text-white hover:bg-white/10"
                 >
                   <X className="w-4 h-4" />
                 </Button>
               </div>
-              <CardDescription className="text-gray-400">
+              <CardDescription className="text-gray-400 text-xs">
                 Ask me anything about Kurian's work!
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col flex-1 px-3 pb-3 overflow-hidden">
+            <CardContent className="flex flex-col flex-1 px-3 pb-3 pt-3 overflow-hidden">
               {/* Scrollable messages */}
               <div
                 ref={messagesRef}
-                className="flex-1 flex flex-col overflow-y-auto space-y-3 pr-1"
+                className="flex-1 flex flex-col overflow-y-auto space-y-3 pr-1 mb-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent"
               >
                 {chatMessages.map((msg, index) => (
                   <div
                     key={index}
-                    className={`p-2 rounded-lg text-sm break-words ${
+                    className={`p-2.5 rounded-lg text-sm break-words ${
                       msg.role === "assistant"
-                        ? "bg-gray-800 text-white self-start"
-                        : "bg-cyan-600 text-white self-end"
-                    } max-w-[75%]`}
+                        ? "bg-white/10 text-white self-start border border-white/5"
+                        : "bg-gradient-to-r from-purple-600 to-cyan-600 text-white self-end shadow-md"
+                    } max-w-[80%]`}
                   >
                     {msg.content}
                   </div>
                 ))}
 
                 {isTyping && (
-                  <div className="p-2 rounded-lg text-sm bg-gray-700 text-gray-300 italic self-start max-w-[75%]">
+                  <div className="p-2.5 rounded-lg text-sm bg-white/5 text-gray-300 italic self-start max-w-[75%] animate-pulse">
                     KurianGPT is typing...
                   </div>
                 )}
@@ -474,24 +487,29 @@ export default function Portfolio() {
               {/* Fixed input */}
               <form
                 onSubmit={handleChatSubmit}
-                className="mt-2 flex gap-2 items-center"
+                className="flex gap-2 items-center"
               >
                 <Input
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Ask about projects, skills..."
-                  className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 text-sm"
+                  placeholder="Ask about projects..."
+                  className="bg-black/30 border-white/10 text-white placeholder-gray-500 text-sm focus:border-cyan-500/50"
                   disabled={isTyping}
                 />
                 <Button
                   type="submit"
                   size="sm"
-                  className="bg-cyan-600 hover:bg-cyan-700"
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white px-3"
                   disabled={isTyping}
                 >
-                  <Send className="w-3 h-3" />
+                  <Send className="w-4 h-4" />
                 </Button>
               </form>
+              
+              {/* Chatbot Footer */}
+              <div className="mt-3 pt-2 border-t border-white/5 text-[10px] text-center text-gray-500">
+                Powered by <a href="https://twinly-ai.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline hover:text-cyan-300 transition-colors">TwinlyAI Chat Engine</a>
+              </div>
             </CardContent>
           </Card>
         )}
