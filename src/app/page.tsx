@@ -91,22 +91,40 @@ export default function Portfolio() {
     { title: "AI Lawyer", description: "PDF-based legal chatbot using LangChain + Groq for constitutional law queries", tech: ["Prompt Engineering", "LangChain", "FAISS", "Node.js","RAG"], github: "https://github.com/KurianJose7586/Ai-lawyer-project.git" },
   ];
 
-  // Skills
-  const skills = [
-    { name: "LangChain", icon: "🔗", category: "AI/ML" },
-    { name: "FAISS", icon: "🔍", category: "AI/ML" },
-    { name: "Groq API", icon: "⚡", category: "AI/ML" },
-    { name: "OpenAI", icon: "🤖", category: "AI/ML" },
-    { name: "Prompt Engineering", icon: "💭", category: "AI/ML" },
-    { name: "NLP", icon: "📝", category: "AI/ML" },
-    { name: "BiLSTM", icon: "🧠", category: "AI/ML" },
-    { name: "TensorFlow", icon: "🔥", category: "AI/ML" },
-    { name: "Streamlit", icon: "🚀", category: "Frontend" },
-    { name: "Flask", icon: "🌶️", category: "Backend" },
-    { name: "Selenium", icon: "🕷️", category: "Automation" },
-    { name: "Git", icon: "📚", category: "Tools" },
-    { name: "VSCode", icon: "💻", category: "Tools" },
-    { name: "Pandas", icon: "🐼", category: "Data" },
+  // REPLACED: Categorized Skills Data
+  const skillCategories = [
+    {
+      title: "Generative AI & NLP",
+      description: "Building the brains behind the software",
+      skills: [
+        { name: "RAG Pipelines", icon: "⚙️" },
+        { name: "LangChain", icon: "🔗" },
+        { name: "Vector Databases", icon: "🗄️" },
+        { name: "LLMs & Transformers", icon: "🤖" },
+        { name: "Prompt Engineering", icon: "💭" },
+      ]
+    },
+    {
+      title: "Backend & Cloud",
+      description: "Scalable infrastructure & deployment",
+      skills: [
+        { name: "FastAPI", icon: "⚡" },
+        { name: "Docker", icon: "🐳" },
+        { name: "Google Cloud (GCP)", icon: "☁️" },
+        { name: "MongoDB", icon: "🍃" },
+        { name: "Flask", icon: "🌶️" },
+      ]
+    },
+    {
+      title: "Frontend & Product",
+      description: "Crafting intuitive user experiences",
+      skills: [
+        { name: "Next.js / React", icon: "⚛️" },
+        { name: "TypeScript", icon: "📘" },
+        { name: "Figma", icon: "🎨" },
+        { name: "Tailwind CSS", icon: "🌊" },
+      ]
+    }
   ];
 
   // Chat submit handler
@@ -248,198 +266,236 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Skills */}
-      <section className="py-20 px-4">
+      {/* Skills Section - Redesigned */}
+      <section className="py-24 px-4 bg-gradient-to-b from-[#121212] to-gray-900/50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-            Skills & Tools
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            {skills.map((skill, index) => (
-              <div key={index} className="bg-gray-900/50 border border-gray-700 rounded-lg p-4 text-center hover:border-purple-500/50 transition-all duration-300">
-                <div className="text-2xl mb-2">{skill.icon}</div>
-                <div className="text-sm font-medium text-white">{skill.name}</div>
-                <div className="text-xs text-gray-400 mt-1">{skill.category}</div>
-              </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              Technical Arsenal
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              A full-stack toolkit focused on building scalable AI solutions and intuitive interfaces.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {skillCategories.map((category, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2, duration: 0.5 }}
+                viewport={{ once: true }}
+                className="bg-gray-900/40 backdrop-blur-md border border-gray-800 rounded-2xl p-6 hover:border-purple-500/30 transition-all duration-300 group"
+              >
+                {/* Category Header */}
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
+                    {category.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 font-medium">
+                    {category.description}
+                  </p>
+                </div>
+
+                {/* Skills List */}
+                <div className="space-y-3">
+                  {category.skills.map((skill, i) => (
+                    <div 
+                      key={i} 
+                      className="flex items-center gap-4 p-3 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:bg-gray-800/80 hover:border-gray-600 transition-all duration-200"
+                    >
+                      <span className="text-xl filter drop-shadow-md">{skill.icon}</span>
+                      <span className="text-gray-300 font-medium text-sm">{skill.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Contact */}
-<section className="py-20 px-4 bg-gray-900/30 relative z-10" id="contact">
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6 }}
-    viewport={{ once: true }}
-    className="max-w-3xl mx-auto text-center"
-  >
-    <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-      Get In Touch
-    </h2>
-    <p className="text-gray-400 mb-12">
-      Have a project in mind or just want to talk AI? Drop me a message — I’ll get back to you soon.
-    </p>
-  </motion.div>
+      <section className="py-20 px-4 bg-gray-900/30 relative z-10" id="contact">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="max-w-3xl mx-auto text-center"
+        >
+          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            Get In Touch
+          </h2>
+          <p className="text-gray-400 mb-12">
+            Have a project in mind or just want to talk AI? Drop me a message — I’ll get back to you soon.
+          </p>
+        </motion.div>
 
-  <motion.form
-    onSubmit={handleContactSubmit}
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.2, duration: 0.6 }}
-    viewport={{ once: true }}
-    className="max-w-2xl mx-auto space-y-6 bg-gray-800/40 p-8 rounded-xl border border-gray-700"
-  >
-    <div className="grid md:grid-cols-2 gap-4">
-      <Input
-        type="text"
-        name="name"
-        value={form.name}
-        onChange={handleFormChange}
-        placeholder="Your Name *"
-        className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
-      />
-      <Input
-        type="email"
-        name="email"
-        value={form.email}
-        onChange={handleFormChange}
-        placeholder="Your Email *"
-        className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
-      />
-    </div>
-    <Input
-      type="text"
-      name="subject"
-      value={form.subject}
-      onChange={handleFormChange}
-      placeholder="Subject"
-      className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
-    />
-    <Textarea
-      name="message"
-      value={form.message}
-      onChange={handleFormChange}
-      placeholder="Your Message *"
-      rows={5}
-      className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
-    />
-    <Button
-      type="submit"
-      disabled={loading}
-      className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700"
-    >
-      {loading ? "Sending..." : (
-        <>
-          <Send className="w-4 h-4 mr-2" /> Send Message
-        </>
-      )}
-    </Button>
-  </motion.form>
-</section>
+        <motion.form
+          onSubmit={handleContactSubmit}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          viewport={{ once: true }}
+          className="max-w-2xl mx-auto space-y-6 bg-gray-800/40 p-8 rounded-xl border border-gray-700"
+        >
+          <div className="grid md:grid-cols-2 gap-4">
+            <Input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleFormChange}
+              placeholder="Your Name *"
+              className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
+            />
+            <Input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleFormChange}
+              placeholder="Your Email *"
+              className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
+            />
+          </div>
+          <Input
+            type="text"
+            name="subject"
+            value={form.subject}
+            onChange={handleFormChange}
+            placeholder="Subject"
+            className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
+          />
+          <Textarea
+            name="message"
+            value={form.message}
+            onChange={handleFormChange}
+            placeholder="Your Message *"
+            rows={5}
+            className="bg-gray-900/50 border-gray-700 focus:border-purple-500 focus:ring-purple-500"
+          />
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700"
+          >
+            {loading ? "Sending..." : (
+              <>
+                <Send className="w-4 h-4 mr-2" /> Send Message
+              </>
+            )}
+          </Button>
+        </motion.form>
+      </section>
 
       {/* Chatbot */}
-<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="fixed bottom-6 right-6 z-50">
-  {!chatOpen ? (
-    <div className="relative w-14 h-14 group">
-      {/* Tooltip */}
-      <span className="absolute left-[-140px] top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-        Talk to KurianGPT
-      </span>
+      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="fixed bottom-6 right-6 z-50">
+        {!chatOpen ? (
+          <div className="relative w-14 h-14 group">
+            {/* Tooltip */}
+            <span className="absolute left-[-140px] top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+              Talk to KurianGPT
+            </span>
 
-      {/* Animated avatar */}
-      <div className="absolute -top-12 right-1 w-16 h-16 overflow-hidden rounded-full pointer-events-none">
-        <motion.video
-          src="/waving-avatar-final.webm"
-          autoPlay
-          muted
-          playsInline
-          loop
-          className="w-full h-full"
-          initial={{ y: "100%", opacity: 0 }}
-          animate={avatarVisible ? { y: 0, opacity: 1 } : { y: "100%", opacity: 0 }}
-          transition={{ type: "spring", stiffness: 200, damping: 18 }}
-        />
-      </div>
+            {/* Animated avatar */}
+            <div className="absolute -top-12 right-1 w-16 h-16 overflow-hidden rounded-full pointer-events-none">
+              <motion.video
+                src="/waving-avatar-final.webm"
+                autoPlay
+                muted
+                playsInline
+                loop
+                className="w-full h-full"
+                initial={{ y: "100%", opacity: 0 }}
+                animate={avatarVisible ? { y: 0, opacity: 1 } : { y: "100%", opacity: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 18 }}
+              />
+            </div>
 
-      {/* Chat open button */}
-      <Button
-        onClick={() => setChatOpen(true)}
-        className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-cyan-600"
-      >
-        <MessageCircle className="w-6 h-6" />
-      </Button>
-    </div>
-  ) : (
-    <Card className="w-80 h-96 bg-gray-900/95 border-gray-700 flex flex-col">
-  <CardHeader className="pb-2">
-    <div className="flex items-center justify-between">
-      <CardTitle className="text-lg text-white">KurianGPT</CardTitle>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={() => setChatOpen(false)}
-        className="text-gray-400 hover:text-white"
-      >
-        <X className="w-4 h-4" />
-      </Button>
-    </div>
-    <CardDescription className="text-gray-400">
-      Ask me anything about Kurian's work!
-    </CardDescription>
-  </CardHeader>
-  <CardContent className="flex flex-col flex-1 px-3 pb-3 overflow-hidden">
-    {/* Scrollable messages */}
-    <div
-      ref={messagesRef}
-      className="flex-1 flex flex-col overflow-y-auto space-y-3 pr-1"
-    >
-      {chatMessages.map((msg, index) => (
-        <div
-          key={index}
-          className={`p-2 rounded-lg text-sm break-words ${
-            msg.role === "assistant"
-              ? "bg-gray-800 text-white self-start"
-              : "bg-cyan-600 text-white self-end"
-          } max-w-[75%]`}
-        >
-          {msg.content}
-        </div>
-      ))}
+            {/* Chat open button */}
+            <Button
+              onClick={() => setChatOpen(true)}
+              className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-cyan-600"
+            >
+              <MessageCircle className="w-6 h-6" />
+            </Button>
+          </div>
+        ) : (
+          <Card className="w-80 h-96 bg-gray-900/95 border-gray-700 flex flex-col">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg text-white">KurianGPT</CardTitle>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setChatOpen(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              <CardDescription className="text-gray-400">
+                Ask me anything about Kurian's work!
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col flex-1 px-3 pb-3 overflow-hidden">
+              {/* Scrollable messages */}
+              <div
+                ref={messagesRef}
+                className="flex-1 flex flex-col overflow-y-auto space-y-3 pr-1"
+              >
+                {chatMessages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 rounded-lg text-sm break-words ${
+                      msg.role === "assistant"
+                        ? "bg-gray-800 text-white self-start"
+                        : "bg-cyan-600 text-white self-end"
+                    } max-w-[75%]`}
+                  >
+                    {msg.content}
+                  </div>
+                ))}
 
-      {isTyping && (
-        <div className="p-2 rounded-lg text-sm bg-gray-700 text-gray-300 italic self-start max-w-[75%]">
-          KurianGPT is typing...
-        </div>
-      )}
-    </div>
+                {isTyping && (
+                  <div className="p-2 rounded-lg text-sm bg-gray-700 text-gray-300 italic self-start max-w-[75%]">
+                    KurianGPT is typing...
+                  </div>
+                )}
+              </div>
 
-    {/* Fixed input */}
-    <form
-      onSubmit={handleChatSubmit}
-      className="mt-2 flex gap-2 items-center"
-    >
-      <Input
-        value={chatInput}
-        onChange={(e) => setChatInput(e.target.value)}
-        placeholder="Ask about projects, skills..."
-        className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 text-sm"
-        disabled={isTyping}
-      />
-      <Button
-        type="submit"
-        size="sm"
-        className="bg-cyan-600 hover:bg-cyan-700"
-        disabled={isTyping}
-      >
-        <Send className="w-3 h-3" />
-      </Button>
-    </form>
-  </CardContent>
-</Card>
-  )}
-</motion.div>
+              {/* Fixed input */}
+              <form
+                onSubmit={handleChatSubmit}
+                className="mt-2 flex gap-2 items-center"
+              >
+                <Input
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="Ask about projects, skills..."
+                  className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 text-sm"
+                  disabled={isTyping}
+                />
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="bg-cyan-600 hover:bg-cyan-700"
+                  disabled={isTyping}
+                >
+                  <Send className="w-3 h-3" />
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+      </motion.div>
     </div>
   );
 }
