@@ -2,7 +2,8 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Github, Linkedin, ExternalLink, MessageCircle, X, Send } from "lucide-react";
+import { Github, Linkedin, ExternalLink, MessageCircle, X, Send, Workflow, Database, Bot, MessageSquare } from "lucide-react";
+import { SiFastapi, SiDocker, SiGooglecloud, SiMongodb, SiFlask, SiNextdotjs, SiTypescript, SiFigma, SiTailwindcss, SiLangchain, SiReact } from "react-icons/si";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -109,32 +110,32 @@ export default function Portfolio() {
       title: "Generative AI & NLP",
       description: "Building the brains behind the software",
       skills: [
-        { name: "RAG Pipelines", icon: "⚙️" },
-        { name: "LangChain", icon: "🔗" },
-        { name: "Vector Databases", icon: "🗄️" },
-        { name: "LLMs & Transformers", icon: "🤖" },
-        { name: "Prompt Engineering", icon: "💭" },
+        { name: "RAG Pipelines", icon: <Workflow /> },
+        { name: "LangChain", icon: <SiLangchain /> },
+        { name: "Vector Databases", icon: <Database /> },
+        { name: "LLMs & Transformers", icon: <Bot /> },
+        { name: "Prompt Engineering", icon: <MessageSquare /> },
       ]
     },
     {
       title: "Backend & Cloud",
       description: "Scalable infrastructure & deployment",
       skills: [
-        { name: "FastAPI", icon: "⚡" },
-        { name: "Docker", icon: "🐳" },
-        { name: "Google Cloud (GCP)", icon: "☁️" },
-        { name: "MongoDB", icon: "🍃" },
-        { name: "Flask", icon: "🌶️" },
+        { name: "FastAPI", icon: <SiFastapi /> },
+        { name: "Docker", icon: <SiDocker /> },
+        { name: "Google Cloud (GCP)", icon: <SiGooglecloud /> },
+        { name: "MongoDB", icon: <SiMongodb /> },
+        { name: "Flask", icon: <SiFlask /> },
       ]
     },
     {
       title: "Frontend & Product",
       description: "Crafting intuitive user experiences",
       skills: [
-        { name: "Next.js / React", icon: "⚛️" },
-        { name: "TypeScript", icon: "📘" },
-        { name: "Figma", icon: "🎨" },
-        { name: "Tailwind CSS", icon: "🌊" },
+        { name: "Next.js / React", icon: <div className="flex gap-2"><SiNextdotjs /><SiReact /></div> },
+        { name: "TypeScript", icon: <SiTypescript /> },
+        { name: "Figma", icon: <SiFigma /> },
+        { name: "Tailwind CSS", icon: <SiTailwindcss /> },
       ]
     }
   ];
