@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Github, Linkedin, ExternalLink, MessageCircle, X, Send, Workflow, Database, Bot, MessageSquare, ChevronLeft, ChevronRight } from "lucide-react";
@@ -364,7 +365,14 @@ export default function Portfolio() {
         <div className="text-center z-10">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 1 }} className="mb-8">
             <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-purple-500 shadow-[0_0_30px_rgba(168,85,247,0.5)]">
-              <img src="/avatar.png" alt="Kurian Avatar" className="w-full h-full object-cover" />
+              <Image 
+                src="/avatar.png" 
+                alt="Kurian Jose - AI Engineer Portrait" 
+                width={128} 
+                height={128} 
+                className="w-full h-full object-cover"
+                priority
+              />
             </div>
           </motion.div>
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
@@ -493,6 +501,7 @@ export default function Portfolio() {
             <Button
               variant="default"
               size="icon"
+              aria-label="Previous project"
               className="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-gray-700 bg-gray-900/80 hover:bg-gray-800 text-white shadow-2xl opacity-0 group-hover/carousel:opacity-100 transition-opacity backdrop-blur-md hidden sm:flex"
               onClick={() => {
                 if (carouselRef.current) {
@@ -505,6 +514,7 @@ export default function Portfolio() {
             <Button
               variant="default"
               size="icon"
+              aria-label="Next project"
               className="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-gray-700 bg-gray-900/80 hover:bg-gray-800 text-white shadow-2xl opacity-0 group-hover/carousel:opacity-100 transition-opacity backdrop-blur-md hidden sm:flex"
               onClick={() => {
                 if (carouselRef.current) {
@@ -640,6 +650,7 @@ export default function Portfolio() {
             <Input
               type="text"
               name="name"
+              aria-label="Your Name"
               value={form.name}
               onChange={handleFormChange}
               placeholder="Your Name *"
@@ -648,6 +659,7 @@ export default function Portfolio() {
             <Input
               type="email"
               name="email"
+              aria-label="Your Email"
               value={form.email}
               onChange={handleFormChange}
               placeholder="Your Email *"
@@ -657,6 +669,7 @@ export default function Portfolio() {
           <Input
             type="text"
             name="subject"
+            aria-label="Subject"
             value={form.subject}
             onChange={handleFormChange}
             placeholder="Subject"
@@ -664,6 +677,7 @@ export default function Portfolio() {
           />
           <Textarea
             name="message"
+            aria-label="Your Message"
             value={form.message}
             onChange={handleFormChange}
             placeholder="Your Message *"
@@ -751,6 +765,7 @@ export default function Portfolio() {
               {/* Chat open button */}
               <Button
                 onClick={() => setChatOpen(true)}
+                aria-label="Open chat"
                 className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-cyan-600 shadow-[0_0_20px_rgba(8,145,178,0.5)] hover:shadow-[0_0_30px_rgba(8,145,178,0.7)] transition-all"
               >
                 <MessageCircle className="w-6 h-6" />
@@ -822,6 +837,7 @@ export default function Portfolio() {
                     <Button
                       type="submit"
                       size="icon"
+                      aria-label="Send message"
                       className="bg-cyan-600 hover:bg-cyan-500 text-white transition-colors rounded-lg w-10 h-10 shrink-0 shadow-lg shadow-cyan-900/20"
                       disabled={isTyping}
                     >
