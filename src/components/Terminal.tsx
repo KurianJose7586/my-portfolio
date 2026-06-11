@@ -10,10 +10,12 @@ import {
 } from '@/lib/terminalData';
 
 interface OutputLine {
-  type: 'boot' | 'command' | 'output' | 'input';
+  type: 'boot' | 'command' | 'output' | 'error';
   content: string;
-  command?: string;
+  isHtml?: boolean;
 }
+
+type WindowState = 'normal' | 'minimized' | 'maximized' | 'closed';
 
 export default function Terminal() {
   const [output, setOutput] = useState<OutputLine[]>([]);
@@ -22,201 +24,370 @@ export default function Terminal() {
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [isBooting, setIsBooting] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [isMaximized, setIsMaximized] = useState(false);
+  const [windowState, setWindowState] = useState<WindowState>('normal');
   const [fontSize, setFontSize] = useState(13);
-  const [windowSize, setWindowSize] = useState({ width: 1000, height: 600 });
+
+  // Drag state
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragOffset = useRef({ x: 0, y: 0 });
+
+  // Resize state
+  const [windowSize, setWindowSize] = useState({ width: 860, height: 560 });
   const [isResizing, setIsResizing] = useState(false);
-  
+  const resizeStart = useRef({ mouseX: 0, mouseY: 0, width: 860, height: 560 });
+
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
   const windowRef = useRef<HTMLDivElement>(null);
   const easterEggs = getEasterEggs();
 
-  // Boot sequence
+  // ── Boot sequence (variable-speed per line) ──────────────────────────
   useEffect(() => {
     if (!isBooting) return;
 
-    let bootIndex = 0;
-    const bootInterval = setInterval(() => {
-      if (bootIndex < bootSequence.length) {
-        setOutput((prev) => [
-          ...prev,
-          { type: 'boot', content: bootSequence[bootIndex] },
-        ]);
-        bootIndex++;
-      } else {
-        clearInterval(bootInterval);
-        setIsBooting(false);
-        inputRef.current?.focus();
-      }
-    }, 120);
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    return () => clearInterval(bootInterval);
+    if (prefersReduced) {
+      setOutput(bootSequence.map(([content]) => ({ type: 'boot' as const, content })));
+      setIsBooting(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    const printLine = (index: number) => {
+      if (cancelled || index >= bootSequence.length) {
+        if (!cancelled) setIsBooting(false);
+        return;
+      }
+      const [content, delay] = bootSequence[index];
+      // Schedule the *next* line after this line's delay
+      const id = setTimeout(() => {
+        setOutput((prev) => [...prev, { type: 'boot' as const, content }]);
+        printLine(index + 1);
+      }, delay);
+      return id;
+    };
+
+    // Kick off immediately
+    printLine(0);
+
+    return () => { cancelled = true; };
   }, [isBooting]);
 
-  // Auto-scroll to bottom
+  // Focus input after boot
+  useEffect(() => {
+    if (!isBooting) inputRef.current?.focus();
+  }, [isBooting]);
+
+  // Auto-scroll
   useEffect(() => {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [output]);
 
-  // Keyboard shortcuts for zoom
+  // ── Keyboard zoom ───────────────────────────────────────────────────
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handler = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
         if (e.key === '+' || e.key === '=') {
           e.preventDefault();
-          setFontSize((prev) => Math.min(prev + 1, 24));
+          setFontSize((p) => Math.min(p + 1, 22));
         } else if (e.key === '-') {
           e.preventDefault();
-          setFontSize((prev) => Math.max(prev - 1, 8));
+          setFontSize((p) => Math.max(p - 1, 10));
         } else if (e.key === '0') {
           e.preventDefault();
           setFontSize(13);
         }
       }
     };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  // Resize functionality
-  const handleMouseDown = useCallback(() => {
-    setIsResizing(true);
-  }, []);
+  // ── Drag (title bar) ─────────────────────────────────────────────────
+  const handleTitleBarMouseDown = useCallback((e: React.MouseEvent) => {
+    if (windowState !== 'normal') return;
+    // Ignore clicks on traffic-light buttons
+    if ((e.target as HTMLElement).closest('button')) return;
+    setIsDragging(true);
+    dragOffset.current = {
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    };
+    e.preventDefault();
+  }, [windowState, position]);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing || !windowRef.current) return;
-
-      const rect = windowRef.current.getBoundingClientRect();
-      const newWidth = e.clientX - rect.left;
-      const newHeight = e.clientY - rect.top;
-
-      if (newWidth > 400) setWindowSize((prev) => ({ ...prev, width: newWidth }));
-      if (newHeight > 300)
-        setWindowSize((prev) => ({ ...prev, height: newHeight }));
+    if (!isDragging) return;
+    const move = (e: MouseEvent) => {
+      setPosition({ x: e.clientX - dragOffset.current.x, y: e.clientY - dragOffset.current.y });
     };
+    const up = () => setIsDragging(false);
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+    return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+  }, [isDragging]);
 
-    const handleMouseUp = () => {
-      setIsResizing(false);
+  // ── Resize (SE corner) ───────────────────────────────────────────────
+  const handleResizeMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+    resizeStart.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      width: windowSize.width,
+      height: windowSize.height,
     };
+  }, [windowSize]);
 
-    if (isResizing) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+  useEffect(() => {
+    if (!isResizing) return;
+    const move = (e: MouseEvent) => {
+      const dw = e.clientX - resizeStart.current.mouseX;
+      const dh = e.clientY - resizeStart.current.mouseY;
+      setWindowSize({
+        width: Math.max(400, resizeStart.current.width + dw),
+        height: Math.max(300, resizeStart.current.height + dh),
+      });
     };
+    const up = () => setIsResizing(false);
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+    return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
   }, [isResizing]);
 
+  // ── Command processor ────────────────────────────────────────────────
   const processCommand = useCallback(
     (cmd: string) => {
       const trimmed = cmd.trim();
 
       if (!trimmed) {
-        setOutput((prev) => [...prev, { type: 'command', content: trimmed }]);
+        setOutput((prev) => [...prev, { type: 'command', content: '' }]);
         return;
       }
 
-      // Add to history
-      setHistory((prev) => [trimmed, ...prev]);
+      setHistory((prev) => [trimmed, ...prev.slice(0, 49)]);
       setHistoryIndex(-1);
+      setOutput((prev) => [...prev, { type: 'command', content: `kurian@portfolio:~$ ${trimmed}` }]);
 
-      // Add command to output
-      setOutput((prev) => [
-        ...prev,
-        { type: 'command', command: trimmed, content: `kurian@portfolio:~$ ${trimmed}` },
-      ]);
-
-      // Check for clear command
+      // clear
       if (trimmed === 'clear') {
         setOutput([]);
         setInput('');
         return;
       }
 
-      // Check for easter eggs
+      // easter eggs
       if (easterEggs[trimmed.toLowerCase()]) {
-        setOutput((prev) => [
-          ...prev,
-          { type: 'output', content: easterEggs[trimmed.toLowerCase()] },
-        ]);
+        setOutput((prev) => [...prev, { type: 'output', content: easterEggs[trimmed.toLowerCase()] }]);
         setInput('');
         return;
       }
 
-      // Check for ask command
+      // ask — wired to KurianGPT via /api/chat → HF Space
       if (trimmed.startsWith('ask ') || trimmed.startsWith('ask"')) {
-        const query = trimmed
-          .replace(/^ask\s*["']?/, '')
-          .replace(/["']$/, '')
-          .trim();
+        const query = trimmed.replace(/^ask\s*["']?/, '').replace(/["']$/, '').trim();
+        if (!query) {
+          setOutput((prev) => [...prev, { type: 'error', content: 'usage: ask "your question here"' }]);
+          setInput('');
+          return;
+        }
 
         setIsLoading(true);
+        setInput('');
+
+        // 3. Context Awareness: Get recent terminal history
+        const recentHistory = output
+          .slice(-10)
+          .map(o => o.type === 'command' ? `User ran: ${o.content}` : `Terminal: ${o.content.replace(/<[^>]*>?/gm, '')}`)
+          .join('\n');
+
+        // 2. Proactive "Thinking" Streams: Animate the loading state
+        let dotIndex = 0;
+        const thinkingSteps = [
+          "[system] parsing intent...",
+          "[retrieval] scanning knowledge base...",
+          "[agent] formatting response..."
+        ];
+        
         setOutput((prev) => [
           ...prev,
-          {
-            type: 'output',
-            content: `KurianGPT thinking... → (connect to your AI endpoint here)`,
-          },
+          { type: 'output', content: `⠋ ${thinkingSteps[0]}` },
         ]);
-        setInput('');
-        // TODO: Wire up actual AI backend
-        setIsLoading(false);
+
+        const loadingInterval = setInterval(() => {
+          dotIndex++;
+          const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+          const frame = frames[dotIndex % frames.length];
+          const step = thinkingSteps[Math.floor((dotIndex / 5)) % thinkingSteps.length];
+          
+          setOutput((prev) => {
+            const newOutput = [...prev];
+            newOutput[newOutput.length - 1] = { type: 'output', content: `${frame} ${step}` };
+            return newOutput;
+          });
+        }, 120);
+
+        // Inject strict TUI formatting rules silently
+        const systemPrompt = `\n\n[SYSTEM RULES: You are a CLI tool outputting to a terminal. 
+1. DO NOT write paragraphs. Give a 1-line direct answer, then structured data (lists/tables), then stop.
+2. DO NOT ask conversational questions ("Let me know if...").
+3. ALWAYS end with exactly one suggested command starting with "→ run \`" (e.g. "→ run \`open twinlyai\` to go deeper" or "→ run \`research\`").
+4. Keep it extremely brief, brutalist, and scannable.]`;
+
+        fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: query + systemPrompt, history: recentHistory }),
+        })
+          .then(async (res) => {
+            const data = await res.json();
+            if (!res.ok || data.error) {
+              throw new Error(data.error || `HTTP ${res.status}`);
+            }
+            return data.reply as string;
+          })
+          .then((reply) => {
+            clearInterval(loadingInterval);
+            
+            // Remove the thinking line and add the top separator
+            setOutput((prev) => {
+              const withoutThinking = prev.slice(0, -1);
+              return [
+                ...withoutThinking,
+                { type: 'output', content: '─────────────────────────────────────────────' },
+              ];
+            });
+
+            // Simulate line-by-line streaming
+            const lines = reply.split('\n');
+            let i = 0;
+
+            const streamLine = () => {
+              if (i < lines.length) {
+                const lineContent = i === 0 ? `KurianGPT > ${lines[i]}` : lines[i];
+                setOutput((prev) => [...prev, { type: 'output', content: lineContent }]);
+                i++;
+                // 30-50ms random delay per line for authentic terminal feel
+                setTimeout(streamLine, 30 + Math.random() * 20);
+              } else {
+                // Add bottom separator when done
+                setOutput((prev) => [
+                  ...prev,
+                  { type: 'output', content: '─────────────────────────────────────────────' },
+                ]);
+                setIsLoading(false);
+              }
+            };
+            
+            streamLine();
+          })
+          .catch((err: Error) => {
+            setOutput((prev) => {
+              const withoutThinking = prev.slice(0, -1);
+              return [
+                ...withoutThinking,
+                { type: 'error', content: `KurianGPT > error: ${err.message}\nhint: the HF Space may be cold-starting — try again in ~30s` },
+              ];
+            });
+            setIsLoading(false);
+          });
+
         return;
       }
 
-      // Check for open command
+      // git log — fetch real public commits from GitHub
+      if (trimmed === 'git log') {
+        setIsLoading(true);
+        setInput('');
+
+        setOutput((prev) => [
+          ...prev,
+          { type: 'output', content: `⠋ fetching public commits for KurianJose7586...` },
+        ]);
+
+        fetch('https://api.github.com/users/KurianJose7586/repos?sort=pushed&direction=desc&per_page=1')
+          .then((res) => {
+            if (!res.ok) throw new Error('GitHub API rate limit exceeded');
+            return res.json();
+          })
+          .then((repos) => {
+            if (!repos || repos.length === 0) {
+              throw new Error('No public repos found');
+            }
+            const repo = repos[0].name;
+            return fetch(`https://api.github.com/repos/KurianJose7586/${repo}/commits?per_page=5`)
+              .then(res => {
+                if (!res.ok) throw new Error(`GitHub API error on repo ${repo}`);
+                return res.json();
+              })
+              .then(commits => ({ repo, commits }));
+          })
+          .then(({ repo, commits }) => {
+            setOutput((prev) => {
+              const withoutThinking = prev.slice(0, -1);
+
+              if (!commits || commits.length === 0) {
+                return [...withoutThinking, { type: 'output', content: 'No recent public commits found.' }];
+              }
+
+              const outputLines = commits.map((c: any) => {
+                const shortSha = c.sha.substring(0, 7);
+                const shortMsg = c.commit.message.split('\n')[0].trim();
+                return `<span class="text-yellow-400">commit ${shortSha}</span>  ${shortMsg} <span class="text-gray-500">(${repo})</span>`;
+              });
+
+              return [
+                ...withoutThinking,
+                { type: 'output', content: '─────────────────────────────────────────────' },
+                ...outputLines.map((line: string) => ({ type: 'output' as const, content: line, isHtml: true })),
+                { type: 'output', content: '─────────────────────────────────────────────' }
+              ];
+            });
+          })
+          .catch((err) => {
+            setOutput((prev) => {
+              const withoutThinking = prev.slice(0, -1);
+              return [...withoutThinking, { type: 'error', content: `error: ${err.message}` }];
+            });
+          })
+          .finally(() => setIsLoading(false));
+
+        return;
+      }
+
+      // open <project>
       const openMatch = trimmed.match(/^open\s+(.+)$/i);
       if (openMatch) {
         const project = openMatch[1].toLowerCase().trim();
         if (projectDetails[project]) {
           const { title, content } = projectDetails[project];
-          setOutput((prev) => [
-            ...prev,
-            { type: 'output', content: `${title}\n${content}` },
-          ]);
+          setOutput((prev) => [...prev, { type: 'output', content: `${title}\n${content}` }]);
         } else {
           setOutput((prev) => [
             ...prev,
-            {
-              type: 'output',
-              content: `command not found: open ${project}\ntype \`help\` for available commands`,
-            },
+            { type: 'error', content: `command not found: open ${project}\ntype \`help\` for available commands` },
           ]);
         }
         setInput('');
         return;
       }
 
-      // Check for standard commands
-      const command = trimmed.toLowerCase();
-      if (terminalCommands[command as keyof typeof terminalCommands]) {
-        const cmd = terminalCommands[command as keyof typeof terminalCommands];
-        const output_content = cmd.title
-          ? `${cmd.title}\n${cmd.content}`
-          : cmd.content;
-        setOutput((prev) => [
-          ...prev,
-          { type: 'output', content: output_content },
-        ]);
+      // standard commands
+      const key = trimmed.toLowerCase() as keyof typeof terminalCommands;
+      if (terminalCommands[key]) {
+        const c = terminalCommands[key];
+        setOutput((prev) => [...prev, { type: 'output', content: c.title ? `${c.title}\n${c.content}` : c.content }]);
       } else {
         setOutput((prev) => [
           ...prev,
-          {
-            type: 'output',
-            content: `command not found: ${trimmed}\ntype \`help\` for available commands`,
-          },
+          { type: 'error', content: `command not found: ${trimmed}\ntype \`help\` for available commands` },
         ]);
       }
-
       setInput('');
     },
     [easterEggs]
@@ -228,213 +399,334 @@ export default function Terminal() {
       processCommand(input);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      const newIndex = historyIndex + 1;
-      if (newIndex < history.length) {
-        setHistoryIndex(newIndex);
-        setInput(history[newIndex]);
-      }
+      const next = historyIndex + 1;
+      if (next < history.length) { setHistoryIndex(next); setInput(history[next]); }
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
-      const newIndex = historyIndex - 1;
-      if (newIndex >= 0) {
-        setHistoryIndex(newIndex);
-        setInput(history[newIndex]);
-      } else if (newIndex === -1) {
-        setHistoryIndex(-1);
-        setInput('');
-      }
+      const next = historyIndex - 1;
+      if (next >= 0) { setHistoryIndex(next); setInput(history[next]); }
+      else { setHistoryIndex(-1); setInput(''); }
+    } else if (e.key === 'Tab') {
+      // Simple tab completion
+      e.preventDefault();
+      const allCmds = [...Object.keys(terminalCommands), 'clear', 'open', 'ask'];
+      const match = allCmds.find((c) => c.startsWith(input) && c !== input);
+      if (match) setInput(match);
     }
   };
 
-  const handleHintClick = (hint: string) => {
-    processCommand(hint);
-  };
+  // ── Window state helpers ─────────────────────────────────────────────
+  const isMaximized = windowState === 'maximized';
+  const isMinimized = windowState === 'minimized';
+  const isClosed   = windowState === 'closed';
+
+  if (isClosed) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-[#0a0e27] to-black">
+        <button
+          onClick={() => { setWindowState('normal'); setOutput([]); setIsBooting(true); }}
+          className="font-mono text-green-400 border border-green-400/40 px-6 py-3 rounded-lg hover:bg-green-400/10 transition-colors duration-200 cursor-pointer"
+          style={{ textShadow: '0 0 8px rgba(0,255,65,0.4)' }}
+        >
+          ▶ reopen terminal
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-black via-slate-900/20 to-black flex items-center justify-center p-4 md:p-8">
+    <div
+      className="w-full min-h-screen flex items-center justify-center p-4 md:p-8 bg-gradient-to-br from-black via-[#0a0e27] to-black"
+      style={{ cursor: isResizing ? 'nwse-resize' : isDragging ? 'grabbing' : 'default' }}
+    >
+      {/* ── Inline styles (scoped) ───────────────────────────────── */}
       <style>{`
-        @keyframes cursor-blink {
+        @keyframes terminal-blink {
           0%, 49% { opacity: 1; }
           50%, 100% { opacity: 0; }
         }
-        .cursor-blink {
-          animation: cursor-blink 1s infinite !important;
-          display: inline-block;
-          will-change: opacity;
+        @media (prefers-reduced-motion: no-preference) {
+          .terminal-cursor { animation: terminal-blink 1s step-end infinite; }
         }
+        .terminal-cursor { display: inline-block; }
+
+        /* Styled scrollbar */
+        .terminal-scroll::-webkit-scrollbar { width: 6px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: transparent; }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+          background: rgba(0,255,65,0.2);
+          border-radius: 3px;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb:hover {
+          background: rgba(0,255,65,0.4);
+        }
+
+        /* Hint chip hover via CSS (not inline JS) */
+        .hint-chip {
+          background: rgba(0,255,65,0.06);
+          border: 1px solid rgba(0,255,65,0.25);
+          color: #00ff41;
+          transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+          cursor: pointer;
+        }
+        .hint-chip:hover:not(:disabled) {
+          background: rgba(0,255,65,0.14);
+          border-color: rgba(0,255,65,0.55);
+          box-shadow: 0 0 10px rgba(0,255,65,0.25);
+        }
+        .hint-chip:active:not(:disabled) {
+          transform: scale(0.96);
+        }
+        .hint-chip:disabled {
+          opacity: 0.35;
+          cursor: not-allowed;
+        }
+
+        /* Traffic-light button labels on hover */
+        .traffic-light-group:hover .tl-label { opacity: 1; }
+        .tl-label { opacity: 0; font-size: 9px; transition: opacity 150ms; user-select: none; }
       `}</style>
-      {/* Terminal Window */}
+
+      {/* ── Terminal window ──────────────────────────────────────── */}
       <div
         ref={windowRef}
-        className={`bg-black rounded-xl shadow-2xl overflow-hidden transition-all duration-300 border border-green-400/20 flex flex-col relative ${
-          isMaximized ? 'w-full h-screen rounded-none' : ''
-        } ${isMinimized ? 'h-12' : ''}`}
+        className={`flex flex-col rounded-xl overflow-hidden border border-green-400/15 select-none
+          ${isMaximized ? 'fixed inset-0 rounded-none z-50' : 'relative'}`}
         style={{
-          boxShadow: '0 0 60px rgba(0,255,65,0.1), 0 0 20px rgba(0,255,65,0.05)',
-          width: isMaximized ? '100%' : `${windowSize.width}px`,
-          height: isMaximized ? '100vh' : isMinimized ? '48px' : `${windowSize.height}px`,
-          cursor: isResizing ? 'nwse-resize' : 'default',
+          width: isMaximized ? '100%' : isMinimized ? '260px' : `${windowSize.width}px`,
+          height: isMaximized ? '100%' : isMinimized ? '44px' : `${windowSize.height}px`,
+          minWidth: isMinimized ? undefined : '400px',
+          boxShadow: '0 0 60px rgba(0,255,65,0.08), 0 25px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,255,65,0.08)',
+          transform: isMaximized ? 'none' : `translate(${position.x}px, ${position.y}px)`,
+          transition: isDragging || isResizing ? 'none' : 'box-shadow 200ms ease',
+          backgroundColor: '#0a0e1a',
+          userSelect: isDragging ? 'none' : 'auto',
         }}
       >
-        {/* Window Chrome */}
+        {/* ── Title bar ─────────────────────────────────────────── */}
         <div
-          className="bg-gradient-to-r from-gray-900 to-gray-800 px-4 py-3 flex items-center justify-between border-b border-green-400/10 flex-shrink-0"
+          onMouseDown={handleTitleBarMouseDown}
+          className="flex items-center justify-between px-3 py-2.5 flex-shrink-0 border-b border-green-400/10"
           style={{
-            background: 'linear-gradient(to bottom, #2a2a2a, #1a1a1a)',
+            background: 'linear-gradient(to bottom, #1e2030, #151825)',
+            cursor: windowState === 'normal' ? 'grab' : 'default',
           }}
+          aria-label="Terminal title bar — drag to move"
         >
-          {/* Window Controls */}
-          <div className="flex gap-2 items-center">
-            {/* Red - Close */}
+          {/* Traffic lights */}
+          <div className="flex gap-2 items-center traffic-light-group">
+            {/* Red — close */}
             <button
-              onClick={() => setIsMinimized(false)}
-              className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer shadow-sm"
+              onClick={() => setWindowState('closed')}
+              className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 active:brightness-75 transition-all cursor-pointer flex items-center justify-center shadow-sm"
               title="Close"
-            />
-            {/* Yellow - Minimize */}
+              aria-label="Close terminal"
+            >
+              <span className="tl-label text-[#7a0000] font-bold leading-none">✕</span>
+            </button>
+            {/* Yellow — minimize */}
             <button
-              onClick={() => setIsMinimized(!isMinimized)}
-              className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors cursor-pointer shadow-sm"
-              title="Minimize"
-            />
-            {/* Green - Maximize */}
+              onClick={() => setWindowState(isMinimized ? 'normal' : 'minimized')}
+              className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-90 active:brightness-75 transition-all cursor-pointer flex items-center justify-center shadow-sm"
+              title={isMinimized ? 'Restore' : 'Minimize'}
+              aria-label={isMinimized ? 'Restore terminal' : 'Minimize terminal'}
+            >
+              <span className="tl-label text-[#6a4900] font-bold leading-none">−</span>
+            </button>
+            {/* Green — maximize */}
             <button
-              onClick={() => setIsMaximized(!isMaximized)}
-              className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors cursor-pointer shadow-sm"
-              title="Maximize"
-            />
+              onClick={() => setWindowState(isMaximized ? 'normal' : 'maximized')}
+              className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-90 active:brightness-75 transition-all cursor-pointer flex items-center justify-center shadow-sm"
+              title={isMaximized ? 'Restore' : 'Maximize'}
+              aria-label={isMaximized ? 'Restore terminal' : 'Maximize terminal'}
+            >
+              <span className="tl-label text-[#003d00] font-bold leading-none">+</span>
+            </button>
           </div>
 
-          {/* Window Title */}
-          <div className="flex-1 text-center">
-            <span className="text-xs text-gray-400 font-mono">kurian@portfolio — Terminal</span>
-          </div>
+          {/* Title */}
+          <span className="absolute left-1/2 -translate-x-1/2 text-[11px] text-gray-400 font-mono tracking-wide pointer-events-none">
+            kurian@portfolio — bash
+          </span>
 
-          {/* Right spacer with zoom indicator */}
-          <div className="w-12 text-xs text-gray-500 text-right">{fontSize}x</div>
+          {/* Right: font size indicator */}
+          <span className="text-[10px] text-gray-600 font-mono tabular-nums">
+            {fontSize}px · Ctrl±
+          </span>
         </div>
 
-        {/* Terminal Content */}
+        {/* ── Terminal body (hidden when minimized) ─────────────── */}
         {!isMinimized && (
-          <div className="flex flex-col h-full bg-black flex-1" style={{ backgroundColor: '#0a0e27' }}>
-            {/* CRT scanline effect */}
+          <div className="flex flex-col flex-1 overflow-hidden relative" style={{ backgroundColor: '#0a0e1a' }}>
+
+            {/* CRT scanline overlay — pointer-events: none so it never blocks clicks */}
             <div
-              className="absolute inset-0 pointer-events-none opacity-5 mix-blend-multiply"
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none z-10 opacity-[0.03]"
               style={{
-                backgroundImage:
-                  'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)',
-                zIndex: 10,
+                backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.8) 2px,rgba(0,0,0,0.8) 4px)',
               }}
             />
 
-            {/* Terminal display */}
+            {/* Output log */}
             <div
               ref={terminalRef}
-              className="flex-1 overflow-y-auto p-4 md:p-6 space-y-0 leading-relaxed scroll-smooth relative z-0"
-              style={{
-                fontSize: `${fontSize}px`,
-                lineHeight: '1.6',
-              }}
+              className="terminal-scroll flex-1 overflow-y-auto p-4 md:p-5 leading-relaxed relative z-0"
+              style={{ fontSize: `${fontSize}px`, lineHeight: 1.65 }}
+              aria-live="polite"
+              aria-label="Terminal output"
+              onClick={() => inputRef.current?.focus()}
             >
-              {output.map((line, idx) => (
-                <div
-                  key={idx}
-                  className={`whitespace-pre-wrap break-words font-mono tracking-tight ${
-                    line.type === 'command'
-                      ? 'text-cyan-300'
-                      : line.type === 'boot'
-                        ? 'text-yellow-300 font-semibold'
-                        : 'text-green-400'
-                  }`}
-                  style={{
-                    textShadow:
-                      line.type === 'boot'
-                        ? '0 0 10px rgba(253,224,71,0.5)'
-                        : line.type === 'command'
-                          ? '0 0 5px rgba(165,243,252,0.3)'
-                          : 'none',
-                  }}
-                >
-                  {line.content}
-                </div>
-              ))}
+              {output.map((line, idx) => {
+                const isCmd  = line.type === 'command';
+                const isBoot = line.type === 'boot';
+                const isErr  = line.type === 'error';
+
+                // Smart colouring for boot log lines
+                const isOk       = isBoot && line.content.startsWith('[ OK  ]');
+                const isWarn     = isBoot && line.content.startsWith('[ WARN ]');
+                const isSys      = isBoot && line.content.startsWith('[ SYS ]');
+                const isBootErr  = isBoot && line.content.startsWith('[ ERR  ]');
+                const isSep      = isBoot && line.content.startsWith('━');
+                const isDone     = isBoot && line.content.trimStart().startsWith('✓');
+
+                const colorClass =
+                  isOk       ? 'text-green-400' :
+                  isWarn     ? 'text-amber-400' :
+                  isSys      ? 'text-sky-400'   :
+                  isBootErr  ? 'text-red-400'   :
+                  isSep      ? 'text-green-900' :
+                  isDone     ? 'text-green-300' :
+                  isBoot     ? 'text-yellow-300':
+                  isCmd      ? 'text-cyan-300'  :
+                  isErr      ? 'text-red-400'   :
+                               'text-green-400';
+
+                const shadow =
+                  isOk       ? '0 0 6px rgba(74,222,128,0.35)'  :
+                  isWarn     ? '0 0 6px rgba(251,191,36,0.4)'   :
+                  isSys      ? '0 0 6px rgba(56,189,248,0.3)'   :
+                  isBootErr  ? '0 0 8px rgba(248,113,113,0.5)'  :
+                  isDone     ? '0 0 10px rgba(134,239,172,0.5)' :
+                  isBoot     ? '0 0 8px rgba(253,224,71,0.35)'  :
+                  isCmd      ? '0 0 6px rgba(103,232,249,0.25)' :
+                  isErr      ? '0 0 6px rgba(248,113,113,0.25)' :
+                               'none';
+
+                const parseMarkdown = (text: string) => {
+                  let contentToParse = text;
+                  let prefix = null;
+
+                  // Distinctly style the KurianGPT prefix
+                  if (text.startsWith('KurianGPT > ')) {
+                    contentToParse = text.slice(12);
+                    prefix = (
+                      <span className="inline-flex items-center justify-center bg-cyan-900/40 text-cyan-300 px-1.5 py-0.5 rounded mr-2 font-bold border border-cyan-500/30 text-[10px] uppercase tracking-widest align-text-bottom">
+                        KurianGPT
+                      </span>
+                    );
+                  }
+
+                  const parts = contentToParse.split(/(\*\*.*?\*\*)/g);
+                  const renderedParts = parts.map((part, i) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                      return (
+                        <span key={i} className="font-bold text-white bg-white/10 px-1 mx-[1px] rounded">
+                          {part.slice(2, -2)}
+                        </span>
+                      );
+                    }
+                    return <span key={i}>{part}</span>;
+                  });
+
+                  return (
+                    <>
+                      {prefix}
+                      {renderedParts}
+                    </>
+                  );
+                };
+
+                return (
+                  <div
+                    key={idx}
+                    className={`whitespace-pre-wrap break-words font-mono ${colorClass} mb-1`}
+                    style={{ textShadow: shadow }}
+                  >
+                    {line.isHtml ? (
+                      <span dangerouslySetInnerHTML={{ __html: line.content }} />
+                    ) : (
+                      parseMarkdown(line.content)
+                    )}
+                  </div>
+                );
+              })}
+
+
+              {/* Empty space so last output isn't flush against input */}
+              <div className="h-2" />
             </div>
 
             {/* Input area */}
             <div
-              className="border-t p-3 md:p-4 space-y-3 flex-shrink-0 relative z-20"
-              style={{ borderColor: 'rgba(0,255,65,0.2)' }}
+              className="flex-shrink-0 border-t border-green-400/10 px-4 py-3 space-y-2.5 relative z-20"
+              style={{ backgroundColor: '#080b14' }}
             >
-              <div className="flex items-center gap-2" style={{ fontSize: `${fontSize}px` }}>
-                <span className="text-cyan-300 flex-shrink-0">kurian@portfolio:~$</span>
+              {/* Input row */}
+              <div
+                className="flex items-center gap-2"
+                style={{ fontSize: `${fontSize}px` }}
+                onClick={() => inputRef.current?.focus()}
+              >
+                <span
+                  className="text-cyan-300 flex-shrink-0 font-mono select-none"
+                  style={{ textShadow: '0 0 6px rgba(103,232,249,0.3)' }}
+                  aria-hidden="true"
+                >
+                  kurian@portfolio:~$
+                </span>
                 <input
                   ref={inputRef}
+                  id="terminal-input"
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleInputKeyDown}
                   disabled={isBooting || isLoading}
-                  className="flex-1 bg-transparent text-green-400 outline-none border-0 p-0 placeholder-green-700"
-                  placeholder={isBooting ? 'booting...' : ''}
+                  className="flex-1 bg-transparent outline-none border-0 p-0 font-mono text-green-400 caret-transparent"
+                  placeholder={isBooting ? 'booting…' : isLoading ? 'thinking…' : ''}
                   autoComplete="off"
+                  autoCorrect="off"
                   spellCheck={false}
+                  aria-label="Terminal input"
                   style={{
-                    textShadow: '0 0 5px rgba(0,255,65,0.3)',
                     fontSize: `${fontSize}px`,
-                    fontFamily: 'monospace',
+                    textShadow: '0 0 5px rgba(0,255,65,0.3)',
                   }}
                 />
+                {/* Blinking block cursor */}
                 <span
-                  className="text-green-400 flex-shrink-0 cursor-blink"
-                  style={{
-                    fontSize: `${fontSize}px`,
-                  }}
+                  className="terminal-cursor text-green-400 flex-shrink-0 select-none"
+                  aria-hidden="true"
+                  style={{ fontSize: `${fontSize}px`, textShadow: '0 0 8px rgba(0,255,65,0.6)' }}
                 >
                   ▌
                 </span>
               </div>
 
-              {/* Hint bar */}
+              {/* Hint chips */}
               <div
-                className="flex flex-wrap gap-1.5 md:gap-2 pt-2 border-t"
-                style={{
-                  borderColor: 'rgba(0,255,65,0.15)',
-                  fontSize: `${Math.max(fontSize - 2, 10)}px`,
-                }}
+                className="flex flex-wrap gap-1.5 pt-2 border-t border-green-400/10"
+                role="group"
+                aria-label="Quick command hints"
               >
                 {hints.map((hint, idx) => (
                   <button
                     key={idx}
-                    onClick={() => handleHintClick(hint)}
+                    onClick={() => { if (!isBooting && !isLoading) processCommand(hint); }}
                     disabled={isBooting || isLoading}
-                    className="px-2 py-1 whitespace-nowrap rounded transition-all duration-200 hover:scale-105 active:scale-95"
-                    style={{
-                      backgroundColor: 'rgba(0,255,65,0.08)',
-                      border: '1px solid rgba(0,255,65,0.3)',
-                      color: '#00ff41',
-                      opacity: isBooting || isLoading ? 0.4 : 1,
-                      cursor: isBooting || isLoading ? 'not-allowed' : 'pointer',
-                      fontSize: `${Math.max(fontSize - 2, 10)}px`,
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isBooting && !isLoading) {
-                        e.currentTarget.style.backgroundColor =
-                          'rgba(0,255,65,0.15)';
-                        e.currentTarget.style.borderColor =
-                          'rgba(0,255,65,0.6)';
-                        e.currentTarget.style.boxShadow =
-                          '0 0 10px rgba(0,255,65,0.3)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isBooting && !isLoading) {
-                        e.currentTarget.style.backgroundColor =
-                          'rgba(0,255,65,0.08)';
-                        e.currentTarget.style.borderColor =
-                          'rgba(0,255,65,0.3)';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }
-                    }}
+                    className="hint-chip px-2 py-0.5 rounded font-mono whitespace-nowrap text-[11px]"
+                    aria-label={`Run command: ${hint}`}
                   >
                     {hint}
                   </button>
@@ -444,15 +736,15 @@ export default function Terminal() {
           </div>
         )}
 
-        {/* Resize handle */}
+        {/* ── Resize handle (SE corner) ─────────────────────────── */}
         {!isMaximized && !isMinimized && (
           <div
-            onMouseDown={handleMouseDown}
-            className="absolute bottom-0 right-0 w-6 h-6 cursor-nwse-resize"
+            onMouseDown={handleResizeMouseDown}
+            className="absolute bottom-0 right-0 w-5 h-5 z-30 cursor-nwse-resize"
+            aria-hidden="true"
             style={{
-              background: 'linear-gradient(135deg, transparent 50%, rgba(0,255,65,0.3) 50%)',
+              background: 'linear-gradient(135deg, transparent 50%, rgba(0,255,65,0.25) 50%)',
             }}
-            title="Drag to resize"
           />
         )}
       </div>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { siteConfig } from "@/lib/data";
 
 export default function Footer() {
@@ -34,10 +35,13 @@ export default function Footer() {
           © {new Date().getFullYear()} {siteConfig.name}
         </div>
         
-        <button className="mechanical-button bg-electric-cyan border-[4px] border-ink px-6 py-3 shadow-[6px_6px_0px_0px_black] font-mono font-bold hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_black] transition-all flex items-center gap-3">
-          <span className="font-black text-xl leading-none">&gt;_</span> 
+        <Link
+          href="/terminal"
+          className="mechanical-button bg-electric-cyan border-[4px] border-ink px-6 py-3 shadow-[6px_6px_0px_0px_black] font-mono font-bold hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_black] transition-all flex items-center gap-3 cursor-pointer"
+        >
+          <span className="font-black text-xl leading-none">&gt;_</span>
           <span className="text-lg">Terminal</span>
-        </button>
+        </Link>
       </div>
     </footer>
   );

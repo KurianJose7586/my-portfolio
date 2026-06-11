@@ -115,34 +115,80 @@ just kidding. how would you even exit.`,
 (try \`projects\` or \`open \` instead of poking around with ls)`,
   pwd: "/home/kurian/portfolio",
   "cat resume.pdf": "binary file. try \`contact\` to get the real thing.",
-  "git log": `commit a3f9d1e  fix: CursorOS v1.2 rollback edge case
-commit 77bc220  feat: TriRank ColBERTv2 reranking stage
-commit 2e841aa  init: TwinlyAI RAG pipeline
-
-(these are fake but the spirit is accurate)`,
   date: `${new Date().toUTCString()} · IST`,
 });
 
 export const easterEggs = getEasterEggs();
 
 export const pixelArt = `
-   ██╗  ██╗██╗   ██╗██████╗ ██╗ █████╗ ██╗     
-   ██║ ██╔╝██║   ██║██╔══██╗██║██╔══██╗██║     
-   █████╔╝ ██║   ██║██████╔╝██║███████║██║     
-   ██╔═██╗ ██║   ██║██╔══██╗██║██╔══██║██║     
-   ██║  ██╗╚██████╔╝██║  ██║██║██║  ██║███████╗
+   ██╗  ██╗██╗   ██╗██████╗ ██╗ █████╗ ███╗   ██╗
+   ██║ ██╔╝██║   ██║██╔══██╗██║██╔══██╗████╗  ██║
+   █████╔╝ ██║   ██║██████╔╝██║███████║██╔██╗ ██║
+   ██╔═██╗ ██║   ██║██╔══██╗██║██╔══██║██║╚██╗██║
+   ██║  ██╗╚██████╔╝██║  ██║██║██║  ██║██║ ╚████║
 
    portfolio v2.0 — ai engineer · builder · thinker
 `;
 
-export const bootSequence = [
-  pixelArt,
-  "▶ kurian-portfolio v2.0 booting...",
-  "loading: identity ..................... ok",
-  "loading: 4 featured projects ......... ok",
-  "loading: TriRank paper (nDCG 0.4638) . ok",
-  "loading: KurianGPT ................... ok",
-  "✓ ready. type `help` to explore, or just poke around.",
+// Each entry: [text, delayMs] — delay BEFORE printing this line
+export const bootSequence: [string, number][] = [
+  // ASCII banner — shown first, fast
+  [pixelArt, 0],
+
+  // System init header
+  [`BIOS v2.0.4 — kurian-portfolio kernel`, 180],
+  [`Copyright (c) 2024 Kurian Jose. All rights reserved.`, 80],
+  [``, 60],
+
+  // Hardware check
+  [`[ SYS ] scanning hardware...`, 220],
+  [`[ SYS ] cpu:       curiosity × ambition @ 4.2GHz`, 90],
+  [`[ SYS ] memory:    500+ hours of side-project RAM`, 90],
+  [`[ SYS ] storage:   github.com/KurianJose7586`, 90],
+  [`[ SYS ] display:   retina-grade attention to detail`, 90],
+  [`[ OK  ] hardware check passed`, 140],
+  [``, 60],
+
+  // Kernel modules
+  [`[ SYS ] loading kernel modules...`, 220],
+  [`[ OK  ] mod: identity ................... loaded`, 110],
+  [`[ OK  ] mod: rag-pipeline ............... loaded`, 110],
+  [`[ OK  ] mod: colbertv2-reranker ......... loaded`, 110],
+  [`[ OK  ] mod: next-js-14 ................. loaded`, 110],
+  [`[ OK  ] mod: fastapi-backend ............ loaded`, 110],
+  [`[ OK  ] mod: esp32-firmware ............. loaded`, 110],
+  [`[ WARN ] mod: sleep ..................... not found`, 110],
+  [`[ ERR  ] mod: that-one-bug .............. couldn't fix that one :(`, 600],
+  [`[ SYS ] ignoring. moving on. it's fine. everything is fine.`, 180],
+  [``, 60],
+
+  // Projects mount
+  [`[ SYS ] mounting projects filesystem...`, 240],
+  [`[ OK  ] /projects/twinlyai    → resume AI assistant  [live]`, 110],
+  [`[ OK  ] /projects/cursorosd   → agentic desktop overlay [v1.2]`, 110],
+  [`[ OK  ] /projects/cablite     → offline ride-hailing  [phase 2]`, 110],
+  [`[ OK  ] /projects/ailawyer    → legal PDF chatbot     [stable]`, 110],
+  [``, 60],
+
+  // Research
+  [`[ SYS ] indexing research papers...`, 220],
+  [`[ OK  ] TriRank: BM25 + BGE-large + ColBERTv2 + RRF`, 110],
+  [`[ OK  ] nDCG@10: 0.4638  MRR@10: 0.3825  (BM25 baseline: 0.2286)`, 110],
+  [`[ OK  ] validated: 4 BEIR datasets · zero fine-tuning`, 110],
+  [``, 60],
+
+  // AI assistant
+  [`[ SYS ] initializing KurianGPT...`, 260],
+  [`[ OK  ] llm:       gemini-primary + groq-llama-3 fallback`, 100],
+  [`[ OK  ] context:   4 projects · 1 paper · ∞ opinions on RAG`, 100],
+  [`[ OK  ] KurianGPT online. try: ask "what makes you different?"`, 100],
+  [``, 60],
+
+  // Done
+  [`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, 300],
+  [`  ✓ boot complete. welcome to the portfolio.`, 120],
+  [`  type \`help\` to explore, or just start poking around.`, 80],
+  [`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, 80],
 ];
 
 export const hints = [

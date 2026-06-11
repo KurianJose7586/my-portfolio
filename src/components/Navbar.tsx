@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { siteConfig } from "@/lib/data";
 import { useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
@@ -40,9 +41,20 @@ export default function Navbar() {
           <a className="font-mono text-sm font-bold text-ink hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#projects">Vault</a>
           <a className="font-mono text-sm font-bold text-ink hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#research">Papers</a>
         </div>
-        <button className="mechanical-button bg-electric-cyan px-6 py-2 text-sm">
-          RESUME.PDF
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Terminal icon — always visible */}
+          <Link
+            href="/terminal"
+            title="Open Terminal"
+            aria-label="Open terminal page"
+            className="flex items-center justify-center gap-1.5 border-4 border-ink bg-electric-cyan px-3 py-2 font-mono font-black text-sm shadow-[4px_4px_0px_0px_black] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_black] transition-all cursor-pointer select-none"
+          >
+            <span className="text-base leading-none">&gt;_</span>
+          </Link>
+          <button className="mechanical-button bg-white px-6 py-2 text-sm cursor-pointer">
+            RESUME.PDF
+          </button>
+        </div>
       </nav>
     </motion.div>
   );

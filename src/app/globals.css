@@ -146,3 +146,9 @@
 #custom-cursor.active {
   @apply bg-cyber-yellow scale-[1.4] rotate-45 rounded-sm;
 }
+
+/* Terminal page — restore cursor and apply Space Mono */
+.terminal-page {
+  cursor: auto !important;
+  font-family: var(--font-space-mono), ui-monospace, 'Courier New', monospace;
+}
