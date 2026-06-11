@@ -1,77 +1,148 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 18, 18, 18;
-  --background-end-rgb: 18, 18, 18;
+@theme {
+  /* Colors */
+  --color-punch-pink: #EB5E93;
+  --color-electric-cyan: #5AC8D8;
+  --color-cyber-yellow: #F7D046;
+  --color-ink: #000000;
+  --color-canvas: #F8F8F8;
+  --color-paper: #e5e7eb;
+
+  /* Fonts */
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui;
+  --font-mono: var(--font-space-mono), ui-monospace, SFMono-Regular;
+  --font-caveat: var(--font-caveat), cursive;
+
+  /* Custom Spacing */
+  --spacing-border-thick: 4px;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
-
-.font-space-grotesk {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
-
-.font-fira-code {
-  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1a1a1a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #4a5568;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #6b46c1;
-}
-
-/* Glassmorphism effect */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Gradient text animation */
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
+/* Custom Base Styles */
+@layer base {
+  body {
+    @apply bg-paper text-ink font-sans overflow-x-hidden min-h-screen cursor-none relative;
   }
-  50% {
-    background-position: 100% 50%;
+  
+  body::before {
+    content: "";
+    @apply fixed inset-0 z-[-1] opacity-40;
+    background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+    background-size: 24px 24px;
   }
-  100% {
-    background-position: 0% 50%;
+
+  body::after {
+    content: "";
+    @apply fixed inset-0 z-[-1] opacity-[0.03] pointer-events-none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
 }
 
-.animate-gradient {
-  background: linear-gradient(-45deg, #8b5cf6, #06b6d4, #8b5cf6, #06b6d4);
-  background-size: 400% 400%;
-  animation: gradient 3s ease infinite;
+/* Neo-Brutalist Utility Classes */
+@layer components {
+  .brutalist-card {
+    border: 4px solid #000;
+    @apply bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] 
+           transition-all duration-200 ease-out hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)];
+  }
+
+  .brutalist-card-active {
+    @apply active:translate-x-2 active:translate-y-2 active:shadow-none;
+  }
+
+  .mechanical-button {
+    border: 4px solid #000;
+    @apply shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] 
+           transition-all duration-200 ease-out uppercase font-mono font-bold
+           hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]
+           active:translate-x-[6px] active:translate-y-[6px] active:shadow-none;
+  }
+
+  .tape-accent {
+    @apply absolute bg-cyber-yellow/70 w-[100px] h-[35px] z-20 pointer-events-none 
+           backdrop-blur-[1px] border border-ink/10 transition-transform duration-300;
+  }
+
+  .tape-hover:hover .tape-accent {
+    @apply -rotate-6 scale-110 opacity-90;
+  }
+
+  .wiggle-on-hover:hover {
+    animation: wiggle 0.4s ease-in-out infinite alternate;
+  }
+
+  .scrapbook-note {
+    background: #fdfbf7;
+    background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+    background-size: 16px 16px;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.05);
+    @apply border-2 border-ink/20 transform transition-transform duration-300;
+  }
+
+  .paper-grid {
+    background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-color: #e5e7eb;
+    background-attachment: fixed;
+  }
+
+  .noise-bg {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    @apply opacity-[0.04] pointer-events-none;
+  }
+
+  .blueprint-grid {
+    background-color: #fafafa;
+    background-image: linear-gradient(#e5e7eb 1px, transparent 1px),
+      linear-gradient(90deg, #e5e7eb 1px, transparent 1px),
+      linear-gradient(#e5e7eb 1px, transparent 1px),
+      linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+    background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+    background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+  }
+
+  .marquee-track {
+    animation: marquee 25s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes wiggle {
+  0% { transform: rotate(-2deg); }
+  100% { transform: rotate(2deg); }
+}
+
+.highlight-on-scroll {
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  background-position: left center;
+  transition: background-size 1.5s ease-in-out;
+}
+
+.in-view .highlight-on-scroll {
+  background-size: 100% 100%;
+}
+
+.bg-cyber-yellow-highlight {
+  background-image: linear-gradient(transparent 20%, #F7D046 20%, #F7D046 85%, transparent 85%);
+}
+.bg-electric-cyan-highlight {
+  background-image: linear-gradient(transparent 20%, #5AC8D8 20%, #5AC8D8 85%, transparent 85%);
+}
+.bg-punch-pink-highlight {
+  background-image: linear-gradient(transparent 20%, #EB5E93 20%, #EB5E93 85%, transparent 85%);
+}
+
+/* Custom Cursor */
+#custom-cursor {
+  @apply fixed w-8 h-8 border-4 border-ink bg-transparent pointer-events-none z-[9999] 
+         -translate-x-1/2 -translate-y-1/2 transition-[background,transform,border-radius] duration-150;
+}
+
+#custom-cursor.active {
+  @apply bg-cyber-yellow scale-[1.4] rotate-45 rounded-sm;
 }
