@@ -8,6 +8,7 @@ import {
   bootSequence,
   hints,
 } from '@/lib/terminalData';
+import { Sparkles, Bot, MessageCircle, Brain, Zap, Terminal as TerminalIcon } from 'lucide-react';
 
 interface OutputLine {
   type: 'boot' | 'command' | 'output' | 'error';
@@ -17,15 +18,31 @@ interface OutputLine {
 
 type WindowState = 'normal' | 'minimized' | 'maximized' | 'closed';
 
-export default function Terminal() {
-  const [output, setOutput] = useState<OutputLine[]>([]);
+interface TerminalProps {
+  initialState?: WindowState;
+  isGlobalWidget?: boolean;
+}
+
+export default function Terminal({ initialState = 'normal', isGlobalWidget = false }: TerminalProps = {}) {
+  const [output, setOutput] = useState<OutputLine[]>(
+    isGlobalWidget 
+      ? [
+          { type: 'output', content: '─────────────────────────────────────────────' },
+          { type: 'output', content: ' KurianGPT Agentic TUI v2.0 ' },
+          { type: 'output', content: ' Type your message to chat directly with KurianGPT.' },
+          { type: 'output', content: ' Or use terminal commands (e.g., `help`, `git log`).' },
+          { type: 'output', content: '─────────────────────────────────────────────' }
+        ] 
+      : []
+  );
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
-  const [isBooting, setIsBooting] = useState(true);
+  const [isBooting, setIsBooting] = useState(!isGlobalWidget);
   const [isLoading, setIsLoading] = useState(false);
-  const [windowState, setWindowState] = useState<WindowState>('normal');
+  const [windowState, setWindowState] = useState<WindowState>(initialState);
   const [fontSize, setFontSize] = useState(13);
+  const [showTip, setShowTip] = useState(false);
 
   // Drag state
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -49,7 +66,7 @@ export default function Terminal() {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (prefersReduced) {
-      setOutput(bootSequence.map(([content]) => ({ type: 'boot' as const, content })));
+      setOutput(prev => [...prev, ...bootSequence.map(([content]) => ({ type: 'boot' as const, content }))]);
       setIsBooting(false);
       return;
     }
@@ -160,7 +177,37 @@ export default function Terminal() {
     return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
   }, [isResizing]);
 
-  // ── Command processor ────────────────────────────────────────────────
+  // ── Global Command Palette Hook (Cmd+K) ───────────────────────────
+  useEffect(() => {
+    if (!isGlobalWidget) return;
+    
+    // Show tip after 12 seconds if not already opened
+    const tipTimer = setTimeout(() => {
+      if (windowState === 'closed' && !localStorage.getItem('kurian_cmd_k_seen')) {
+        setShowTip(true);
+      }
+    }, 12000);
+
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setWindowState(prev => prev === 'closed' ? 'normal' : 'closed');
+        setShowTip(false);
+        localStorage.setItem('kurian_cmd_k_seen', 'true');
+      }
+      if (e.key === 'Escape' && windowState !== 'closed') {
+        setWindowState('closed');
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown);
+      clearTimeout(tipTimer);
+    };
+  }, [isGlobalWidget, windowState]);
+
+  // ── Command execution ────────────────────────────────────────────────
   const processCommand = useCallback(
     (cmd: string) => {
       const trimmed = cmd.trim();
@@ -172,7 +219,8 @@ export default function Terminal() {
 
       setHistory((prev) => [trimmed, ...prev.slice(0, 49)]);
       setHistoryIndex(-1);
-      setOutput((prev) => [...prev, { type: 'command', content: `kurian@portfolio:~$ ${trimmed}` }]);
+      const promptString = isGlobalWidget ? `you > ` : `kurian@portfolio:~$ `;
+      setOutput((prev) => [...prev, { type: 'command', content: `${promptString}${trimmed}` }]);
 
       // clear
       if (trimmed === 'clear') {
@@ -188,15 +236,7 @@ export default function Terminal() {
         return;
       }
 
-      // ask — wired to KurianGPT via /api/chat → HF Space
-      if (trimmed.startsWith('ask ') || trimmed.startsWith('ask"')) {
-        const query = trimmed.replace(/^ask\s*["']?/, '').replace(/["']$/, '').trim();
-        if (!query) {
-          setOutput((prev) => [...prev, { type: 'error', content: 'usage: ask "your question here"' }]);
-          setInput('');
-          return;
-        }
-
+      const executeAskQuery = (query: string) => {
         setIsLoading(true);
         setInput('');
 
@@ -296,7 +336,17 @@ export default function Terminal() {
             });
             setIsLoading(false);
           });
+      };
 
+      // ask — wired to KurianGPT via /api/chat → HF Space
+      if (trimmed.startsWith('ask ') || trimmed.startsWith('ask"')) {
+        const query = trimmed.replace(/^ask\s*["']?/, '').replace(/["']$/, '').trim();
+        if (!query) {
+          setOutput((prev) => [...prev, { type: 'error', content: 'usage: ask "your question here"' }]);
+          setInput('');
+          return;
+        }
+        executeAskQuery(query);
         return;
       }
 
@@ -383,6 +433,10 @@ export default function Terminal() {
         const c = terminalCommands[key];
         setOutput((prev) => [...prev, { type: 'output', content: c.title ? `${c.title}\n${c.content}` : c.content }]);
       } else {
+        if (isGlobalWidget) {
+          executeAskQuery(trimmed);
+          return;
+        }
         setOutput((prev) => [
           ...prev,
           { type: 'error', content: `command not found: ${trimmed}\ntype \`help\` for available commands` },
@@ -421,6 +475,38 @@ export default function Terminal() {
   const isClosed   = windowState === 'closed';
 
   if (isClosed) {
+    if (isGlobalWidget) {
+      return (
+        <div className="fixed bottom-8 right-8 z-[90] flex flex-col items-end pointer-events-none">
+          {showTip && (
+            <div className="mb-4 bg-[#1e2030]/90 backdrop-blur-md text-green-400 p-4 rounded-lg shadow-2xl border border-green-500/20 max-w-sm pointer-events-auto transform transition-all translate-y-0 opacity-100">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 text-green-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                </div>
+                <div>
+                  <p className="text-sm font-medium mb-1">Agentic Mode Available</p>
+                  <p className="text-xs text-green-400/70">Press <kbd className="bg-black/40 px-1.5 py-0.5 rounded text-green-300 font-mono">⌘K</kbd> or <kbd className="bg-black/40 px-1.5 py-0.5 rounded text-green-300 font-mono">Ctrl+K</kbd> anywhere to ask KurianGPT or execute commands.</p>
+                </div>
+                <button onClick={() => setShowTip(false)} className="text-green-400/50 hover:text-green-400 ml-2">✕</button>
+              </div>
+            </div>
+          )}
+          
+          <button 
+            onClick={() => { setWindowState('normal'); setShowTip(false); localStorage.setItem('kurian_cmd_k_seen', 'true'); }}
+            className="w-14 h-14 rounded-full relative flex items-center justify-center animate-pulse hover:animate-none transition-all hover:scale-110 active:scale-95 pointer-events-auto kurian-orb cursor-none"
+            style={{
+              background: 'radial-gradient(circle at center, #4ade80 0%, #166534 50%, #052e16 100%)',
+              boxShadow: '0 0 20px rgba(74, 222, 128, 0.6), inset 0 0 10px rgba(255,255,255,0.5)'
+            }}
+            title="Open KurianGPT"
+            aria-label="Open KurianGPT"
+          />
+        </div>
+      );
+    }
+
     return (
       <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-[#0a0e27] to-black">
         <button
@@ -436,9 +522,10 @@ export default function Terminal() {
 
   return (
     <div
-      className="w-full min-h-screen flex items-center justify-center p-4 md:p-8 bg-gradient-to-br from-black via-[#0a0e27] to-black"
+      className={isGlobalWidget ? "fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 pointer-events-none" : "w-full min-h-screen flex items-center justify-center p-4 md:p-8 bg-gradient-to-br from-black via-[#0a0e27] to-black"}
       style={{ cursor: isResizing ? 'nwse-resize' : isDragging ? 'grabbing' : 'default' }}
     >
+      {isGlobalWidget && <div className="absolute inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto" onClick={() => setWindowState('closed')} />}
       {/* ── Inline styles (scoped) ───────────────────────────────── */}
       <style>{`
         @keyframes terminal-blink {
@@ -506,9 +593,11 @@ export default function Terminal() {
         {/* ── Title bar ─────────────────────────────────────────── */}
         <div
           onMouseDown={handleTitleBarMouseDown}
-          className="flex items-center justify-between px-3 py-2.5 flex-shrink-0 border-b border-green-400/10"
+          className={`flex items-center justify-between px-3 py-2.5 flex-shrink-0 border-b border-green-400/10 ${
+            isGlobalWidget ? 'bg-white/5 backdrop-blur-md' : ''
+          }`}
           style={{
-            background: 'linear-gradient(to bottom, #1e2030, #151825)',
+            background: isGlobalWidget ? undefined : 'linear-gradient(to bottom, #1e2030, #151825)',
             cursor: windowState === 'normal' ? 'grab' : 'default',
           }}
           aria-label="Terminal title bar — drag to move"
@@ -546,7 +635,7 @@ export default function Terminal() {
 
           {/* Title */}
           <span className="absolute left-1/2 -translate-x-1/2 text-[11px] text-gray-400 font-mono tracking-wide pointer-events-none">
-            kurian@portfolio — bash
+            {isGlobalWidget ? 'KurianGPT' : 'kurian@portfolio — bash'}
           </span>
 
           {/* Right: font size indicator */}
@@ -683,7 +772,7 @@ export default function Terminal() {
                   style={{ textShadow: '0 0 6px rgba(103,232,249,0.3)' }}
                   aria-hidden="true"
                 >
-                  kurian@portfolio:~$
+                  {isGlobalWidget ? 'you >' : 'kurian@portfolio:~$'}
                 </span>
                 <input
                   ref={inputRef}

@@ -147,6 +147,11 @@
   @apply bg-cyber-yellow scale-[1.4] rotate-45 rounded-sm;
 }
 
+#custom-cursor.orb-active {
+  @apply bg-transparent border-green-400 scale-[2] rounded-full shadow-[0_0_15px_rgba(74,222,128,0.8)];
+  border-width: 2px;
+}
+
 /* Terminal page — restore cursor and apply Space Mono */
 .terminal-page {
   cursor: auto !important;
