@@ -16,9 +16,21 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import PaperPlane from "@/components/PaperPlane";
+import Terminal from "@/components/Terminal";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if the user has visited recently to skip the splash screen
+    const splashTimestamp = localStorage.getItem("kurian_splash_timestamp");
+    const now = new Date().getTime();
+    const twoHours = 2 * 60 * 60 * 1000;
+    
+    if (splashTimestamp && now - parseInt(splashTimestamp) < twoHours) {
+      setTimeout(() => setIsLoading(false), 0);
+    }
+  }, []);
 
   useEffect(() => {
     // Lock scroll while loading
@@ -29,11 +41,17 @@ export default function Home() {
     }
   }, [isLoading]);
 
+  const handleFinishLoading = () => {
+    setIsLoading(false);
+    localStorage.setItem("kurian_splash_timestamp", new Date().getTime().toString());
+  };
+
   return (
     <>
+      <Terminal initialState="closed" isGlobalWidget={true} />
       <AnimatePresence mode="wait">
         {isLoading && (
-          <SplashScreen finishLoading={() => setIsLoading(false)} />
+          <SplashScreen finishLoading={handleFinishLoading} />
         )}
       </AnimatePresence>
 
