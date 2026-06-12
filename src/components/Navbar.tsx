@@ -21,6 +21,7 @@ export default function Navbar() {
     setLastY(latest);
   });
 
+  return (
     <>
       <motion.div 
         variants={{
@@ -80,4 +81,5 @@ export default function Navbar() {
         </nav>
       </div>
     </>
+  );
 }
