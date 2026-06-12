@@ -588,7 +588,7 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
       {/* ── Terminal window ──────────────────────────────────────── */}
       <div
         ref={windowRef}
-        className={`flex flex-col overflow-hidden select-none
+        className={`flex flex-col overflow-hidden select-none pointer-events-auto
           ${isMaximized ? 'fixed inset-0 z-50' : isMobile && isGlobalWidget ? 'fixed bottom-0 left-0 right-0 z-[110] rounded-t-2xl border-t border-green-400/20 shadow-[0_-10px_40px_rgba(0,0,0,0.8)]' : 'relative rounded-xl border border-green-400/15'}`}
         style={{
           width: isMaximized || (isMobile && isGlobalWidget) ? '100%' : isMinimized ? '260px' : `${windowSize.width}px`,
