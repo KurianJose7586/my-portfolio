@@ -157,3 +157,19 @@
   cursor: auto !important;
   font-family: var(--font-space-mono), ui-monospace, 'Courier New', monospace;
 }
+
+/* Disable Custom Cursor on Mobile/Touch Devices */
+@media (pointer: coarse) {
+  #custom-cursor {
+    display: none !important;
+  }
+  body {
+    cursor: auto !important;
+  }
+  .cursor-none {
+    cursor: auto !important;
+  }
+  .kurian-orb {
+    cursor: pointer !important;
+  }
+}

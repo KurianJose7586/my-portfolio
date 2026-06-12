@@ -43,6 +43,14 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
   const [windowState, setWindowState] = useState<WindowState>(initialState);
   const [fontSize, setFontSize] = useState(13);
   const [showTip, setShowTip] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Drag state
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -450,6 +458,9 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(10);
+      }
       processCommand(input);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
@@ -577,15 +588,15 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
       {/* ── Terminal window ──────────────────────────────────────── */}
       <div
         ref={windowRef}
-        className={`flex flex-col rounded-xl overflow-hidden border border-green-400/15 select-none
-          ${isMaximized ? 'fixed inset-0 rounded-none z-50' : 'relative'}`}
+        className={`flex flex-col overflow-hidden select-none
+          ${isMaximized ? 'fixed inset-0 z-50' : isMobile && isGlobalWidget ? 'fixed bottom-0 left-0 right-0 z-[110] rounded-t-2xl border-t border-green-400/20 shadow-[0_-10px_40px_rgba(0,0,0,0.8)]' : 'relative rounded-xl border border-green-400/15'}`}
         style={{
-          width: isMaximized ? '100%' : isMinimized ? '260px' : `${windowSize.width}px`,
-          height: isMaximized ? '100%' : isMinimized ? '44px' : `${windowSize.height}px`,
-          minWidth: isMinimized ? undefined : '400px',
-          boxShadow: '0 0 60px rgba(0,255,65,0.08), 0 25px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,255,65,0.08)',
-          transform: isMaximized ? 'none' : `translate(${position.x}px, ${position.y}px)`,
-          transition: isDragging || isResizing ? 'none' : 'box-shadow 200ms ease',
+          width: isMaximized || (isMobile && isGlobalWidget) ? '100%' : isMinimized ? '260px' : `${windowSize.width}px`,
+          height: isMaximized ? '100%' : (isMobile && isGlobalWidget) ? '85vh' : isMinimized ? '44px' : `${windowSize.height}px`,
+          minWidth: isMinimized || (isMobile && isGlobalWidget) ? undefined : '400px',
+          boxShadow: isMobile && isGlobalWidget ? undefined : '0 0 60px rgba(0,255,65,0.08), 0 25px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,255,65,0.08)',
+          transform: isMaximized || (isMobile && isGlobalWidget) ? 'none' : `translate(${position.x}px, ${position.y}px)`,
+          transition: isDragging || isResizing ? 'none' : 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
           backgroundColor: '#0a0e1a',
           userSelect: isDragging ? 'none' : 'auto',
         }}
@@ -598,7 +609,7 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
           }`}
           style={{
             background: isGlobalWidget ? undefined : 'linear-gradient(to bottom, #1e2030, #151825)',
-            cursor: windowState === 'normal' ? 'grab' : 'default',
+            cursor: windowState === 'normal' && !(isMobile && isGlobalWidget) ? 'grab' : 'default',
           }}
           aria-label="Terminal title bar — drag to move"
         >

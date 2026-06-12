@@ -48,16 +48,16 @@ export default function Contact() {
     <>
       <section className="pt-32 pb-10" id="contact">
         {/* Top Left Badge */}
-        <div className="mb-24">
-          <div className="inline-block bg-cyber-yellow border-[6px] border-ink px-6 py-3 shadow-[8px_8px_0px_0px_black]">
-            <h2 className="font-sans text-3xl md:text-5xl font-black uppercase tracking-wide">
+        <div className="mb-16 md:mb-24">
+          <div className="inline-block bg-cyber-yellow border-[6px] border-ink px-4 md:px-6 py-2 md:py-3 shadow-[6px_6px_0px_0px_black] md:shadow-[8px_8px_0px_0px_black]">
+            <h2 className="font-sans text-2xl md:text-5xl font-black uppercase tracking-wide">
               GET IN TOUCH
             </h2>
           </div>
         </div>
 
-        <div className="text-center mb-20">
-          <h3 className="font-sans text-2xl md:text-4xl font-bold text-ink">
+        <div className="text-center mb-16 md:mb-20 px-4">
+          <h3 className="font-sans text-xl md:text-4xl font-bold text-ink">
             Let&apos;s build something amazing together
           </h3>
         </div>
@@ -99,16 +99,16 @@ export default function Contact() {
       {isModalOpen && (
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-ink/80 backdrop-blur-sm" onClick={closeModal}></div>
-          <div className="bg-white border-[6px] border-ink p-8 md:p-12 shadow-[16px_16px_0px_0px_black] relative z-10 w-full max-w-3xl rotate-[0.5deg]">
+          <div className="bg-white border-[6px] border-ink p-6 md:p-12 shadow-[16px_16px_0px_0px_black] relative z-10 w-full max-w-3xl rotate-[0.5deg] max-h-[90vh] overflow-y-auto">
             <button 
               onClick={closeModal}
-              className="absolute top-6 right-6 bg-punch-pink border-4 border-ink w-12 h-12 flex items-center justify-center hover:bg-cyber-yellow hover:rotate-90 transition-all shadow-[4px_4px_0px_0px_black] cursor-pointer"
+              className="absolute top-4 right-4 md:top-6 md:right-6 bg-punch-pink border-4 border-ink w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:bg-cyber-yellow hover:rotate-90 transition-all shadow-[4px_4px_0px_0px_black] cursor-pointer z-50"
               aria-label="Close contact form"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
 
-            <h2 className="font-sans text-4xl md:text-5xl font-black uppercase text-ink leading-[0.8] tracking-tighter mb-10">
+            <h2 className="font-sans text-3xl md:text-5xl font-black uppercase text-ink leading-[0.8] tracking-tighter mb-8 md:mb-10 mt-6 md:mt-0">
               SEND A TRANSMISSION
             </h2>
 

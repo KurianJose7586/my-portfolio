@@ -38,31 +38,31 @@ export default function Hero() {
         <motion.div 
           initial={{ rotate: -5, scale: 0.9, opacity: 0 }}
           animate={{ rotate: -1, scale: 1, opacity: 1 }}
-          className="inline-block bg-punch-pink text-white px-6 py-2 border-4 border-ink shadow-[6px_6px_0px_0px_black]"
+          className="inline-block bg-punch-pink text-white px-4 py-2 md:px-6 md:py-2 border-4 border-ink shadow-[4px_4px_0px_0px_black] md:shadow-[6px_6px_0px_0px_black]"
         >
-          <span className="font-mono text-sm font-bold uppercase tracking-widest text-white">
+          <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-white">
             SYSTEM STATUS: OPERATIONAL ⚡
           </span>
         </motion.div>
         
-        <h1 className="font-sans text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter">
+        <h1 className="font-sans text-5xl md:text-8xl font-black leading-tight md:leading-[0.85] tracking-tighter">
           I'm <br />
-          <span className="text-punch-pink bg-cyber-yellow/20 px-2">{siteConfig.name}.</span>
+          <span className="text-punch-pink bg-cyber-yellow/20 px-2 leading-none inline-block mt-2 md:mt-0">{siteConfig.name}.</span>
         </h1>
 
-        <div className="bg-white border-4 border-ink p-10 shadow-[16px_16px_0px_0px_black] max-w-xl relative rotate-[0.5deg]">
-          <div className="tape-accent -top-6 -left-6 rotate-[-15deg] bg-cyber-yellow/80"></div>
-          <p className="font-mono text-xl leading-relaxed min-h-[4rem]">
+        <div className="bg-white border-4 border-ink p-4 sm:p-6 md:p-10 shadow-[8px_8px_0px_0px_black] md:shadow-[16px_16px_0px_0px_black] max-w-xl relative rotate-[0.5deg]">
+          <div className="tape-accent -top-4 -left-4 md:-top-6 md:-left-6 rotate-[-15deg] bg-cyber-yellow/80"></div>
+          <p className="font-mono text-lg md:text-xl leading-relaxed min-h-[4rem]">
             {displayedText}
             <span className="animate-pulse font-bold">|</span>
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-6 pt-4">
-          <a href="#projects" className="mechanical-button bg-cyber-yellow px-10 py-4 text-xl inline-block group">
+        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          <a href="#projects" className="mechanical-button bg-cyber-yellow px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl inline-block group text-center active:translate-y-1 active:shadow-none transition-all">
             <span className="inline-block group-hover:-rotate-3 transition-transform">ACCESS VAULT</span>
           </a>
-          <a href="#contact" className="mechanical-button bg-white px-10 py-4 text-xl inline-block group">
+          <a href="#contact" className="mechanical-button bg-white px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl inline-block group text-center active:translate-y-1 active:shadow-none transition-all">
             <span className="inline-block group-hover:rotate-3 transition-transform">TRANSMIT SIGNAL</span>
           </a>
         </div>
