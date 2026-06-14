@@ -45,6 +45,14 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             {/* Terminal icon — always visible */}
             <Link
+              href="/arcade"
+              title="Open Arcade"
+              aria-label="Open arcade page"
+              className="flex items-center justify-center gap-1.5 border-4 border-ink bg-punch-pink px-3 py-2 font-mono font-black text-sm shadow-[4px_4px_0px_0px_black] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_black] transition-all cursor-pointer select-none"
+            >
+              <span className="text-base leading-none">🎮</span>
+            </Link>
+            <Link
               href="/terminal"
               title="Open Terminal"
               aria-label="Open terminal page"
