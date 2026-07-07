@@ -66,7 +66,7 @@ export default function Contact() {
         <div className="flex flex-col lg:flex-row justify-center items-center gap-16 lg:gap-10 max-w-6xl mx-auto">
           
           {/* LinkedIn Note */}
-          <a href="https://linkedin.com/in/kurian-jose" target="_blank" rel="noreferrer" className="relative group hover:-translate-y-2 transition-transform duration-300 w-72 h-56 block">
+          <a href="https://www.linkedin.com/in/kurianjose316" target="_blank" rel="noreferrer" className="relative group hover:-translate-y-2 transition-transform duration-300 w-72 h-56 block">
             <div className="absolute inset-0 bg-electric-cyan border-[6px] border-ink shadow-[12px_12px_0px_0px_black] rotate-[-2deg] flex flex-col items-center justify-center gap-6">
               <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
               <span className="font-caveat text-4xl font-bold">LinkedIn</span>

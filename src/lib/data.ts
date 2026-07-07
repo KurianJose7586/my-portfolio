@@ -3,8 +3,8 @@ export const siteConfig = {
   role: "CS Student · AI Engineer",
   email: "kurianjose005@gmail.com",
   github: "https://github.com/KurianJose7586",
-  linkedin: "https://linkedin.com/in/kurian-jose", // Placeholder
-  resume: "/resume.pdf",
+  linkedin: "https://www.linkedin.com/in/kurianjose316",
+  resume: "https://drive.google.com/file/d/1vW57HLq8cGeJr4fKsaDo_qvrBSRrcoGm/view?usp=sharing",
   timezone: "IST (India)",
 };
 

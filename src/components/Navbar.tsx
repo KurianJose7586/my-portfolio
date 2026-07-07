@@ -37,10 +37,10 @@ export default function Navbar() {
             KURIAN.AI
           </div>
           <div className="hidden md:flex gap-8 items-center">
-            <a className="font-mono text-sm font-bold text-ink hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#">Index</a>
-            <a className="font-mono text-sm font-bold text-ink hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#about">Bio</a>
-            <a className="font-mono text-sm font-bold text-ink hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#projects">Vault</a>
-            <a className="font-mono text-sm font-bold text-ink hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#research">Papers</a>
+            <a className="font-mono text-sm font-bold text-ink uppercase tracking-wider hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#">Index</a>
+            <a className="font-mono text-sm font-bold text-ink uppercase tracking-wider hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#about">Bio</a>
+            <a className="font-mono text-sm font-bold text-ink uppercase tracking-wider hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#projects">Vault</a>
+            <a className="font-mono text-sm font-bold text-ink uppercase tracking-wider hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#research">Papers</a>
           </div>
           <div className="flex items-center gap-3">
             {/* Terminal icon — always visible */}
@@ -60,31 +60,31 @@ export default function Navbar() {
             >
               <span className="text-base leading-none">&gt;_</span>
             </Link>
-            <button className="mechanical-button bg-white px-6 py-2 text-sm cursor-pointer">
+            <a href={siteConfig.resume} target="_blank" rel="noreferrer" className="mechanical-button bg-white px-6 py-2 text-sm cursor-pointer text-ink hover:text-ink no-underline block text-center flex items-center justify-center">
               RESUME.PDF
-            </button>
+            </a>
           </div>
         </nav>
       </motion.div>
 
       {/* Mobile Bottom Tab Bar */}
-      <div className="md:hidden fixed bottom-4 left-4 right-4 z-[90]">
+      <div className="md:hidden fixed bottom-4 left-4 right-[22px] z-[90]">
         <nav className="bg-cyber-yellow border-4 border-ink rounded-xl px-2 py-3 flex justify-between items-center shadow-[6px_6px_0px_0px_black]">
-          <a href="#" className="flex-1 flex flex-col items-center gap-1 active:translate-y-1 active:opacity-70 transition-all">
-            <span className="text-xl">🏠</span>
-            <span className="font-mono text-[10px] font-black tracking-tight text-ink">HOME</span>
+          <a href="#" onClick={() => navigator.vibrate?.(50)} className="flex-1 flex flex-col items-center gap-1 active:translate-y-1 active:opacity-70 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-ink"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span className="font-mono text-[10px] font-black tracking-tight text-ink uppercase">HOME</span>
           </a>
-          <a href="#projects" className="flex-1 flex flex-col items-center gap-1 active:translate-y-1 active:opacity-70 transition-all">
-            <span className="text-xl">📁</span>
-            <span className="font-mono text-[10px] font-black tracking-tight text-ink">VAULT</span>
+          <a href="#projects" onClick={() => navigator.vibrate?.(50)} className="flex-1 flex flex-col items-center gap-1 active:translate-y-1 active:opacity-70 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-ink"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <span className="font-mono text-[10px] font-black tracking-tight text-ink uppercase">VAULT</span>
           </a>
-          <a href="#about" className="flex-1 flex flex-col items-center gap-1 active:translate-y-1 active:opacity-70 transition-all">
-            <span className="text-xl">👤</span>
-            <span className="font-mono text-[10px] font-black tracking-tight text-ink">BIO</span>
+          <a href="#about" onClick={() => navigator.vibrate?.(50)} className="flex-1 flex flex-col items-center gap-1 active:translate-y-1 active:opacity-70 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-ink"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span className="font-mono text-[10px] font-black tracking-tight text-ink uppercase">BIO</span>
           </a>
-          <a href="#contact" className="flex-1 flex flex-col items-center gap-1 active:translate-y-1 active:opacity-70 transition-all">
-            <span className="text-xl">✉️</span>
-            <span className="font-mono text-[10px] font-black tracking-tight text-ink">CONTACT</span>
+          <a href="#contact" onClick={() => navigator.vibrate?.(50)} className="flex-1 flex flex-col items-center gap-1 active:translate-y-1 active:opacity-70 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-ink"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            <span className="font-mono text-[10px] font-black tracking-tight text-ink uppercase">CONTACT</span>
           </a>
         </nav>
       </div>

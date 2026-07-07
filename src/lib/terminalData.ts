@@ -65,7 +65,7 @@ auth       JWT, OAuth, AWS, Twilio`,
     title: "── contact ─────────────────────────────────────────",
     content: `  email     kurianjose005@gmail.com
   github    github.com/KurianJose7586
-  linkedin  linkedin.com/in/kurian-jose
+  linkedin  linkedin.com/in/kurianjose316
 
 open to: internships · freelance AI projects · collabs
 if the problem is hard and the use case is real, let's talk.`,
@@ -114,7 +114,7 @@ just kidding. how would you even exit.`,
 
 (try \`projects\` or \`open \` instead of poking around with ls)`,
   pwd: "/home/kurian/portfolio",
-  "cat resume.pdf": "binary file. try \`contact\` to get the real thing.",
+  "cat resume.pdf": "binary file. you can view it here: https://drive.google.com/file/d/1vW57HLq8cGeJr4fKsaDo_qvrBSRrcoGm/view?usp=sharing",
   date: `${new Date().toUTCString()} · IST`,
 });
 
@@ -175,6 +175,16 @@ export const bootSequence: [string, number][] = [
   [`[ OK  ] TriRank: BM25 + BGE-large + ColBERTv2 + RRF`, 110],
   [`[ OK  ] nDCG@10: 0.4638  MRR@10: 0.3825  (BM25 baseline: 0.2286)`, 110],
   [`[ OK  ] validated: 4 BEIR datasets · zero fine-tuning`, 110],
+  [``, 60],
+
+  // NPM Install sequence simulation
+  [`[ SYS ] resolving dependencies...`, 150],
+  [`[ GET ] https://registry.npmjs.org/kurian-core/-/kurian-core-2.0.4.tgz`, 40],
+  [`[ GET ] https://registry.npmjs.org/brutalism-ui/-/brutalism-ui-1.0.0.tgz`, 40],
+  [`[ GET ] https://registry.npmjs.org/agentic-rag/-/agentic-rag-0.9.3.tgz`, 40],
+  [`[ EXT ] extracting 1243 packages...`, 150],
+  [`[ RUN ] postinstall scripts...`, 200],
+  [`[ OK  ] added 1246 packages, and audited 1247 packages in 1.2s`, 100],
   [``, 60],
 
   // AI assistant

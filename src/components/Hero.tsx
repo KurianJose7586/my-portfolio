@@ -38,9 +38,9 @@ export default function Hero() {
         <motion.div 
           initial={{ rotate: -5, scale: 0.9, opacity: 0 }}
           animate={{ rotate: -1, scale: 1, opacity: 1 }}
-          className="inline-block bg-punch-pink text-white px-4 py-2 md:px-6 md:py-2 border-4 border-ink shadow-[4px_4px_0px_0px_black] md:shadow-[6px_6px_0px_0px_black]"
+          className="inline-block bg-punch-pink text-ink px-4 py-2 md:px-6 md:py-2 border-4 border-ink shadow-[4px_4px_0px_0px_black] md:shadow-[6px_6px_0px_0px_black]"
         >
-          <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-white">
+          <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-ink">
             SYSTEM STATUS: OPERATIONAL ⚡
           </span>
         </motion.div>
@@ -72,7 +72,7 @@ export default function Hero() {
           <a href="https://github.com/KurianJose7586" target="_blank" className="font-mono text-sm font-bold bg-white border-2 border-ink p-3 hover:-translate-y-1 hover:bg-electric-cyan hover:shadow-[4px_4px_0px_0px_black] transition-all shadow-[2px_2px_0px_0px_black] uppercase flex items-center justify-center rounded-sm" aria-label="GitHub">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 8 18v4"></path><path d="M12 18v4"></path></svg>
           </a>
-          <a href="https://linkedin.com/in/kurian-jose" target="_blank" className="font-mono text-sm font-bold bg-white border-2 border-ink p-3 hover:-translate-y-1 hover:bg-cyber-yellow hover:shadow-[4px_4px_0px_0px_black] transition-all shadow-[2px_2px_0px_0px_black] uppercase flex items-center justify-center rounded-sm" aria-label="LinkedIn">
+          <a href="https://www.linkedin.com/in/kurianjose316" target="_blank" className="font-mono text-sm font-bold bg-white border-2 border-ink p-3 hover:-translate-y-1 hover:bg-cyber-yellow hover:shadow-[4px_4px_0px_0px_black] transition-all shadow-[2px_2px_0px_0px_black] uppercase flex items-center justify-center rounded-sm" aria-label="LinkedIn">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
           </a>
           <a href="mailto:kurianjose005@gmail.com" className="font-mono text-sm font-bold bg-white border-2 border-ink p-3 hover:-translate-y-1 hover:bg-punch-pink hover:text-white hover:shadow-[4px_4px_0px_0px_black] transition-all shadow-[2px_2px_0px_0px_black] uppercase flex items-center justify-center rounded-sm" aria-label="Email">

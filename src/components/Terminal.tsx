@@ -24,26 +24,52 @@ interface TerminalProps {
 }
 
 export default function Terminal({ initialState = 'normal', isGlobalWidget = false }: TerminalProps = {}) {
-  const [output, setOutput] = useState<OutputLine[]>(
-    isGlobalWidget 
-      ? [
-          { type: 'output', content: '─────────────────────────────────────────────' },
-          { type: 'output', content: ' KurianGPT Agentic TUI v2.0 ' },
-          { type: 'output', content: ' Type your message to chat directly with KurianGPT.' },
-          { type: 'output', content: ' Or use terminal commands (e.g., `help`, `git log`).' },
-          { type: 'output', content: '─────────────────────────────────────────────' }
-        ] 
-      : []
-  );
+  const [output, setOutput] = useState<OutputLine[]>([]);
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [hasBooted, setHasBooted] = useState(!isGlobalWidget);
   const [isBooting, setIsBooting] = useState(!isGlobalWidget);
   const [isLoading, setIsLoading] = useState(false);
   const [windowState, setWindowState] = useState<WindowState>(initialState);
   const [fontSize, setFontSize] = useState(13);
   const [showTip, setShowTip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [idleHint, setIdleHint] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isBooting || isLoading || windowState !== 'normal' || input.length > 0) {
+      setIdleHint(null);
+      return;
+    }
+
+    let showTimer: NodeJS.Timeout;
+    let hideTimer: NodeJS.Timeout;
+
+    const scheduleHint = () => {
+      showTimer = setTimeout(() => {
+        const hintsList = [
+          "You still there?",
+          "Confused? check out `help`",
+          "Overwhelmed? let's start with `projects`",
+          "Too much? let's just ask KurianGPT, try `ask \"what makes you different?\"`"
+        ];
+        setIdleHint(hintsList[Math.floor(Math.random() * hintsList.length)]);
+        
+        hideTimer = setTimeout(() => {
+          setIdleHint(null);
+          scheduleHint(); // Schedule the next one!
+        }, 10000);
+      }, 15000);
+    };
+
+    scheduleHint();
+
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
+  }, [input, output, isBooting, isLoading, windowState]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -69,15 +95,15 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
 
   // ── Boot sequence (variable-speed per line) ──────────────────────────
   useEffect(() => {
-    if (!isBooting) return;
-
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReduced) {
-      setOutput(prev => [...prev, ...bootSequence.map(([content]) => ({ type: 'boot' as const, content }))]);
-      setIsBooting(false);
-      return;
+    if (isGlobalWidget && windowState === 'normal' && !hasBooted) {
+      setHasBooted(true);
+      setOutput([]);
+      setIsBooting(true);
     }
+  }, [windowState, isGlobalWidget, hasBooted]);
+
+  useEffect(() => {
+    if (!isBooting) return;
 
     let cancelled = false;
 
@@ -488,7 +514,7 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
   if (isClosed) {
     if (isGlobalWidget) {
       return (
-        <div className="fixed bottom-8 right-8 z-[90] flex flex-col items-end pointer-events-none">
+        <div className="fixed bottom-24 md:bottom-8 right-6 md:right-8 z-[100] flex flex-col items-end pointer-events-none">
           {showTip && (
             <div className="mb-4 bg-[#1e2030]/90 backdrop-blur-md text-green-400 p-4 rounded-lg shadow-2xl border border-green-500/20 max-w-sm pointer-events-auto transform transition-all translate-y-0 opacity-100">
               <div className="flex items-start gap-3">
@@ -767,11 +793,15 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
               <div className="h-2" />
             </div>
 
-            {/* Input area */}
             <div
               className="flex-shrink-0 border-t border-green-400/10 px-4 py-3 space-y-2.5 relative z-20"
               style={{ backgroundColor: '#080b14' }}
             >
+              {idleHint && (
+                <div className="font-mono text-gray-500 italic mb-1 animate-pulse text-sm pointer-events-none">
+                  # {idleHint}
+                </div>
+              )}
               {/* Input row */}
               <div
                 className="flex items-center gap-2"
