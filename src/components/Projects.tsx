@@ -1,6 +1,17 @@
+import { useState } from "react";
 import { featuredProjects } from "@/lib/data";
+import { projectDetails } from "@/lib/projectDetails";
+import ProjectModal from "./ProjectModal";
 
 export default function Projects() {
+  const [selectedProject, setSelectedProject] = useState<{title: string, markdown: string} | null>(null);
+
+  const openProjectDetails = (title: string) => {
+    // Map AI Lawyer to Internship Project since it is part of it
+    const detailsKey = title === "AI Lawyer" ? "Internship Project" : title;
+    const markdown = projectDetails[detailsKey] || "";
+    setSelectedProject({ title, markdown });
+  };
   return (
     <section id="projects" className="pt-20">
       <div className="inline-block bg-ink text-white px-6 py-3 md:px-10 md:py-4 border-4 border-ink mb-10 md:mb-20 shadow-[6px_6px_0px_0px_#5AC8D8] md:shadow-[10px_10px_0px_0px_#5AC8D8] rotate-1">
@@ -57,12 +68,22 @@ export default function Projects() {
               ))}
             </div>
 
-            <button className="mechanical-button bg-white text-ink px-6 py-4 text-base w-full">
+            <button 
+              onClick={() => openProjectDetails(project.title)}
+              className="mechanical-button bg-white text-ink px-6 py-4 text-base w-full z-10 relative"
+            >
               {project.cta}
             </button>
           </div>
         ))}
       </div>
+
+      <ProjectModal 
+        isOpen={selectedProject !== null}
+        onClose={() => setSelectedProject(null)}
+        title={selectedProject?.title || ""}
+        markdownContent={selectedProject?.markdown || ""}
+      />
     </section>
   );
 }

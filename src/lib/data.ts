@@ -75,6 +75,26 @@ export const featuredProjects = [
     icon: "gavel",
     logo: "/file.svg",
   },
+  {
+    title: "BeaconBRD",
+    tagline: "Transform unstructured comms into structured BRDs.",
+    description: "An automated intelligence engine that filters noise from Slack and Gmail, synthesizing high-confidence signals into multi-agent Business Requirement Documents.",
+    tech: ["FastAPI", "Python", "LLMs", "LangChain", "OAuth"],
+    cta: "View Project",
+    link: "#",
+    color: "electric-cyan",
+    icon: "document_scanner",
+  },
+  {
+    title: "Build_Trust",
+    tagline: "Enterprise data marketplace with agentic workflows.",
+    description: "A production-ready CRM connecting 100k+ records via Dataverse. Features an interactive AI Project Manager that maps scoping to real specialists with live cost estimates.",
+    tech: ["FastAPI", "React", "Dataverse", "Gemma-2-9b", "OData"],
+    cta: "View Project",
+    link: "#",
+    color: "punch-pink",
+    icon: "handshake",
+  },
 ];
 
 export const researchData = {

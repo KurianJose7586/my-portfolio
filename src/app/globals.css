@@ -188,3 +188,72 @@
     cursor: pointer !important;
   }
 }
+
+/* Markdown Prose Styles */
+.markdown-prose {
+  @apply font-sans text-lg text-ink;
+}
+
+.markdown-prose h1 {
+  @apply font-black text-4xl uppercase tracking-tighter mb-6 pb-2 border-b-4 border-ink;
+}
+
+.markdown-prose h2 {
+  @apply font-black text-2xl uppercase tracking-tight mt-10 mb-4 bg-ink text-white inline-block px-3 py-1;
+}
+
+.markdown-prose h3 {
+  @apply font-bold text-xl uppercase mt-8 mb-3;
+}
+
+.markdown-prose p {
+  @apply mb-4 leading-relaxed font-medium;
+}
+
+.markdown-prose ul {
+  @apply list-disc list-inside mb-6 space-y-2;
+}
+
+.markdown-prose ol {
+  @apply list-decimal list-inside mb-6 space-y-2;
+}
+
+.markdown-prose li::marker {
+  @apply font-black;
+}
+
+.markdown-prose blockquote {
+  @apply border-l-[6px] border-punch-pink bg-paper pl-4 py-2 my-6 font-mono text-sm;
+}
+
+.markdown-prose code {
+  @apply font-mono bg-paper border-2 border-ink px-1 py-0.5 text-sm font-bold;
+}
+
+.markdown-prose pre {
+  @apply bg-ink text-green-400 p-4 border-4 border-ink my-6 overflow-x-auto shadow-[6px_6px_0px_0px_#5AC8D8];
+}
+
+.markdown-prose pre code {
+  @apply bg-transparent border-none p-0 text-green-400 font-normal shadow-none;
+}
+
+.markdown-prose table {
+  @apply w-full mb-8 border-collapse border-4 border-ink;
+}
+
+.markdown-prose th {
+  @apply bg-cyber-yellow border-4 border-ink p-3 text-left font-black uppercase;
+}
+
+.markdown-prose td {
+  @apply border-4 border-ink p-3;
+}
+
+.markdown-prose a {
+  @apply text-electric-cyan font-bold underline decoration-4 underline-offset-4 hover:bg-electric-cyan hover:text-ink transition-colors;
+}
+
+.markdown-prose hr {
+  @apply border-t-4 border-dashed border-ink my-10;
+}
