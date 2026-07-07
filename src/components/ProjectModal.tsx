@@ -18,6 +18,7 @@ export default function ProjectModal({ isOpen, onClose, title, markdownContent }
       setIsClosing(false);
     } else {
       document.body.style.overflow = "unset";
+      setIsClosing(false);
     }
     return () => {
       document.body.style.overflow = "unset";
