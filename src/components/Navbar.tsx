@@ -44,7 +44,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="hidden md:block sticky top-6 left-0 right-0 z-[100] px-4 md:px-10 pb-4">
+      <div className="hidden md:block sticky top-0 z-[100] px-4 md:px-10 pt-6 pb-4 bg-paper/30 backdrop-blur-sm">
         <nav className="bg-cyber-yellow border-4 border-ink rounded-lg px-6 py-4 flex justify-between items-center shadow-[8px_8px_0px_0px_black] transition-none w-full group/nav">
           <div className="flex items-center gap-4">
             <div className="font-sans text-2xl font-black tracking-tighter text-ink bg-white px-4 py-1 border-4 border-ink shadow-[4px_4px_0px_0px_black] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_black] transition-all cursor-pointer">
