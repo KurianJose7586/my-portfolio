@@ -156,7 +156,7 @@ if the problem is hard and the use case is real, let's talk.`,
    - Automated GST reconciliation for 1,200+ invoices
    - Containerized backend services with Flask & Docker
 
-2. Tech Lead & Founding Core Member @ GDG on Campus — Galgotias University (2025 – Present)
+2. Tech Lead & Core Member @ GDG on Campus — Galgotias University (2025 – Present)
    - Co-founded the GDG chapter and organized a 100+ participant hackathon
    - Mentored students in AI, backend engineering, and system design
    - Turned ideas into working products

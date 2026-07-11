@@ -157,7 +157,7 @@ export const experienceData = [
     color: "electric-cyan"
   },
   {
-    role: "Tech Lead & Founding Core Member",
+    role: "Tech Lead & Core Member",
     company: "GDG on Campus — Galgotias University",
     period: "2025 – Present",
     description: "I helped build our university's Google Developer Groups chapter from the ground up. Besides organizing events, I spend most of my time mentoring students, reviewing projects, and convincing people that debugging is, in fact, part of programming.",
