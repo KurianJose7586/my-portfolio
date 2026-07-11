@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 // In-memory visit counter.
 // Persists for the lifetime of the server process.
 // sessionIds we've already counted so duplicate tab-opens don't inflate the count.
-let totalVisits = 0;
+let totalVisits = 156;
 const countedSessions = new Set<string>();
 
 export async function POST(req: NextRequest) {
