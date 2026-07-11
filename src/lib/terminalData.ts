@@ -264,7 +264,7 @@ export function getNode(path: string[]): FsNode | null {
   let node: FsNode = fileSystem;
   for (const seg of path) {
     if (node.type !== 'dir') return null;
-    const child = (node as FsDir).children[seg];
+    const child: FsNode = (node as FsDir).children[seg];
     if (!child) return null;
     node = child;
   }
