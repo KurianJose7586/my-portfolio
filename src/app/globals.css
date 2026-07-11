@@ -257,3 +257,30 @@
 .markdown-prose hr {
   @apply border-t-4 border-dashed border-ink my-10;
 }
+
+/* ── Interaction Effects ───────────────────────────────────────────────────── */
+
+/* Emoji: floats up and fades out over 2.8s */
+@keyframes kurian-emoji-float {
+  0%   { transform: translateY(0px) scale(1.6) rotate(-8deg); opacity: 1; }
+  15%  { transform: translateY(-20px) scale(1.2) rotate(4deg); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: translateY(-160px) scale(0.9) rotate(-2deg); opacity: 0; }
+}
+
+/* Click-splosion stamp: pops in with a bounce, then fades */
+@keyframes kurian-stamp-pop {
+  0%   { transform: scale(0) rotate(-20deg); opacity: 1; }
+  30%  { transform: scale(1.5) rotate(8deg); opacity: 1; }
+  55%  { transform: scale(0.9) rotate(-3deg); opacity: 1; }
+  70%  { transform: scale(1.05) rotate(1deg); opacity: 1; }
+  82%  { opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 0; }
+}
+
+/* Radial menu buttons: scale-bounce in one by one */
+@keyframes kurian-menu-in {
+  0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+  65%  { transform: scale(1.15) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}

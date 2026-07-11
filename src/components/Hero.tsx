@@ -3,6 +3,9 @@
 import { heroData, siteConfig } from "@/lib/data";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
+const LiveStatus = dynamic(() => import("@/components/LiveStatus"), { ssr: false });
+const VisitsCounter = dynamic(() => import("@/components/VisitsCounter"), { ssr: false });
 
 export default function Hero() {
   const [textIndex, setTextIndex] = useState(0);
@@ -45,6 +48,8 @@ export default function Hero() {
           </span>
         </motion.div>
         
+        <LiveStatus variant="hero" />
+        
         <h1 className="font-sans text-5xl md:text-8xl font-black leading-tight md:leading-[0.85] tracking-tighter">
           I'm <br />
           <span className="text-punch-pink bg-cyber-yellow/20 px-2 leading-none inline-block mt-2 md:mt-0">{siteConfig.name}.</span>
@@ -52,7 +57,7 @@ export default function Hero() {
 
         <div className="bg-white border-4 border-ink p-4 sm:p-6 md:p-10 shadow-[8px_8px_0px_0px_black] md:shadow-[16px_16px_0px_0px_black] max-w-xl relative rotate-[0.5deg]">
           <div className="tape-accent -top-4 -left-4 md:-top-6 md:-left-6 rotate-[-15deg] bg-cyber-yellow/80"></div>
-          <p className="font-mono text-lg md:text-xl leading-relaxed min-h-[4rem]">
+          <p className="font-mono text-lg md:text-xl leading-relaxed min-h-[6rem]">
             {displayedText}
             <span className="animate-pulse font-bold">|</span>
           </p>
@@ -68,7 +73,7 @@ export default function Hero() {
         </div>
         
         {/* Quick Links */}
-        <div className="flex flex-wrap gap-4 pt-4">
+        <div className="flex flex-wrap items-center gap-4 pt-4">
           <a href="https://github.com/KurianJose7586" target="_blank" className="font-mono text-sm font-bold bg-white border-2 border-ink p-3 hover:-translate-y-1 hover:bg-electric-cyan hover:shadow-[4px_4px_0px_0px_black] transition-all shadow-[2px_2px_0px_0px_black] uppercase flex items-center justify-center rounded-sm" aria-label="GitHub">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 8 18v4"></path><path d="M12 18v4"></path></svg>
           </a>
@@ -78,6 +83,10 @@ export default function Hero() {
           <a href="mailto:kurianjose005@gmail.com" className="font-mono text-sm font-bold bg-white border-2 border-ink p-3 hover:-translate-y-1 hover:bg-punch-pink hover:text-white hover:shadow-[4px_4px_0px_0px_black] transition-all shadow-[2px_2px_0px_0px_black] uppercase flex items-center justify-center rounded-sm" aria-label="Email">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
           </a>
+          
+          <div className="ml-auto">
+            <VisitsCounter />
+          </div>
         </div>
         
         {/* Core Arsenal */}
@@ -102,7 +111,7 @@ export default function Hero() {
           <div className="absolute -bottom-8 -right-8 w-full h-full bg-cyber-yellow border-4 border-ink z-0 rotate-[2deg] group-hover:rotate-[6deg] transition-transform duration-300"></div>
           <div className="relative z-10 p-4 pb-12 bg-white border-4 border-ink shadow-[20px_20px_0px_0px_black] transition-transform duration-300 group-hover:-translate-y-2 group-hover:-translate-x-2">
             <img 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCHb2LeGW4K9o7bcWvbzvIENggSL_2-zjMz_aBz9xeEhflkWZQSxdX5P97G6TKdip2tqMyi30W6nDx5JLyw-Ga6sdq-3DA6zfrwoboYMP7dPKcQMgV_NPuYrXZsuplcdoTXubP9iQu7Drdqw50LTnhCHFU5WuG9840ggefrLjchs7VeShFj-MYzcgIQ6knoiiR35_cOchoiUW3aPSD3yR29XbQGmhXn2TRzILy02sLVy4j_jVpEv1bneDXOYIiDwa2cHxhEGVoVB0" 
+              src="/profile.png" 
               alt={siteConfig.name}
               className="w-64 md:w-80 object-contain grayscale group-hover:grayscale-0 transition-all duration-500 border-2 border-ink"
             />

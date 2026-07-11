@@ -12,29 +12,40 @@ interface ProjectModalProps {
 export default function ProjectModal({ isOpen, onClose, title, markdownContent }: ProjectModalProps) {
   const [isClosing, setIsClosing] = useState(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      setIsClosing(false);
-    } else {
-      document.body.style.overflow = "unset";
-      setIsClosing(false);
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
-  if (!isOpen && !isClosing) return null;
-
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(onClose, 300);
   };
 
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        handleClose();
+      }
+    };
+
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      setIsClosing(false);
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.body.style.overflow = "";
+      setIsClosing(false);
+    }
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+
+  if (!isOpen && !isClosing) return null;
+
   return (
     <div 
       className={`fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}
+      role="dialog"
+      aria-modal="true"
     >
       <div 
         className="absolute inset-0 bg-ink/80 backdrop-blur-sm cursor-pointer" 

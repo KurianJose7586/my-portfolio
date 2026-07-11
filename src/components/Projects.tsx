@@ -20,6 +20,11 @@ export default function Projects() {
         </h2>
       </div>
 
+      <div className="md:hidden flex items-center justify-end pr-4 mb-4 text-ink/60 font-mono text-[10px] font-bold tracking-widest uppercase">
+        <span>Swipe to explore</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </div>
+
       <div className="flex overflow-x-auto snap-x snap-mandatory pb-12 -mx-4 px-4 md:grid md:grid-cols-2 gap-8 md:gap-16 md:overflow-visible md:mx-0 md:px-0 scrollbar-hide">
         {featuredProjects.map((project, i) => (
           <div

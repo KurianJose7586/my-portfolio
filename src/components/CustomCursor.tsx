@@ -7,47 +7,38 @@ export default function CustomCursor() {
   const [cursorType, setCursorType] = useState<"default" | "active" | "orb">("default");
 
   useEffect(() => {
+    // Disable JS cursor logic on touch devices
+    if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+      return;
+    }
+
     const onMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
     };
 
-    const onMouseEnter = (e: Event) => {
+    const onMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.classList.contains('kurian-orb') || target.closest('.kurian-orb')) {
-        setCursorType("orb");
+      if (
+        target.closest(
+          'a, button, input, textarea, .brutalist-card, .group, .clickable, [role="button"], .kurian-orb'
+        )
+      ) {
+        if (target.closest('.kurian-orb')) {
+          setCursorType("orb");
+        } else {
+          setCursorType("active");
+        }
       } else {
-        setCursorType("active");
+        setCursorType("default");
       }
     };
-    const onMouseLeave = () => setCursorType("default");
 
     document.addEventListener("mousemove", onMouseMove);
-    
-    const attachListeners = () => {
-      const interactives = document.querySelectorAll(
-        'a, button, input, textarea, .brutalist-card, .group, .clickable, [role="button"], .kurian-orb'
-      );
-      
-      interactives.forEach((el) => {
-        el.addEventListener("mouseenter", onMouseEnter);
-        el.addEventListener("mouseleave", onMouseLeave);
-      });
-    };
-
-    attachListeners();
-    // Re-attach periodically in case of dynamic DOM updates (like the Terminal widget mounting)
-    const interval = setInterval(attachListeners, 1000);
+    document.addEventListener("mouseover", onMouseOver);
 
     return () => {
       document.removeEventListener("mousemove", onMouseMove);
-      clearInterval(interval);
-      const interactives = document.querySelectorAll(
-        'a, button, input, textarea, .brutalist-card, .group, .clickable, [role="button"], .kurian-orb'
-      );
-      interactives.forEach((el) => {
-        el.removeEventListener("mouseenter", onMouseEnter);
-        el.removeEventListener("mouseleave", onMouseLeave);
-      });
+      document.removeEventListener("mouseover", onMouseOver);
     };
   }, []);
 
