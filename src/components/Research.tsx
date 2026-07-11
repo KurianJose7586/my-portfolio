@@ -39,9 +39,14 @@ export default function Research() {
                 ))}
               </div>
 
-              <button className="mechanical-button bg-ink text-white px-12 py-5 text-xl w-full md:w-auto">
+              <a
+                href={researchData.link}
+                target="_blank"
+                rel="noreferrer"
+                className="mechanical-button bg-ink text-white px-12 py-5 text-xl w-full md:w-auto text-center no-underline inline-block"
+              >
                 {researchData.cta}
-              </button>
+              </a>
             </div>
 
             <div className="lg:w-2/5 w-full flex justify-center">
