@@ -146,6 +146,23 @@ linkedin  linkedin.com/in/kurianjose316
 open to: internships · freelance AI projects · collabs
 if the problem is hard and the use case is real, let's talk.`,
     },
+    'experience.txt': {
+      type: 'file',
+      content: `WORK HISTORY:
+
+1. AI Intern @ Astron Financial Solutions (June 2025 – August 2025)
+   - Built a Legal Case Brief Generator (cut review time by 40%)
+   - Developed an AI legal research assistant (85% relevance accuracy)
+   - Automated GST reconciliation for 1,200+ invoices
+   - Containerized backend services with Flask & Docker
+
+2. Tech Lead & Founding Core Member @ GDG on Campus — Galgotias University (2025 – Present)
+   - Co-founded the GDG chapter and organized a 100+ participant hackathon
+   - Mentored students in AI, backend engineering, and system design
+   - Turned ideas into working products
+
+(Run \`open experience\` to view the full dossier on the site, or scroll down!)`,
+    },
     'projects': {
       type: 'dir',
       children: {

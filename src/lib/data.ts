@@ -140,3 +140,34 @@ export const techArsenal = [
     color: "cyber-yellow",
   },
 ];
+
+export const experienceData = [
+  {
+    role: "AI Intern",
+    company: "Astron Financial Solutions",
+    period: "June 2025 – August 2025",
+    description: "My first dive into building AI systems that solved actual business problems instead of classroom assignments. I worked on legal-tech and financial automation tools, building everything from RAG pipelines to backend APIs.",
+    highlights: [
+      "Built a Legal Case Brief Generator that summarized 250+ page legal documents and cut review time by roughly 40%.",
+      "Developed an AI legal research assistant capable of retrieving and ranking relevant Supreme Court judgments with 85% relevance accuracy.",
+      "Automated GST reconciliation for 1,200+ invoices, helping identify financial discrepancies with minimal manual effort.",
+      "Containerized and deployed backend services using Flask and Docker, making deployments far less painful."
+    ],
+    tech: ["Python", "Flask", "Docker", "RAG", "LLMs", "FAISS", "PostgreSQL"],
+    color: "electric-cyan"
+  },
+  {
+    role: "Tech Lead & Founding Core Member",
+    company: "GDG on Campus — Galgotias University",
+    period: "2025 – Present",
+    description: "I helped build our university's Google Developer Groups chapter from the ground up. Besides organizing events, I spend most of my time mentoring students, reviewing projects, and convincing people that debugging is, in fact, part of programming.",
+    highlights: [
+      "Co-founded the GDG chapter at Galgotias University.",
+      "Helped organize a 100+ participant hackathon.",
+      "Mentored students in AI, backend engineering, and system design.",
+      "Worked closely with teams to turn ideas into working products."
+    ],
+    tech: ["Leadership", "Mentorship", "System Design", "Event Organization"],
+    color: "punch-pink"
+  }
+];

@@ -59,7 +59,7 @@ export default function Navbar() {
             <a className="font-mono text-sm font-bold text-ink uppercase tracking-wider hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#">Index</a>
             <a className="font-mono text-sm font-bold text-ink uppercase tracking-wider hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#about">Bio</a>
             <a className="font-mono text-sm font-bold text-ink uppercase tracking-wider hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#projects">Vault</a>
-            <a className="font-mono text-sm font-bold text-ink uppercase tracking-wider hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#research">Papers</a>
+            <a className="font-mono text-sm font-bold text-ink uppercase tracking-wider hover:underline decoration-4 underline-offset-4 hover:-translate-y-1 transition-transform" href="#experience">Dossier</a>
           </div>
           <div className="flex items-center gap-3">
             {/* Terminal icon — always visible */}
