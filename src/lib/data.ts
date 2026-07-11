@@ -114,7 +114,7 @@ export const researchData = {
     { label: "Fusion", value: "RRF" },
   ],
   cta: "GET THE FULL PDF",
-  link: "#",
+  link: "https://drive.google.com/file/d/1szBawJBbm8d1DGUXkjNI1Z05Yz43rutk/view?usp=sharing",
 };
 
 export const labNotes = [

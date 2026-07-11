@@ -7,8 +7,14 @@ import {
   getEasterEggs,
   bootSequence,
   hints,
+  fileSystem,
+  resolvePath,
+  getNode,
+  FsDir,
 } from '@/lib/terminalData';
 import { Sparkles, Bot, MessageCircle, Brain, Zap, Terminal as TerminalIcon } from 'lucide-react';
+
+const HISTORY_KEY = 'kurian_terminal_history';
 
 interface OutputLine {
   type: 'boot' | 'command' | 'output' | 'error';
@@ -26,7 +32,10 @@ interface TerminalProps {
 export default function Terminal({ initialState = 'normal', isGlobalWidget = false }: TerminalProps = {}) {
   const [output, setOutput] = useState<OutputLine[]>([]);
   const [input, setInput] = useState('');
-  const [history, setHistory] = useState<string[]>([]);
+  const [history, setHistory] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; }
+  });
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [hasBooted, setHasBooted] = useState(!isGlobalWidget);
   const [isBooting, setIsBooting] = useState(!isGlobalWidget);
@@ -36,6 +45,8 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
   const [showTip, setShowTip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [idleHint, setIdleHint] = useState<string | null>(null);
+  // File system state: cwd is an array of directory names from root
+  const [cwd, setCwd] = useState<string[]>([]);
 
   useEffect(() => {
     if (isBooting || isLoading || windowState !== 'normal' || input.length > 0) {
@@ -251,14 +262,84 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
         return;
       }
 
-      setHistory((prev) => [trimmed, ...prev.slice(0, 49)]);
+      const newHistory = [trimmed, ...history.filter(h => h !== trimmed).slice(0, 49)];
+      setHistory(newHistory);
+      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory)); } catch {}
       setHistoryIndex(-1);
-      const promptString = isGlobalWidget ? `you > ` : `kurian@portfolio:~$ `;
+      const cwdStr = cwd.length === 0 ? '~' : '~/' + cwd.join('/');
+      const promptString = isGlobalWidget ? `you > ` : `kurian@portfolio:${cwdStr}$ `;
       setOutput((prev) => [...prev, { type: 'command', content: `${promptString}${trimmed}` }]);
 
       // clear
       if (trimmed === 'clear') {
         setOutput([]);
+        setInput('');
+        return;
+      }
+
+      // ── pwd ──────────────────────────────────────────────────────────
+      if (trimmed === 'pwd') {
+        const path = '/home/kurian/portfolio' + (cwd.length ? '/' + cwd.join('/') : '');
+        setOutput((prev) => [...prev, { type: 'output', content: path }]);
+        setInput('');
+        return;
+      }
+
+      // ── ls ───────────────────────────────────────────────────────────
+      if (trimmed === 'ls' || trimmed.startsWith('ls ')) {
+        const targetPath = trimmed === 'ls' ? cwd : resolvePath(cwd, trimmed.slice(3).trim()) ?? cwd;
+        const node = getNode(targetPath);
+        if (!node) {
+          setOutput((prev) => [...prev, { type: 'error', content: `ls: no such directory` }]);
+        } else if (node.type === 'file') {
+          setOutput((prev) => [...prev, { type: 'output', content: targetPath[targetPath.length - 1] }]);
+        } else {
+          const dir = node as FsDir;
+          const entries = Object.entries(dir.children)
+            .map(([name, n]) => n.type === 'dir' ? `\x1b[dir]${name}/` : name)
+            .sort();
+          const dirs = entries.filter(e => e.startsWith('\x1b[dir]')).map(e => e.replace('\x1b[dir]', ''));
+          const files = entries.filter(e => !e.startsWith('\x1b[dir]'));
+          const formatted = [...dirs.map(d => `<span class="text-sky-400">${d}/</span>`), ...files].join('   ');
+          setOutput((prev) => [...prev, { type: 'output', content: formatted, isHtml: true }]);
+        }
+        setInput('');
+        return;
+      }
+
+      // ── cd ───────────────────────────────────────────────────────────
+      if (trimmed === 'cd' || trimmed.startsWith('cd ')) {
+        const arg = trimmed === 'cd' ? '' : trimmed.slice(3).trim();
+        if (!arg || arg === '~' || arg === '/') {
+          setCwd([]);
+          setInput('');
+          return;
+        }
+        const newPath = resolvePath(cwd, arg);
+        if (!newPath) { setOutput((prev) => [...prev, { type: 'error', content: `cd: not a directory: ${arg}` }]); setInput(''); return; }
+        const node = getNode(newPath);
+        if (!node || node.type !== 'dir') {
+          setOutput((prev) => [...prev, { type: 'error', content: `cd: not a directory: ${arg}` }]);
+        } else {
+          setCwd(newPath);
+        }
+        setInput('');
+        return;
+      }
+
+      // ── cat ──────────────────────────────────────────────────────────
+      if (trimmed.startsWith('cat ')) {
+        const arg = trimmed.slice(4).trim();
+        const filePath = resolvePath(cwd, arg);
+        if (!filePath) { setOutput((prev) => [...prev, { type: 'error', content: `cat: ${arg}: No such file` }]); setInput(''); return; }
+        const node = getNode(filePath);
+        if (!node) {
+          setOutput((prev) => [...prev, { type: 'error', content: `cat: ${arg}: No such file` }]);
+        } else if (node.type === 'dir') {
+          setOutput((prev) => [...prev, { type: 'error', content: `cat: ${arg}: Is a directory — try \`ls ${arg}\`` }]);
+        } else {
+          setOutput((prev) => [...prev, { type: 'output', content: node.content }]);
+        }
         setInput('');
         return;
       }
@@ -478,7 +559,7 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
       }
       setInput('');
     },
-    [easterEggs]
+    [easterEggs, cwd, history]
   );
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -498,9 +579,51 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
       if (next >= 0) { setHistoryIndex(next); setInput(history[next]); }
       else { setHistoryIndex(-1); setInput(''); }
     } else if (e.key === 'Tab') {
-      // Simple tab completion
       e.preventDefault();
-      const allCmds = [...Object.keys(terminalCommands), 'clear', 'open', 'ask'];
+      const allCmds = [...Object.keys(terminalCommands), 'clear', 'open', 'ask', 'ls', 'cd', 'cat', 'pwd', 'git log'];
+
+      // Context-aware: `open <TAB>` → list projects
+      if (input.startsWith('open ')) {
+        const partial = input.slice(5);
+        const choices = Object.keys(projectDetails).filter(p => p.startsWith(partial));
+        if (choices.length === 1) { setInput(`open ${choices[0]}`); }
+        else if (choices.length > 1) {
+          setOutput(prev => [...prev, { type: 'output', content: choices.join('   ') }]);
+        }
+        return;
+      }
+
+      // Context-aware: `cd <TAB>` → list directories in cwd
+      if (input.startsWith('cd ')) {
+        const partial = input.slice(3);
+        const node = getNode(cwd);
+        if (node && node.type === 'dir') {
+          const dirs = Object.entries((node as FsDir).children)
+            .filter(([, n]) => n.type === 'dir')
+            .map(([name]) => name)
+            .filter(name => name.startsWith(partial));
+          if (dirs.length === 1) { setInput(`cd ${dirs[0]}`); }
+          else if (dirs.length > 1) { setOutput(prev => [...prev, { type: 'output', content: dirs.join('   ') }]); }
+        }
+        return;
+      }
+
+      // Context-aware: `cat <TAB>` → list files in cwd
+      if (input.startsWith('cat ')) {
+        const partial = input.slice(4);
+        const node = getNode(cwd);
+        if (node && node.type === 'dir') {
+          const files = Object.entries((node as FsDir).children)
+            .filter(([, n]) => n.type === 'file')
+            .map(([name]) => name)
+            .filter(name => name.startsWith(partial));
+          if (files.length === 1) { setInput(`cat ${files[0]}`); }
+          else if (files.length > 1) { setOutput(prev => [...prev, { type: 'output', content: files.join('   ') }]); }
+        }
+        return;
+      }
+
+      // Default: complete command names
       const match = allCmds.find((c) => c.startsWith(input) && c !== input);
       if (match) setInput(match);
     }
@@ -753,13 +876,27 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
                     );
                   }
 
-                  const parts = contentToParse.split(/(\*\*.*?\*\*)/g);
+                  // Split on **bold**, `backtick` tokens
+                  const parts = contentToParse.split(/(\*\*.*?\*\*|`[^`]+`)/g);
                   const renderedParts = parts.map((part, i) => {
                     if (part.startsWith('**') && part.endsWith('**')) {
                       return (
                         <span key={i} className="font-bold text-white bg-white/10 px-1 mx-[1px] rounded">
                           {part.slice(2, -2)}
                         </span>
+                      );
+                    }
+                    if (part.startsWith('`') && part.endsWith('`')) {
+                      const cmd = part.slice(1, -1);
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => { if (!isBooting && !isLoading) { setInput(cmd); setTimeout(() => inputRef.current?.focus(), 0); } }}
+                          className="hint-chip px-1.5 py-0 mx-[2px] rounded text-[11px] align-text-bottom"
+                          title={`Click to run: ${cmd}`}
+                        >
+                          {cmd}
+                        </button>
                       );
                     }
                     return <span key={i}>{part}</span>;
@@ -813,7 +950,7 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
                   style={{ textShadow: '0 0 6px rgba(103,232,249,0.3)' }}
                   aria-hidden="true"
                 >
-                  {isGlobalWidget ? 'you >' : 'kurian@portfolio:~$'}
+                  {isGlobalWidget ? 'you >' : `kurian@portfolio:${cwd.length === 0 ? '~' : '~/' + cwd.join('/')}$`}
                 </span>
                 <input
                   ref={inputRef}
