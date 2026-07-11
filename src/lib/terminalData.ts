@@ -163,6 +163,26 @@ if the problem is hard and the use case is real, let's talk.`,
 
 (Run \`open experience\` to view the full dossier on the site, or scroll down!)`,
     },
+    'roll': {
+      type: 'dir',
+      children: {
+        'devfest_2025.txt': {
+          type: 'file',
+          content: `DevFest Noida 2025 Organizers Team Photo.
+The squad at DevFest 2025! ⚡`,
+        },
+        'nvidia_meetup.txt': {
+          type: 'file',
+          content: `GDG Team Meetup @ NVIDIA Lab 🚀
+Technical collaboration and session.`,
+        },
+        'workshop.txt': {
+          type: 'file',
+          content: `me Hosting a Technical Workshop 🎤
+Presenting system design, AI, and backend concepts.`,
+        },
+      }
+    },
     'projects': {
       type: 'dir',
       children: {

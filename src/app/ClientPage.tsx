@@ -16,6 +16,7 @@ import Bio from "@/components/Bio";
 import Projects from "@/components/Projects";
 import Experience from "@/components/Experience";
 import ResearchModal from "@/components/ResearchModal";
+import Gallery from "@/components/Gallery";
 import Arsenal from "@/components/Arsenal";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -113,6 +114,10 @@ export default function ClientPage({ initialShowSplash }: { initialShowSplash: b
               
               <ScrollReveal>
                 <Experience onOpenResearch={() => setIsResearchOpen(true)} />
+              </ScrollReveal>
+              
+              <ScrollReveal>
+                <Gallery />
               </ScrollReveal>
               
               <ScrollReveal>
