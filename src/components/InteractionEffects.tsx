@@ -169,7 +169,14 @@ export default function InteractionEffects() {
     }
 
     function onKeyDown(e: KeyboardEvent) {
-      if (isTypingTarget(e.target)) return;
+      if (
+        isTypingTarget(e.target) ||
+        isTypingTarget(document.activeElement) ||
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      ) {
+        return;
+      }
 
       if ((e.key === "e" || e.key === "E") && !e.repeat) {
         e.preventDefault();
