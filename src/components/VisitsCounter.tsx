@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getOrCreateSessionId } from "@/lib/session";
 
 export default function VisitsCounter() {
   const [visits, setVisits] = useState<number | null>(null);
 
   useEffect(() => {
-    const sessionId = sessionStorage.getItem("kurian_tab_id");
+    // getOrCreateSessionId ensures the ID exists even if LiveStatus hasn't mounted yet
+    const sessionId = getOrCreateSessionId();
     if (!sessionId) return;
 
-    // Register this session and get the updated count
     fetch("/api/visits", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -18,7 +19,6 @@ export default function VisitsCounter() {
       .then(r => r.json())
       .then(d => setVisits(d.visits))
       .catch(() => {
-        // Fallback: just read current count
         fetch("/api/visits")
           .then(r => r.json())
           .then(d => setVisits(d.visits))

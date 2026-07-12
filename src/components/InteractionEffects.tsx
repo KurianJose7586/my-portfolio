@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { getOrCreateSessionId } from "@/lib/session";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const EMOJIS = ["⚡", "👾", "🛠️", "🔥", "🎯", "💡"];
@@ -24,9 +25,6 @@ function sessionShapeVariant(id: string): 0 | 1 | 2 {
   return (hash % 3) as 0 | 1 | 2;
 }
 
-function getSessionId(): string | null {
-  return sessionStorage.getItem("kurian_tab_id");
-}
 
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!target) return false;
@@ -35,6 +33,7 @@ function isTypingTarget(target: EventTarget | null): boolean {
     el.tagName === "INPUT" ||
     el.tagName === "TEXTAREA" ||
     el.tagName === "SELECT" ||
+    el.tagName === "CANVAS" ||
     !!el.isContentEditable
   );
 }
@@ -124,7 +123,7 @@ export default function InteractionEffects() {
   const mouseRef = useRef({ clientX: 0, clientY: 0, pageX: 0, pageY: 0 });
 
   useEffect(() => {
-    myId.current = getSessionId();
+    myId.current = getOrCreateSessionId();
   }, []);
 
   // ── Track scroll (needed for laser viewport conversion) ───────────────────
@@ -290,7 +289,7 @@ export default function InteractionEffects() {
       } catch { /* ignore */ }
     }
 
-    const interval = setInterval(poll, 150);
+    const interval = setInterval(poll, 400);
     return () => clearInterval(interval);
   }, []);
 

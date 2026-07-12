@@ -1,44 +1,39 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { getOrCreateSessionId } from "@/lib/session";
 
 interface RemoteCursor {
   sessionId: string;
-  pageX: number;  // absolute document X (px) — scroll-independent
-  pageY: number;  // absolute document Y (px) — scroll-independent
+  pageX: number;
+  pageY: number;
   color: string;
-}
-
-function getTabSessionId(): string | null {
-  return sessionStorage.getItem("kurian_tab_id");
 }
 
 export default function RemoteCursors() {
   const [cursors, setCursors] = useState<RemoteCursor[]>([]);
-  // Track our own scroll offset so we can convert pageCoords → viewportCoords
   const [scrollX, setScrollX] = useState(0);
   const [scrollY, setScrollY] = useState(0);
-  const mySessionId = useRef<string | null>(null);
+  const mySessionId = useRef<string>("");
 
-  // Grab sessionId once on mount
+  // Create/read session ID on mount
   useEffect(() => {
-    mySessionId.current = getTabSessionId();
+    mySessionId.current = getOrCreateSessionId();
   }, []);
 
-  // ── Track our own scroll offset ───────────────────────────────────────────
+  // Track scroll so we can convert absolute pageCoords → viewport coords
   useEffect(() => {
     function onScroll() {
       setScrollX(window.scrollX);
       setScrollY(window.scrollY);
     }
-    // Seed the initial scroll position
     setScrollX(window.scrollX);
     setScrollY(window.scrollY);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // ── Send cursor position as ABSOLUTE page coords ──────────────────────────
+  // Send cursor position (absolute page coords, scroll-independent)
   const sendCursor = useCallback(async (pageX: number, pageY: number) => {
     const sessionId = mySessionId.current;
     if (!sessionId) return;
@@ -46,7 +41,6 @@ export default function RemoteCursors() {
       await fetch("/api/cursors", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // pageX/pageY = clientX + scrollX, so they don't change when others scroll
         body: JSON.stringify({ sessionId, pageX, pageY }),
       });
     } catch { /* ignore */ }
@@ -57,14 +51,16 @@ export default function RemoteCursors() {
 
     function handleMouseMove(e: MouseEvent) {
       const now = Date.now();
-      if (now - lastSend < 80) return; // ~12 fps
+      if (now - lastSend < 60) return; // ~16 fps
       lastSend = now;
-      // Use pageX/pageY (= clientX + scrollX) — absolute document coordinates
       sendCursor(e.pageX, e.pageY);
     }
 
-    // Remove cursor when mouse leaves the window
-    function handleMouseLeave() {
+    // On mouse leave: stop sending. The 3s Redis TTL will auto-remove the cursor.
+    // No need for an explicit DELETE beacon — avoids the sendBeacon/DELETE bug.
+
+    // On page hide (tab close / navigate away): explicitly remove cursor
+    function handlePageHide() {
       const sessionId = mySessionId.current;
       if (!sessionId) return;
       navigator.sendBeacon(
@@ -74,36 +70,36 @@ export default function RemoteCursors() {
     }
 
     window.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseleave", handleMouseLeave);
+    window.addEventListener("pagehide", handlePageHide);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("pagehide", handlePageHide);
     };
   }, [sendCursor]);
 
-  // ── Poll for other cursors every 150 ms ──────────────────────────────────
+  // Poll for other cursors every 200ms (was 150ms — slightly less aggressive)
   useEffect(() => {
     async function fetchCursors() {
       try {
         const res = await fetch("/api/cursors");
         const data = await res.json();
         if (!Array.isArray(data.cursors)) return;
-        const myId = mySessionId.current ?? sessionStorage.getItem("kurian_tab_id");
+        const myId = mySessionId.current;
         setCursors(data.cursors.filter((c: RemoteCursor) => c.sessionId !== myId));
       } catch { /* ignore */ }
     }
 
-    const interval = setInterval(fetchCursors, 150);
+    const interval = setInterval(fetchCursors, 200);
     return () => clearInterval(interval);
   }, []);
 
   return (
+    // No overflow-hidden — that was clipping cursors near edges
     <div
-      className="fixed inset-0 pointer-events-none z-[9998] overflow-hidden"
+      className="fixed inset-0 pointer-events-none z-[9998]"
       aria-hidden="true"
     >
       {cursors.map((cursor) => {
-        // Convert absolute page coords → viewport coords for this viewer
         const viewportX = cursor.pageX - scrollX;
         const viewportY = cursor.pageY - scrollY;
 
@@ -114,12 +110,10 @@ export default function RemoteCursors() {
             style={{
               left: viewportX,
               top: viewportY,
-              // Smooth out the ~150ms polling lag
-              transition: "left 120ms linear, top 120ms linear",
+              transition: "left 100ms linear, top 100ms linear",
               willChange: "left, top",
             }}
           >
-            {/* Tiny neobrutalist arrow cursor */}
             <svg
               width="14"
               height="18"
@@ -137,7 +131,6 @@ export default function RemoteCursors() {
                 strokeLinecap="round"
               />
             </svg>
-            {/* Tiny color dot underneath as a subtle indicator */}
             <div
               className="absolute top-[14px] left-[1px] w-1.5 h-1.5 rounded-full border border-black/50"
               style={{ backgroundColor: cursor.color, opacity: 0.85 }}

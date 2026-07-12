@@ -1,22 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-function getTabSessionId(): string {
-  // sessionStorage is unique per-tab — unlike localStorage which is shared
-  let id = sessionStorage.getItem("kurian_tab_id");
-  if (!id) {
-    id = crypto.randomUUID();
-    sessionStorage.setItem("kurian_tab_id", id);
-  }
-  return id;
-}
+import { getOrCreateSessionId } from "@/lib/session";
 
 export default function LiveStatus({ variant }: { variant: "hero" | "navbar" }) {
-  const [onlineCount, setOnlineCount] = useState(1);
+  // null = not yet loaded (prevents flicker from hardcoded "1")
+  const [onlineCount, setOnlineCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const sessionId = getTabSessionId();
+    const sessionId = getOrCreateSessionId();
 
     async function heartbeat() {
       try {
@@ -27,9 +19,7 @@ export default function LiveStatus({ variant }: { variant: "hero" | "navbar" }) 
         });
         const data = await res.json();
         if (typeof data.count === "number") setOnlineCount(data.count);
-      } catch {
-        // silently ignore network errors
-      }
+      } catch { /* ignore */ }
     }
 
     async function poll() {
@@ -37,19 +27,17 @@ export default function LiveStatus({ variant }: { variant: "hero" | "navbar" }) 
         const res = await fetch("/api/active-users");
         const data = await res.json();
         if (typeof data.count === "number") setOnlineCount(data.count);
-      } catch {
-        // silently ignore network errors
-      }
+      } catch { /* ignore */ }
     }
 
-    // Register this tab immediately, refresh session every 10s
+    // Register immediately, then heartbeat every 8s
     heartbeat();
-    const heartbeatInterval = setInterval(heartbeat, 10_000);
+    const heartbeatInterval = setInterval(heartbeat, 8_000);
 
-    // Poll for count changes every 3s so other tabs' joins/leaves show up fast
-    const pollInterval = setInterval(poll, 3_000);
+    // Poll for count changes every 5s
+    const pollInterval = setInterval(poll, 5_000);
 
-    // Deregister when tab closes (best-effort — fires on most modern browsers)
+    // Clean up on tab close
     function handleUnload() {
       navigator.sendBeacon(
         "/api/active-users",
@@ -68,14 +56,17 @@ export default function LiveStatus({ variant }: { variant: "hero" | "navbar" }) 
     };
   }, []);
 
+  const label = onlineCount === null
+    ? "connecting…"
+    : `${onlineCount} ${onlineCount === 1 ? "person" : "people"} online`;
 
   const counterContent = (
-    <div className={`flex items-center gap-2 font-mono text-sm uppercase tracking-widest font-bold ${variant === 'navbar' ? 'text-paper' : 'text-ink'}`}>
+    <div className={`flex items-center gap-2 font-mono text-sm uppercase tracking-widest font-bold ${variant === "navbar" ? "text-paper" : "text-ink"}`}>
       <div className="relative flex h-3 w-3">
-        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${variant === 'navbar' ? 'bg-electric-cyan' : 'bg-punch-pink'}`}></span>
-        <span className={`relative inline-flex rounded-full h-3 w-3 ${variant === 'navbar' ? 'bg-electric-cyan' : 'bg-punch-pink'}`}></span>
+        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${variant === "navbar" ? "bg-electric-cyan" : "bg-punch-pink"}`} />
+        <span className={`relative inline-flex rounded-full h-3 w-3 ${variant === "navbar" ? "bg-electric-cyan" : "bg-punch-pink"}`} />
       </div>
-      <span>{onlineCount} {onlineCount === 1 ? 'person' : 'people'} online</span>
+      <span>{label}</span>
     </div>
   );
 
