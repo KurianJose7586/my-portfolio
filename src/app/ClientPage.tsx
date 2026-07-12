@@ -8,6 +8,7 @@ const RemoteCursors = dynamic(() => import("@/components/RemoteCursors"), { ssr:
 const InteractionEffects = dynamic(() => import("@/components/InteractionEffects"), { ssr: false });
 import SplashScreen from "@/components/SplashScreen";
 import CustomCursor from "@/components/CustomCursor";
+import ArcadeDock from "@/components/ArcadeDock";
 import ProgressBar from "@/components/ProgressBar";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -61,6 +62,7 @@ export default function ClientPage({ initialShowSplash }: { initialShowSplash: b
         className="paper-grid relative"
       >
         <CustomCursor />
+        <ArcadeDock />
         <RemoteCursors />
         <InteractionEffects />
         <ProgressBar />

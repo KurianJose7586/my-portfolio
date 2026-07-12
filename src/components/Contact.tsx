@@ -57,6 +57,18 @@ export default function Contact() {
         </div>
 
         <div className="text-center mb-16 md:mb-20 px-4">
+          <div className="flex justify-center mb-4">
+            <div className="relative w-16 h-16 rounded-full border-4 border-ink overflow-hidden shadow-[4px_4px_0px_0px_black]">
+              <video
+                src="/waving-avatar-final.webm"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
           <h3 className="font-sans text-xl md:text-4xl font-bold text-ink">
             Let&apos;s build something amazing together
           </h3>

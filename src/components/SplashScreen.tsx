@@ -18,9 +18,18 @@ const FAKE_LOGS = [
   { id: "7a6e5f", addr: "0x9d2b" }
 ];
 
+const BIBLE_QUOTES = [
+  { text: "I know that there is no good in them, but for a man to rejoice, and to do good in his life. And also that every man should eat and drink, and enjoy the good of all his labour, it is the gift of God.", ref: "Ecclesiastes 3:12–13 (KJV)" },
+  { text: "Then I commended mirth, because a man hath no better thing under the sun, than to eat, and to drink, and to be merry.", ref: "Ecclesiastes 8:15 (KJV)" },
+  { text: "Go thy way, eat thy bread with joy, and drink thy wine with a merry heart; for God now accepteth thy works.", ref: "Ecclesiastes 9:7 (KJV)" },
+  { text: "Rejoice in the Lord alway: and again I say, Rejoice.", ref: "Philippians 4:4 (KJV)" },
+  { text: "This is the day which the Lord hath made; we will rejoice and be glad in it.", ref: "Psalm 118:24 (KJV)" },
+];
+
 export default function SplashScreen({ finishLoading }: { finishLoading: () => void }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [quote] = useState(() => BIBLE_QUOTES[Math.floor(Math.random() * BIBLE_QUOTES.length)]);
 
   useEffect(() => {
     const stepInterval = setInterval(() => {
@@ -129,6 +138,20 @@ export default function SplashScreen({ finishLoading }: { finishLoading: () => v
           <span className="font-mono text-cyber-yellow text-xs tracking-widest uppercase">
             ESTABLISHING KINETIC CONNECTION
           </span>
+        </motion.div>
+        {/* Bible Quote */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
+          className="mt-6 max-w-md text-center px-2"
+        >
+          <p className="font-mono text-cyber-yellow/70 text-xs leading-relaxed italic">
+            &ldquo;{quote.text}&rdquo;
+          </p>
+          <p className="font-mono text-white/30 text-[10px] mt-2 tracking-widest uppercase">
+            — {quote.ref}
+          </p>
         </motion.div>
       </div>
     </motion.div>
