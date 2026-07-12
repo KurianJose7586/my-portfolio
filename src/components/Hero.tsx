@@ -4,6 +4,7 @@ import { heroData, siteConfig } from "@/lib/data";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 const LiveStatus = dynamic(() => import("@/components/LiveStatus"), { ssr: false });
 const VisitsCounter = dynamic(() => import("@/components/VisitsCounter"), { ssr: false });
 
@@ -110,9 +111,12 @@ export default function Hero() {
           <div className="absolute -top-8 -left-8 w-full h-full bg-electric-cyan border-4 border-ink z-0 rotate-[-4deg] group-hover:rotate-[-8deg] transition-transform duration-300"></div>
           <div className="absolute -bottom-8 -right-8 w-full h-full bg-cyber-yellow border-4 border-ink z-0 rotate-[2deg] group-hover:rotate-[6deg] transition-transform duration-300"></div>
           <div className="relative z-10 p-4 pb-12 bg-white border-4 border-ink shadow-[20px_20px_0px_0px_black] transition-transform duration-300 group-hover:-translate-y-2 group-hover:-translate-x-2">
-            <img 
+            <Image 
               src="/profile.png" 
               alt={siteConfig.name}
+              width={320}
+              height={400}
+              priority
               className="w-64 md:w-80 object-contain grayscale group-hover:grayscale-0 transition-all duration-500 border-2 border-ink"
             />
             <div className="absolute bottom-4 left-0 w-full text-center font-caveat font-bold text-2xl rotate-[-2deg] opacity-80 group-hover:opacity-100 transition-opacity">

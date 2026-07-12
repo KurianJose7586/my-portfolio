@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
+import Image from "next/image";
 
 interface Photo {
   src: string;
@@ -216,10 +217,12 @@ export default function Gallery() {
 
               {/* Photo Frame */}
               <div className="relative w-full aspect-4/3 bg-ink border-2 border-ink overflow-hidden pointer-events-none">
-                <img 
+                <Image 
                   src={photo.src} 
                   alt={photo.caption}
-                  className="w-full h-full object-cover select-none pointer-events-none"
+                  fill
+                  sizes="(max-width: 768px) 260px, 220px"
+                  className="object-cover select-none pointer-events-none"
                 />
               </div>
 
@@ -265,11 +268,13 @@ export default function Gallery() {
             </button>
 
             {/* Expanded Image */}
-            <div className="border-4 border-ink bg-ink aspect-video md:aspect-auto md:h-[60vh] overflow-hidden">
-              <img 
+            <div className="relative border-4 border-ink bg-ink aspect-video md:aspect-auto md:h-[60vh] overflow-hidden">
+              <Image 
                 src={activePhoto.src} 
                 alt={activePhoto.caption}
-                className="w-full h-full object-contain"
+                fill
+                sizes="100vw"
+                className="object-contain"
               />
             </div>
 

@@ -9,8 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@playhtml/common": "^0.8.1",
-    "@playhtml/react": "^2.0.1",
     "@types/nodemailer": "^8.0.1",
     "@upstash/redis": "^1.38.0",
     "clsx": "^2.1.1",
@@ -18,7 +16,6 @@
     "lucide-react": "^1.17.0",
     "next": "16.2.9",
     "nodemailer": "^8.0.11",
-    "playhtml": "^2.13.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-markdown": "^10.1.0",

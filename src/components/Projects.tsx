@@ -2,6 +2,7 @@ import { useState } from "react";
 import { featuredProjects } from "@/lib/data";
 import { projectDetails } from "@/lib/projectDetails";
 import ProjectModal from "./ProjectModal";
+import Image from "next/image";
 
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<{title: string, markdown: string} | null>(null);
@@ -37,9 +38,11 @@ export default function Projects() {
           >
             <div className="tape-accent -top-4 left-1/2 -translate-x-1/2 bg-white/70 w-16 md:w-24"></div>
             {project.logo ? (
-              <img
+              <Image
                 src={project.logo}
                 alt={project.title}
+                width={96}
+                height={96}
                 className="absolute -top-4 -right-4 md:-top-6 md:-right-6 w-16 h-16 md:w-24 md:h-24 object-contain drop-shadow-[4px_4px_0px_0px_black] md:drop-shadow-[6px_6px_0px_0px_black] rotate-12 group-hover:rotate-0 transition-transform"
               />
             ) : (

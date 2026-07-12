@@ -21,6 +21,21 @@ const caveat = Caveat({
 export const metadata: Metadata = {
   title: "KURIAN.AI — KINETIC LAB",
   description: "Neo-Brutalist Portfolio of Kurian Jose - AI Engineer & CS Student",
+  keywords: ["Kurian Jose", "AI Engineer", "Software Developer", "Portfolio", "Neo-Brutalist", "Computer Science"],
+  authors: [{ name: "Kurian Jose" }],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://kurianjose.com",
+    title: "KURIAN.AI — KINETIC LAB",
+    description: "Neo-Brutalist Portfolio of Kurian Jose - AI Engineer & CS Student",
+    siteName: "Kurian Jose Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KURIAN.AI — KINETIC LAB",
+    description: "Neo-Brutalist Portfolio of Kurian Jose - AI Engineer & CS Student",
+  },
 };
 
 export default function RootLayout({
@@ -36,7 +51,7 @@ export default function RootLayout({
       <head>
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
         />
       </head>
       <body className="min-h-full font-sans">{children}</body>
