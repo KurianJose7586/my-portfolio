@@ -1,4 +1,8 @@
+import dynamic from "next/dynamic";
 import ArcadeLobby from "@/components/arcade/ArcadeLobby";
+import CustomCursor from "@/components/CustomCursor";
+
+const InteractionEffects = dynamic(() => import("@/components/InteractionEffects"), { ssr: false });
 
 export const metadata = {
   title: "Arcade — Kurian Jose",
@@ -6,5 +10,11 @@ export const metadata = {
 };
 
 export default function ArcadePage() {
-  return <ArcadeLobby />;
+  return (
+    <>
+      <CustomCursor />
+      <InteractionEffects />
+      <ArcadeLobby />
+    </>
+  );
 }
