@@ -1,12 +1,8 @@
 import { Redis } from "@upstash/redis";
 
-if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-  throw new Error(
-    "Missing UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN. " +
-    "Add them to .env.local and your Vercel project settings."
-  );
-}
-
+// No throw on missing env: the build must not depend on runtime secrets.
+// Without UPSTASH_REDIS_REST_URL/TOKEN the client only warns, presence routes
+// fail at request time, and the client-side presenceFetch backs off.
 export const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
