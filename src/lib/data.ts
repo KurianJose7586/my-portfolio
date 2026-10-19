@@ -1,3 +1,18 @@
+// Full class names so Tailwind can see them; `color` fields below index into these.
+export const accentBg: Record<string, string> = {
+  "electric-cyan": "bg-electric-cyan",
+  "cyber-yellow": "bg-cyber-yellow",
+  "punch-pink": "bg-punch-pink",
+  white: "bg-paper",
+};
+
+export const accentText: Record<string, string> = {
+  "electric-cyan": "text-electric-cyan",
+  "cyber-yellow": "text-cyber-yellow",
+  "punch-pink": "text-punch-pink",
+  white: "text-ink",
+};
+
 export const siteConfig = {
   name: "Kurian Jose",
   role: "CS Student · AI Engineer",
@@ -37,7 +52,6 @@ export const featuredProjects = [
     cta: "Try TwinlyAI",
     link: "#",
     color: "electric-cyan",
-    icon: "description",
     logo: "/twinlyAIlogo.png",
   },
   {
@@ -49,7 +63,6 @@ export const featuredProjects = [
     cta: "View Project",
     link: "#",
     color: "cyber-yellow",
-    icon: "terminal",
     logo: "/CursorOS.png",
   },
   {
@@ -61,7 +74,6 @@ export const featuredProjects = [
     cta: "View Project",
     link: "#",
     color: "punch-pink",
-    icon: "offline_bolt",
     logo: "/cabliteicon.png",
   },
   {
@@ -72,7 +84,6 @@ export const featuredProjects = [
     cta: "View Project",
     link: "#",
     color: "white",
-    icon: "gavel",
     logo: "/file.svg",
   },
   {
@@ -83,7 +94,6 @@ export const featuredProjects = [
     cta: "View Project",
     link: "#",
     color: "electric-cyan",
-    icon: "document_scanner",
   },
   {
     title: "Build_Trust",
@@ -93,7 +103,6 @@ export const featuredProjects = [
     cta: "View Project",
     link: "#",
     color: "punch-pink",
-    icon: "handshake",
   },
 ];
 

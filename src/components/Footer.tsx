@@ -1,47 +1,47 @@
 import Link from "next/link";
+import { Gamepad2, Terminal } from "lucide-react";
 import { siteConfig } from "@/lib/data";
+
+const LINKS = [
+  { href: "#top", label: "Home" },
+  { href: "#work", label: "Work" },
+  { href: "#experience", label: "Experience" },
+  { href: "#about", label: "About" },
+  { href: "#irl", label: "IRL" },
+  { href: "#contact", label: "Contact" },
+];
 
 export default function Footer() {
   return (
-    <footer className="pt-20 pb-10 flex flex-col relative z-50 bg-transparent px-4 md:px-10">
-      {/* Top Divider */}
-      <div className="border-t-[4px] border-ink w-full mb-10"></div>
-      
-      {/* Middle Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-8">
+    <footer className="max-w-6xl mx-auto px-5 md:px-8 mt-28 md:mt-40 pb-10">
+      <div className="border-t-3 border-ink pt-10 flex flex-col md:flex-row justify-between gap-8">
         <div>
-          <h2 className="font-sans text-xl font-bold uppercase tracking-wider text-ink mb-1">
-            {siteConfig.name}
-          </h2>
-          <p className="font-sans text-gray-600 text-sm font-semibold">
-            AI & Systems Engineer
-          </p>
+          <p className="text-xl font-black uppercase tracking-tight">{siteConfig.name}</p>
+          <p className="text-sm text-ink/60 font-medium">AI &amp; Systems Engineer</p>
         </div>
-        
-        <div className="flex flex-wrap gap-8">
-          <a href="#hero" className="font-sans font-bold text-ink hover:text-electric-cyan transition-colors">Home</a>
-          <a href="#about" className="font-sans font-bold text-ink hover:text-cyber-yellow transition-colors">About</a>
-          <a href="#projects" className="font-sans font-bold text-ink hover:text-punch-pink transition-colors">Experience</a>
-          <a href="#research" className="font-sans font-bold text-ink hover:text-electric-cyan transition-colors">Skills</a>
-        </div>
+
+        <nav className="flex flex-wrap gap-x-6 gap-y-3">
+          {LINKS.map(({ href, label }) => (
+            <a key={href} href={href} className="font-mono text-sm font-bold uppercase hover:underline decoration-cyber-yellow decoration-4 underline-offset-4">
+              {label}
+            </a>
+          ))}
+          <a href={siteConfig.resume} target="_blank" rel="noreferrer" className="font-mono text-sm font-bold uppercase hover:underline decoration-cyber-yellow decoration-4 underline-offset-4">
+            Resume
+          </a>
+        </nav>
       </div>
-      
-      {/* Bottom Divider */}
-      <div className="border-t-[4px] border-ink w-full mb-10"></div>
-      
-      {/* Bottom Section */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-        <div className="font-mono text-gray-500 text-sm font-bold">
-          © {new Date().getFullYear()} {siteConfig.name}
+
+      <div className="mt-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <p className="font-mono text-sm text-ink/50">© {new Date().getFullYear()} {siteConfig.name}</p>
+        <div className="flex gap-3">
+          <Link href="/terminal" className="mechanical-button bg-electric-cyan px-4 py-2.5 text-sm">
+            <Terminal size={18} strokeWidth={2.5} /> Terminal
+          </Link>
+          <Link href="/arcade" className="mechanical-button bg-white px-4 py-2.5 text-sm">
+            <Gamepad2 size={18} strokeWidth={2.5} /> Arcade
+          </Link>
         </div>
-        
-        <Link
-          href="/terminal"
-          className="mechanical-button bg-electric-cyan border-[4px] border-ink px-6 py-3 shadow-[6px_6px_0px_0px_black] font-mono font-bold hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_black] transition-all flex items-center gap-3 cursor-pointer"
-        >
-          <span className="font-black text-xl leading-none">&gt;_</span>
-          <span className="text-lg">Terminal</span>
-        </Link>
       </div>
     </footer>
   );

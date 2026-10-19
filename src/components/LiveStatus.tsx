@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getOrCreateSessionId } from "@/lib/session";
 
-export default function LiveStatus({ variant }: { variant: "hero" | "navbar" }) {
+export default function LiveStatus() {
   // null = not yet loaded (prevents flicker from hardcoded "1")
   const [onlineCount, setOnlineCount] = useState<number | null>(null);
 
@@ -60,23 +60,13 @@ export default function LiveStatus({ variant }: { variant: "hero" | "navbar" }) 
     ? "connecting…"
     : `${onlineCount} ${onlineCount === 1 ? "person" : "people"} online`;
 
-  const counterContent = (
-    <div className={`flex items-center gap-2 font-mono text-sm uppercase tracking-widest font-bold ${variant === "navbar" ? "text-paper" : "text-ink"}`}>
-      <div className="relative flex h-3 w-3">
-        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${variant === "navbar" ? "bg-electric-cyan" : "bg-punch-pink"}`} />
-        <span className={`relative inline-flex rounded-full h-3 w-3 ${variant === "navbar" ? "bg-electric-cyan" : "bg-punch-pink"}`} />
-      </div>
-      <span>{label}</span>
-    </div>
+  return (
+    <span className="flex items-center gap-2">
+      <span className="relative flex h-2.5 w-2.5">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-punch-pink opacity-75" />
+        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-punch-pink" />
+      </span>
+      {label}
+    </span>
   );
-
-  if (variant === "hero") {
-    return (
-      <div className="mt-8 inline-block bg-paper text-ink px-4 py-2 border-[4px] border-ink shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        {counterContent}
-      </div>
-    );
-  }
-
-  return counterContent;
 }

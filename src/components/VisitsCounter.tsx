@@ -29,11 +29,9 @@ export default function VisitsCounter() {
   const display = visits === null ? "—" : String(visits).padStart(5, "0");
 
   return (
-    <div className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-ink/70 flex flex-col gap-1 items-end">
-      <span>Total Visits</span>
-      <span className="bg-ink text-cyber-yellow px-2 py-0.5 text-base md:text-xl border-2 border-ink">
-        {display}
-      </span>
-    </div>
+    <span className="flex items-center gap-2">
+      Visits
+      <span className="bg-ink text-cyber-yellow px-1.5 py-0.5 tabular-nums">{display}</span>
+    </span>
   );
 }

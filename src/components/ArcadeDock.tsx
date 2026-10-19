@@ -20,7 +20,7 @@ export default function ArcadeDock() {
   return (
     <>
       {/* ── Left Dock ─────────────────────────────────────────────────── */}
-      <div className="fixed left-0 top-1/2 -translate-y-1/2 z-[200]">
+      <div className="hidden xl:block fixed left-0 top-1/2 -translate-y-1/2 z-[200]">
         <motion.button
           onClick={handleClick}
           disabled={isOpening}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { CodeXml, X } from "lucide-react";
 
 interface ProjectModalProps {
   isOpen: boolean;
@@ -47,37 +48,37 @@ export default function ProjectModal({ isOpen, onClose, title, markdownContent }
       role="dialog"
       aria-modal="true"
     >
-      <div 
-        className="absolute inset-0 bg-ink/80 backdrop-blur-sm cursor-pointer" 
+      <div
+        className="absolute inset-0 bg-ink/70 backdrop-blur-sm cursor-pointer"
         onClick={handleClose}
       />
-      
-      <div 
-        className={`bg-paper border-[8px] md:border-[12px] border-ink w-full max-w-5xl h-[85vh] md:h-[90vh] shadow-[16px_16px_0px_0px_black] relative flex flex-col transform transition-transform duration-300 ${isClosing ? 'scale-95 translate-y-8' : 'scale-100 translate-y-0'}`}
+
+      <div
+        className={`bg-white border-3 border-ink w-full max-w-4xl h-[85vh] md:h-[88vh] shadow-brutal-lg relative flex flex-col transition-transform duration-300 ease-out-quint ${isClosing ? 'scale-95 translate-y-8' : 'scale-100 translate-y-0'}`}
       >
-        {/* Header */}
-        <div className="bg-ink text-white p-4 flex justify-between items-center border-b-[6px] border-ink flex-shrink-0">
-          <h2 className="font-sans text-xl md:text-2xl font-black uppercase tracking-tighter">
-            {title} _DETAILS
-          </h2>
-          <button 
+        <div className="bg-ink text-white px-5 py-4 flex justify-between items-center gap-4 flex-shrink-0">
+          <div>
+            <p className="eyebrow text-white/50">Project file</p>
+            <h2 className="font-sans text-xl md:text-2xl font-black uppercase tracking-tight">{title}</h2>
+          </div>
+          <button
             onClick={handleClose}
-            className="w-10 h-10 bg-punch-pink border-4 border-ink flex items-center justify-center hover:bg-cyber-yellow hover:scale-110 active:scale-95 transition-all shadow-[4px_4px_0px_0px_black]"
+            aria-label="Close project details"
+            className="w-11 h-11 bg-white text-ink border-3 border-white flex items-center justify-center hover:bg-cyber-yellow transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined font-black">close</span>
+            <X size={22} strokeWidth={3} />
           </button>
         </div>
 
-        {/* Markdown Content Area */}
-        <div className="p-6 md:p-12 overflow-y-auto flex-1 markdown-prose custom-scrollbar bg-white">
+        <div className="p-6 md:p-12 overflow-y-auto flex-1 markdown-prose">
           {markdownContent ? (
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {markdownContent}
             </ReactMarkdown>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-ink/50 font-mono text-center space-y-4">
-              <span className="material-symbols-outlined text-6xl">code_off</span>
-              <p>NO ADDITIONAL DATA FOUND IN VAULT</p>
+            <div className="h-full flex flex-col items-center justify-center text-ink/50 font-mono text-center gap-4">
+              <CodeXml size={56} />
+              <p>Write-up coming soon.</p>
             </div>
           )}
         </div>

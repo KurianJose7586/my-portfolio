@@ -19,6 +19,7 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://kurianjose.me"),
   title: "KURIAN.AI — KINETIC LAB",
   description: "Neo-Brutalist Portfolio of Kurian Jose - AI Engineer & CS Student",
   keywords: ["Kurian Jose", "AI Engineer", "Software Developer", "Portfolio", "Neo-Brutalist", "Computer Science"],
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://kurianjose.com",
+    url: "/",
     title: "KURIAN.AI — KINETIC LAB",
     description: "Neo-Brutalist Portfolio of Kurian Jose - AI Engineer & CS Student",
     siteName: "Kurian Jose Portfolio",
@@ -48,12 +49,6 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${spaceMono.variable} ${caveat.variable} h-full antialiased scroll-smooth`}
     >
-      <head>
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-        />
-      </head>
       <body className="min-h-full font-sans">{children}</body>
     </html>
   );

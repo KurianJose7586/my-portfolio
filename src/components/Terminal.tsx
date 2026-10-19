@@ -229,7 +229,10 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
     // Show tip after 12 seconds if not already opened
     const tipTimer = setTimeout(() => {
       if (windowState === 'closed' && !localStorage.getItem('kurian_cmd_k_seen')) {
+        // Shown once per browser, and it gets out of the way on its own
         setShowTip(true);
+        localStorage.setItem('kurian_cmd_k_seen', 'true');
+        setTimeout(() => setShowTip(false), 6000);
       }
     }, 12000);
 
@@ -637,32 +640,28 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
   if (isClosed) {
     if (isGlobalWidget) {
       return (
-        <div className="fixed bottom-24 md:bottom-8 right-6 md:right-8 z-[100] flex flex-col items-end pointer-events-none">
+        <div className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-[100] flex flex-col items-end pointer-events-none">
           {showTip && (
-            <div className="mb-4 bg-[#1e2030]/90 backdrop-blur-md text-green-400 p-4 rounded-lg shadow-2xl border border-green-500/20 max-w-sm pointer-events-auto transform transition-all translate-y-0 opacity-100">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 text-green-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-                </div>
-                <div>
-                  <p className="text-sm font-medium mb-1">Agentic Mode Available</p>
-                  <p className="text-xs text-green-400/70">Press <kbd className="bg-black/40 px-1.5 py-0.5 rounded text-green-300 font-mono">⌘K</kbd> or <kbd className="bg-black/40 px-1.5 py-0.5 rounded text-green-300 font-mono">Ctrl+K</kbd> anywhere to ask KurianGPT or execute commands.</p>
-                </div>
-                <button onClick={() => setShowTip(false)} className="text-green-400/50 hover:text-green-400 ml-2">✕</button>
+            <div className="mb-3 bg-ink text-white p-4 border-3 border-ink shadow-brutal-sm shadow-electric-cyan max-w-xs pointer-events-auto flex items-start gap-3">
+              <div>
+                <p className="font-mono text-sm font-bold mb-1">Ask KurianGPT</p>
+                <p className="text-xs text-white/70 leading-relaxed">
+                  Press <kbd className="bg-white/15 px-1.5 py-0.5 font-mono">⌘K</kbd> or <kbd className="bg-white/15 px-1.5 py-0.5 font-mono">Ctrl+K</kbd> anywhere to chat or run commands.
+                </p>
               </div>
+              <button onClick={() => setShowTip(false)} aria-label="Dismiss tip" className="text-white/50 hover:text-white">✕</button>
             </div>
           )}
-          
-          <button 
+
+          <button
             onClick={() => { setWindowState('normal'); setShowTip(false); localStorage.setItem('kurian_cmd_k_seen', 'true'); }}
-            className="w-14 h-14 rounded-full relative flex items-center justify-center animate-pulse hover:animate-none transition-all hover:scale-110 active:scale-95 pointer-events-auto kurian-orb cursor-none"
-            style={{
-              background: 'radial-gradient(circle at center, #4ade80 0%, #166534 50%, #052e16 100%)',
-              boxShadow: '0 0 20px rgba(74, 222, 128, 0.6), inset 0 0 10px rgba(255,255,255,0.5)'
-            }}
-            title="Open KurianGPT"
+            className="kurian-orb relative w-12 h-12 md:w-14 md:h-14 bg-ink text-green-400 border-3 border-ink shadow-brutal-sm flex items-center justify-center font-mono font-bold text-lg pointer-events-auto cursor-none transition-[translate,box-shadow] duration-100 hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-brutal active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
+            title="Open KurianGPT (⌘K)"
             aria-label="Open KurianGPT"
-          />
+          >
+            &gt;_
+            <span className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-green-400 border-2 border-ink animate-pulse" />
+          </button>
         </div>
       );
     }

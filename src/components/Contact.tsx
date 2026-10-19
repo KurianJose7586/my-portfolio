@@ -1,5 +1,9 @@
 "use client";
 import { useState } from "react";
+import { Check, Copy, Send } from "lucide-react";
+import { siteConfig } from "@/lib/data";
+import { GithubIcon, LinkedinIcon } from "@/components/icons";
+import SectionHeader from "./SectionHeader";
 
 interface FormState {
   name: string;
@@ -7,205 +11,156 @@ interface FormState {
   message: string;
 }
 
-type Status = 'idle' | 'loading' | 'success' | 'error';
+type Status = "idle" | "loading" | "success" | "error";
+
+const fieldClass =
+  "w-full bg-paper border-3 border-ink p-4 font-mono text-base outline-none transition-shadow focus:shadow-brutal-sm focus:shadow-electric-cyan disabled:opacity-60";
 
 export default function Contact() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState<FormState>({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState<Status>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [form, setForm] = useState<FormState>({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) return;
 
-    setStatus('loading');
-    setErrorMsg('');
+    setStatus("loading");
+    setErrorMsg("");
 
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (!res.ok || data.error) throw new Error(data.error || 'Failed to send');
-      setStatus('success');
-      setForm({ name: '', email: '', message: '' });
+      if (!res.ok || data.error) throw new Error(data.error || "Failed to send");
+      setStatus("success");
+      setForm({ name: "", email: "", message: "" });
     } catch (err) {
-      setStatus('error');
-      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong');
+      setStatus("error");
+      setErrorMsg(err instanceof Error ? err.message : "Something went wrong");
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    // Reset after close animation
-    setTimeout(() => { setStatus('idle'); setErrorMsg(''); }, 300);
+  const copyEmail = async () => {
+    await navigator.clipboard.writeText(siteConfig.email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <>
-      <section className="pt-32 pb-10" id="contact">
-        {/* Top Left Badge */}
-        <div className="mb-16 md:mb-24">
-          <div className="inline-block bg-cyber-yellow border-[6px] border-ink px-4 md:px-6 py-2 md:py-3 shadow-[6px_6px_0px_0px_black] md:shadow-[8px_8px_0px_0px_black]">
-            <h2 className="font-sans text-2xl md:text-5xl font-black uppercase tracking-wide">
-              GET IN TOUCH
-            </h2>
+    <section id="contact" className="scroll-mt-32">
+      <SectionHeader index="05" label="Contact" title="Let's build" subtitle="Internships, collaborations, and messy workflows welcome" />
+
+      <div className="grid lg:grid-cols-12 gap-10 items-start">
+        <div className="lg:col-span-5 flex flex-col gap-8">
+          <div className="flex items-center gap-4">
+            <span className="w-16 h-16 rounded-full border-3 border-ink overflow-hidden shrink-0">
+              <video src="/waving-avatar-final.webm" autoPlay loop muted playsInline className="w-full h-full object-cover" />
+            </span>
+            <p className="text-xl md:text-2xl font-bold leading-snug">
+              If professionals hate doing it by hand, I want to hear about it.
+            </p>
+          </div>
+
+          <div>
+            <p className="eyebrow text-ink/60 mb-2">Email</p>
+            <div className="flex items-stretch border-3 border-ink bg-white shadow-brutal-sm">
+              <a href={`mailto:${siteConfig.email}`} className="flex-1 min-w-0 px-4 py-3 font-mono font-bold truncate hover:bg-cyber-yellow transition-colors">
+                {siteConfig.email}
+              </a>
+              <button onClick={copyEmail} aria-label="Copy email address" className="w-12 border-l-3 border-ink flex items-center justify-center hover:bg-ink hover:text-white transition-colors cursor-pointer">
+                {copied ? <Check size={18} strokeWidth={3} /> : <Copy size={18} strokeWidth={2.5} />}
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-5">
+            <a href={siteConfig.linkedin} target="_blank" rel="noreferrer" className="relative brutalist-card lift bg-electric-cyan -rotate-2 p-5 flex flex-col items-center gap-3">
+              <span className="tape-accent -top-3 left-1/2 -translate-x-1/2 w-16 h-6 -rotate-3" />
+              <LinkedinIcon size={36} />
+              <span className="font-caveat text-2xl font-bold">LinkedIn</span>
+            </a>
+            <a href={siteConfig.github} target="_blank" rel="noreferrer" className="relative brutalist-card lift bg-cyber-yellow rotate-2 p-5 flex flex-col items-center gap-3">
+              <span className="tape-accent -top-3 left-1/2 -translate-x-1/2 w-16 h-6 rotate-3 bg-white/70" />
+              <GithubIcon size={36} />
+              <span className="font-caveat text-2xl font-bold">GitHub</span>
+            </a>
           </div>
         </div>
 
-        <div className="text-center mb-16 md:mb-20 px-4">
-          <div className="flex justify-center mb-4">
-            <div className="relative w-16 h-16 rounded-full border-4 border-ink overflow-hidden shadow-[4px_4px_0px_0px_black]">
-              <video
-                src="/waving-avatar-final.webm"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-          <h3 className="font-sans text-xl md:text-4xl font-bold text-ink">
-            Let&apos;s build something amazing together
-          </h3>
-        </div>
-
-        {/* Sticky Notes Grid */}
-        <div className="flex flex-col lg:flex-row justify-center items-center gap-16 lg:gap-10 max-w-6xl mx-auto">
-          
-          {/* LinkedIn Note */}
-          <a href="https://www.linkedin.com/in/kurianjose316" target="_blank" rel="noreferrer" className="relative group hover:-translate-y-2 transition-transform duration-300 w-72 h-56 block">
-            <div className="absolute inset-0 bg-electric-cyan border-[6px] border-ink shadow-[12px_12px_0px_0px_black] rotate-[-2deg] flex flex-col items-center justify-center gap-6">
-              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-              <span className="font-caveat text-4xl font-bold">LinkedIn</span>
-            </div>
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-10 bg-yellow-300/70 rotate-[-5deg] z-10 backdrop-blur-sm shadow-sm"></div>
-          </a>
-
-          {/* GitHub Note */}
-          <a href="https://github.com/KurianJose7586" target="_blank" rel="noreferrer" className="relative group hover:-translate-y-2 transition-transform duration-300 w-72 h-56 block">
-            <div className="absolute inset-0 bg-cyber-yellow border-[6px] border-ink shadow-[12px_12px_0px_0px_black] rotate-[1deg] flex flex-col items-center justify-center gap-6">
-              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 8 18v4"></path><path d="M12 18v4"></path></svg>
-              <span className="font-caveat text-4xl font-bold">GitHub</span>
-            </div>
-            <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-24 h-10 bg-yellow-300/70 rotate-[6deg] z-10 backdrop-blur-sm shadow-sm"></div>
-          </a>
-
-          {/* Mail Note - Triggers Modal */}
-          <button onClick={() => setIsModalOpen(true)} className="relative group hover:-translate-y-2 transition-transform duration-300 w-72 h-56 block outline-none cursor-pointer">
-            <div className="absolute inset-0 bg-punch-pink border-[6px] border-ink shadow-[12px_12px_0px_0px_black] rotate-[-1deg] flex flex-col items-center justify-center gap-6">
-              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
-              <span className="font-caveat text-4xl font-bold">Mail</span>
-            </div>
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-10 bg-yellow-300/70 rotate-[-3deg] z-10 backdrop-blur-sm shadow-sm"></div>
-          </button>
-
-        </div>
-      </section>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-ink/80 backdrop-blur-sm" onClick={closeModal}></div>
-          <div className="bg-white border-[6px] border-ink p-6 md:p-12 shadow-[16px_16px_0px_0px_black] relative z-10 w-full max-w-3xl rotate-[0.5deg] max-h-[90vh] overflow-y-auto">
-            <button 
-              onClick={closeModal}
-              className="absolute top-4 right-4 md:top-6 md:right-6 bg-punch-pink border-4 border-ink w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:bg-cyber-yellow hover:rotate-90 transition-all shadow-[4px_4px_0px_0px_black] cursor-pointer z-50"
-              aria-label="Close contact form"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
-
-            <h2 className="font-sans text-3xl md:text-5xl font-black uppercase text-ink leading-[0.8] tracking-tighter mb-8 md:mb-10 mt-6 md:mt-0">
-              SEND A TRANSMISSION
-            </h2>
-
-            {/* Success state */}
-            {status === 'success' ? (
-              <div className="text-center py-12 space-y-4">
-                <div className="text-6xl">✓</div>
-                <p className="font-mono text-xl font-bold text-ink">TRANSMISSION RECEIVED.</p>
-                <p className="font-mono text-sm text-gray-600">I&apos;ll get back to you soon.</p>
-                <button
-                  onClick={closeModal}
-                  className="mechanical-button bg-cyber-yellow px-8 py-3 font-sans text-lg font-black uppercase tracking-widest mt-6 cursor-pointer"
-                >
-                  CLOSE
-                </button>
+        <div className="lg:col-span-7 brutalist-card p-6 md:p-10">
+          {status === "success" ? (
+            <div className="text-center py-16 space-y-4">
+              <div className="w-16 h-16 mx-auto bg-cyber-yellow border-3 border-ink flex items-center justify-center">
+                <Check size={32} strokeWidth={3} />
               </div>
-            ) : (
-              <form className="space-y-8" onSubmit={handleSubmit} noValidate>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label htmlFor="contact-name" className="font-mono font-bold uppercase text-xs text-ink tracking-widest">
-                      Identity // Name
-                    </label>
-                    <input
-                      id="contact-name"
-                      className="w-full bg-paper border-4 border-ink p-4 font-mono text-lg focus:ring-8 focus:ring-electric-cyan/30 outline-none transition-all shadow-[4px_4px_0px_0px_black]"
-                      placeholder="WHO ARE YOU?"
-                      type="text"
-                      value={form.name}
-                      onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                      required
-                      disabled={status === 'loading'}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="contact-email" className="font-mono font-bold uppercase text-xs text-ink tracking-widest">
-                      Relay // Email
-                    </label>
-                    <input
-                      id="contact-email"
-                      className="w-full bg-paper border-4 border-ink p-4 font-mono text-lg focus:ring-8 focus:ring-electric-cyan/30 outline-none transition-all shadow-[4px_4px_0px_0px_black]"
-                      placeholder="REACH OUT VIA..."
-                      type="email"
-                      value={form.email}
-                      onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                      required
-                      disabled={status === 'loading'}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="contact-message" className="font-mono font-bold uppercase text-xs text-ink tracking-widest">
-                    The Objective // Problem
-                  </label>
-                  <textarea
-                    id="contact-message"
-                    className="w-full bg-paper border-4 border-ink p-4 font-mono text-lg focus:ring-8 focus:ring-electric-cyan/30 outline-none transition-all shadow-[4px_4px_0px_0px_black]"
-                    placeholder="DESCRIBE THE WORKFLOW..."
-                    rows={4}
-                    value={form.message}
-                    onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+              <p className="font-mono text-xl font-bold">Transmission received.</p>
+              <p className="text-ink/60">I&apos;ll get back to you soon.</p>
+              <button onClick={() => setStatus("idle")} className="mechanical-button bg-white px-6 py-3 text-sm mt-4">
+                Send another
+              </button>
+            </div>
+          ) : (
+            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+              <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight">Send a transmission</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <label className="space-y-2 block">
+                  <span className="eyebrow">Name</span>
+                  <input
+                    className={fieldClass}
+                    placeholder="Who are you?"
+                    type="text"
+                    value={form.name}
+                    onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                     required
-                    disabled={status === 'loading'}
+                    disabled={status === "loading"}
                   />
-                </div>
+                </label>
+                <label className="space-y-2 block">
+                  <span className="eyebrow">Email</span>
+                  <input
+                    className={fieldClass}
+                    placeholder="you@company.com"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                    required
+                    disabled={status === "loading"}
+                  />
+                </label>
+              </div>
+              <label className="space-y-2 block">
+                <span className="eyebrow">The problem</span>
+                <textarea
+                  className={fieldClass}
+                  placeholder="Describe the workflow..."
+                  rows={5}
+                  value={form.message}
+                  onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+                  required
+                  disabled={status === "loading"}
+                />
+              </label>
 
-                {/* Error message */}
-                {status === 'error' && (
-                  <p className="font-mono text-sm text-red-600 border-2 border-red-400 bg-red-50 p-3">
-                    ✕ {errorMsg}
-                  </p>
-                )}
+              {status === "error" && (
+                <p className="font-mono text-sm text-red-700 border-2 border-red-700 bg-red-50 p-3">✕ {errorMsg}</p>
+              )}
 
-                <button
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="mechanical-button bg-cyber-yellow w-full py-6 font-sans text-3xl font-black uppercase tracking-widest mt-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {status === 'loading' ? 'TRANSMITTING…' : 'TRANSMIT DATA'}
-                </button>
-              </form>
-            )}
-          </div>
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                className="mechanical-button bg-cyber-yellow w-full py-4 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {status === "loading" ? "Transmitting…" : <>Transmit <Send size={18} strokeWidth={2.5} /></>}
+              </button>
+            </form>
+          )}
         </div>
-      )}
-    </>
+      </div>
+    </section>
   );
 }

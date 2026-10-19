@@ -1,24 +1,13 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { getOrCreateSessionId } from "@/lib/session";
+import { getOrCreateSessionId, sessionColor } from "@/lib/session";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const EMOJIS = ["⚡", "👾", "🛠️", "🔥", "🎯", "💡"];
-const COLORS = [
-  "#EB5E93", "#00D4FF", "#7C3AED", "#10B981",
-  "#F59E0B", "#EF4444", "#3B82F6", "#EC4899",
-  "#14B8A6", "#F97316",
-];
 const LASER_FADE_MS = 2500;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function sessionColor(id: string): string {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-  return COLORS[hash % COLORS.length];
-}
-
 function sessionShapeVariant(id: string): 0 | 1 | 2 {
   let hash = 0;
   for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;

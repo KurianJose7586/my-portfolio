@@ -55,6 +55,16 @@ export default function SplashScreen({ finishLoading }: { finishLoading: () => v
     };
   }, [finishLoading]);
 
+  useEffect(() => {
+    // Any click or key skips the boot sequence
+    window.addEventListener("keydown", finishLoading);
+    window.addEventListener("pointerdown", finishLoading);
+    return () => {
+      window.removeEventListener("keydown", finishLoading);
+      window.removeEventListener("pointerdown", finishLoading);
+    };
+  }, [finishLoading]);
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
@@ -70,7 +80,7 @@ export default function SplashScreen({ finishLoading }: { finishLoading: () => v
           transition={{ duration: 0.8 }}
         >
           {/* Terminal Header */}
-          <div className="bg-paper border-4 border-ink p-2 flex justify-between items-center mb-0">
+          <div className="bg-paper border-3 border-ink p-2 flex justify-between items-center mb-0">
             <div className="flex gap-2">
               <div className="w-3 h-3 bg-punch-pink border-2 border-ink"></div>
               <div className="w-3 h-3 bg-cyber-yellow border-2 border-ink"></div>
@@ -80,7 +90,7 @@ export default function SplashScreen({ finishLoading }: { finishLoading: () => v
           </div>
   
           {/* Terminal Body */}
-          <div className="bg-white border-x-4 border-b-4 border-ink p-6 shadow-[12px_12px_0px_0px_rgba(247,208,70,1)]">
+          <div className="bg-white border-x-3 border-b-3 border-ink p-6 shadow-brutal-lg shadow-cyber-yellow">
             <div className="space-y-2 mb-8 h-24 overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.p
@@ -118,7 +128,7 @@ export default function SplashScreen({ finishLoading }: { finishLoading: () => v
                 <span>Loading Protocol</span>
                 <span>{Math.min(progress, 100)}%</span>
               </div>
-              <div className="h-8 border-4 border-ink bg-paper relative overflow-hidden">
+              <div className="h-8 border-3 border-ink bg-paper relative overflow-hidden">
                 <motion.div
                   className="h-full bg-electric-cyan"
                   initial={{ width: 0 }}
@@ -160,6 +170,9 @@ export default function SplashScreen({ finishLoading }: { finishLoading: () => v
             — {quote.ref}
           </p>
         </motion.div>
+        <p className="mt-10 text-center font-mono text-[10px] tracking-widest uppercase text-white/30">
+          Click or press any key to skip
+        </p>
       </div>
     </motion.div>
   );

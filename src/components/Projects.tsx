@@ -1,92 +1,89 @@
 import { useState } from "react";
-import { featuredProjects } from "@/lib/data";
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
+import { accentBg, featuredProjects, labNotes } from "@/lib/data";
 import { projectDetails } from "@/lib/projectDetails";
 import ProjectModal from "./ProjectModal";
-import Image from "next/image";
+import SectionHeader from "./SectionHeader";
 
 export default function Projects() {
-  const [selectedProject, setSelectedProject] = useState<{title: string, markdown: string} | null>(null);
+  const [selectedProject, setSelectedProject] = useState<{ title: string; markdown: string } | null>(null);
 
   const openProjectDetails = (title: string) => {
-    // Map AI Lawyer to Internship Project since it is part of it
+    // AI Lawyer is written up as part of the internship project
     const detailsKey = title === "AI Lawyer" ? "Internship Project" : title;
-    const markdown = projectDetails[detailsKey] || "";
-    setSelectedProject({ title, markdown });
+    setSelectedProject({ title, markdown: projectDetails[detailsKey] || "" });
   };
+
   return (
-    <section id="projects" className="pt-20">
-      <div className="inline-block bg-ink text-white px-6 py-3 md:px-10 md:py-4 border-4 border-ink mb-10 md:mb-20 shadow-[6px_6px_0px_0px_#5AC8D8] md:shadow-[10px_10px_0px_0px_#5AC8D8] rotate-1">
-        <h2 className="font-sans text-2xl md:text-4xl font-black uppercase tracking-tighter">
-          PROJECT_VAULT.v2
-        </h2>
-      </div>
+    <section id="work" className="scroll-mt-32">
+      <SectionHeader index="01" label="Work" title="Selected Work" subtitle="Shipped products, research, and things still on the bench" />
 
-      <div className="md:hidden flex items-center justify-end pr-4 mb-4 text-ink/60 font-mono text-[10px] font-bold tracking-widest uppercase">
-        <span>Swipe to explore</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-      </div>
-
-      <div className="flex overflow-x-auto snap-x snap-mandatory pb-12 -mx-4 px-4 md:grid md:grid-cols-2 gap-8 md:gap-16 md:overflow-visible md:mx-0 md:px-0 scrollbar-hide">
-        {featuredProjects.map((project, i) => (
-          <div
-            key={i}
-            className={`brutalist-card p-6 md:p-10 relative flex-shrink-0 w-[85vw] md:w-auto snap-center rotate-0 md:rotate-[${(i % 2 === 0 ? -1.5 : 2)}deg] group tape-hover md:hover:rotate-0 transition-transform duration-300 ${
-              project.color === "electric-cyan" ? "bg-electric-cyan" : 
-              project.color === "cyber-yellow" ? "bg-cyber-yellow" : 
-              project.color === "punch-pink" ? "bg-punch-pink text-white" : "bg-white"
-            }`}
-          >
-            <div className="tape-accent -top-4 left-1/2 -translate-x-1/2 bg-white/70 w-16 md:w-24"></div>
-            {project.logo ? (
-              <Image
-                src={project.logo}
-                alt={project.title}
-                width={96}
-                height={96}
-                className="absolute -top-4 -right-4 md:-top-6 md:-right-6 w-16 h-16 md:w-24 md:h-24 object-contain drop-shadow-[4px_4px_0px_0px_black] md:drop-shadow-[6px_6px_0px_0px_black] rotate-12 group-hover:rotate-0 transition-transform"
-              />
-            ) : (
-              <div className="absolute -top-4 -right-4 md:-top-6 md:-right-6 bg-white border-4 border-ink w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded shadow-[4px_4px_0px_0px_black] md:shadow-[6px_6px_0px_0px_black] rotate-12 text-ink group-hover:rotate-0 transition-transform">
-                <span className="material-symbols-outlined text-2xl md:text-3xl">{project.icon}</span>
-              </div>
-            )}
-            
-            <h3 className="font-sans text-3xl md:text-4xl font-black mb-2 uppercase tracking-tighter pr-8">
-              {project.title}
-            </h3>
-            
-            <p className={`font-mono text-sm font-bold mb-6 tracking-widest border-b-2 border-ink inline-block pb-1 uppercase ${
-              project.color === "punch-pink" ? "border-white" : "text-ink/80"
-            }`}>
-              {project.tagline}
-            </p>
-            
-            <p className="font-sans text-lg leading-relaxed mb-8 font-medium">
-              {project.description}
-            </p>
-
-            <div className="flex flex-wrap gap-3 mb-10">
-              {project.tech.map((tech, j) => (
-                <span
-                  key={j}
-                  className="bg-white text-ink border-2 border-ink px-3 py-1 font-mono text-xs font-bold uppercase shadow-[3px_3px_0px_0px_black]"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-
-            <button 
-              onClick={() => openProjectDetails(project.title)}
-              className="mechanical-button bg-white text-ink px-6 py-4 text-base w-full z-10 relative"
+      <div className="grid md:grid-cols-2 gap-8">
+        {featuredProjects.map((project, i) => {
+          const featured = i === 0;
+          return (
+            <article
+              key={project.title}
+              className={`brutalist-card lift flex flex-col ${featured ? "md:col-span-2 md:flex-row" : ""}`}
             >
-              {project.cta}
-            </button>
-          </div>
-        ))}
+              <div
+                className={`${accentBg[project.color]} border-ink p-6 md:p-8 flex flex-col gap-5 ${
+                  featured ? "border-b-3 md:border-b-0 md:border-r-3 md:w-2/5 md:justify-between" : "border-b-3"
+                }`}
+              >
+                {project.logo && (
+                  <div className="w-14 h-14 bg-white border-2 border-ink p-1.5 shrink-0">
+                    <Image src={project.logo} alt="" width={56} height={56} className="w-full h-full object-contain" />
+                  </div>
+                )}
+                <div>
+                  <h3 className={`font-black uppercase tracking-tight leading-none ${featured ? "text-4xl md:text-5xl" : "text-3xl"}`}>
+                    {project.title}
+                  </h3>
+                  <p className="font-mono text-xs font-bold uppercase tracking-wider mt-3 text-ink/80">{project.tagline}</p>
+                </div>
+              </div>
+
+              <div className="p-6 md:p-8 flex flex-col gap-6 flex-1">
+                {project.status && (
+                  <p className="eyebrow flex items-center gap-2 text-ink/70">
+                    <span className="w-2 h-2 bg-green-500 border border-ink" />
+                    {project.status}
+                  </p>
+                )}
+                <p className="text-lg leading-relaxed">{project.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.map((tech) => (
+                    <span key={tech} className="chip">{tech}</span>
+                  ))}
+                </div>
+                <button
+                  onClick={() => openProjectDetails(project.title)}
+                  className="mechanical-button bg-white px-6 py-3.5 text-sm mt-auto self-start"
+                >
+                  {project.cta} <ArrowUpRight size={18} strokeWidth={3} />
+                </button>
+              </div>
+            </article>
+          );
+        })}
       </div>
 
-      <ProjectModal 
+      <div className="mt-16">
+        <p className="eyebrow text-ink/60 mb-4">Side builds</p>
+        <ul className="bg-white border-3 border-ink divide-y-3 divide-ink">
+          {labNotes.map((note) => (
+            <li key={note.id} className="flex items-center gap-5 px-5 py-4">
+              <span className="font-mono text-sm font-bold text-ink/40">{note.id}</span>
+              <span className="font-bold text-lg">{note.title}</span>
+              <span className={`ml-auto w-3 h-3 border-2 border-ink ${accentBg[note.color]}`} />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <ProjectModal
         isOpen={selectedProject !== null}
         onClose={() => setSelectedProject(null)}
         title={selectedProject?.title || ""}
