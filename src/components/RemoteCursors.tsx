@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { getOrCreateSessionId } from "@/lib/session";
+import { getOrCreateSessionId, presenceFetch } from "@/lib/session";
 
 interface RemoteCursor {
   sessionId: string;
@@ -37,13 +37,11 @@ export default function RemoteCursors() {
   const sendCursor = useCallback(async (pageX: number, pageY: number) => {
     const sessionId = mySessionId.current;
     if (!sessionId) return;
-    try {
-      await fetch("/api/cursors", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, pageX, pageY }),
-      });
-    } catch { /* ignore */ }
+    await presenceFetch("/api/cursors", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId, pageX, pageY }),
+    });
   }, []);
 
   useEffect(() => {
@@ -80,13 +78,10 @@ export default function RemoteCursors() {
   // Poll for other cursors every 200ms (was 150ms — slightly less aggressive)
   useEffect(() => {
     async function fetchCursors() {
-      try {
-        const res = await fetch("/api/cursors");
-        const data = await res.json();
-        if (!Array.isArray(data.cursors)) return;
-        const myId = mySessionId.current;
-        setCursors(data.cursors.filter((c: RemoteCursor) => c.sessionId !== myId));
-      } catch { /* ignore */ }
+      const data = await presenceFetch("/api/cursors");
+      if (!Array.isArray(data?.cursors)) return;
+      const myId = mySessionId.current;
+      setCursors(data.cursors.filter((c: RemoteCursor) => c.sessionId !== myId));
     }
 
     const interval = setInterval(fetchCursors, 200);

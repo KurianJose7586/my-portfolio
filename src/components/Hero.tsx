@@ -67,16 +67,13 @@ export default function Hero() {
         </div>
 
         <div className="mt-10 inline-flex border-3 border-ink bg-white font-mono text-xs font-bold uppercase tracking-wider divide-x-3 divide-ink">
-          <span className="hidden sm:flex items-center gap-2 px-3 py-2">
+          {/* only:flex — on mobile, show this when presence cells are absent so the strip isn't empty */}
+          <span className="hidden sm:flex only:flex items-center gap-2 px-3 py-2">
             <span className="w-2.5 h-2.5 bg-green-500 border border-ink" />
             Operational
           </span>
-          <span className="px-3 py-2">
-            <LiveStatus />
-          </span>
-          <span className="px-3 py-2">
-            <VisitsCounter />
-          </span>
+          <LiveStatus />
+          <VisitsCounter />
         </div>
       </div>
 

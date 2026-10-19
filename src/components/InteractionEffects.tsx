@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { getOrCreateSessionId, sessionColor } from "@/lib/session";
+import { getOrCreateSessionId, presenceFetch, sessionColor } from "@/lib/session";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const EMOJIS = ["⚡", "👾", "🛠️", "🔥", "🎯", "💡"];
@@ -129,13 +129,11 @@ export default function InteractionEffects() {
 
   // ── API helper ────────────────────────────────────────────────────────────
   const postInteraction = useCallback(async (body: object) => {
-    try {
-      await fetch("/api/interactions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-    } catch { /* ignore */ }
+    await presenceFetch("/api/interactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
   }, []);
 
   // ── Mouse tracking, laser recording, keyboard ─────────────────────────────
@@ -249,8 +247,8 @@ export default function InteractionEffects() {
   useEffect(() => {
     async function poll() {
       try {
-        const res = await fetch("/api/interactions");
-        const data = await res.json();
+        const data = await presenceFetch("/api/interactions");
+        if (!data) return;
         const now = Date.now();
         const mySessionId = myId.current;
 

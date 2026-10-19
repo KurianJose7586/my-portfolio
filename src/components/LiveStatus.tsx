@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getOrCreateSessionId } from "@/lib/session";
+import { getOrCreateSessionId, presenceFetch } from "@/lib/session";
 
 export default function LiveStatus() {
   // null = not yet loaded (prevents flicker from hardcoded "1")
@@ -11,23 +11,17 @@ export default function LiveStatus() {
     const sessionId = getOrCreateSessionId();
 
     async function heartbeat() {
-      try {
-        const res = await fetch("/api/active-users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId }),
-        });
-        const data = await res.json();
-        if (typeof data.count === "number") setOnlineCount(data.count);
-      } catch { /* ignore */ }
+      const data = await presenceFetch("/api/active-users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      });
+      if (typeof data?.count === "number") setOnlineCount(data.count);
     }
 
     async function poll() {
-      try {
-        const res = await fetch("/api/active-users");
-        const data = await res.json();
-        if (typeof data.count === "number") setOnlineCount(data.count);
-      } catch { /* ignore */ }
+      const data = await presenceFetch("/api/active-users");
+      if (typeof data?.count === "number") setOnlineCount(data.count);
     }
 
     // Register immediately, then heartbeat every 8s
@@ -56,17 +50,16 @@ export default function LiveStatus() {
     };
   }, []);
 
-  const label = onlineCount === null
-    ? "connecting…"
-    : `${onlineCount} ${onlineCount === 1 ? "person" : "people"} online`;
+  // No count yet (or presence is down): render no cell at all
+  if (onlineCount === null) return null;
 
   return (
-    <span className="flex items-center gap-2">
+    <span className="flex items-center gap-2 px-3 py-2">
       <span className="relative flex h-2.5 w-2.5">
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-punch-pink opacity-75" />
         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-punch-pink" />
       </span>
-      {label}
+      {onlineCount} {onlineCount === 1 ? "person" : "people"} online
     </span>
   );
 }

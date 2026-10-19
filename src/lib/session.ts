@@ -21,3 +21,21 @@ export function getOrCreateSessionId(): string {
   }
   return id;
 }
+
+// Shared by every presence call: after 3 straight failures (Redis down / env missing)
+// all presence fetching stops for this tab. Returns parsed JSON, or null on failure.
+// ponytail: no retry until reload; add a timed re-probe if prod Redis blips matter.
+let presenceFailures = 0;
+
+export async function presenceFetch(url: string, init?: RequestInit) {
+  if (presenceFailures >= 3) return null;
+  try {
+    const res = await fetch(url, init);
+    if (res.ok) {
+      presenceFailures = 0;
+      return await res.json();
+    }
+  } catch { /* counted below */ }
+  presenceFailures++;
+  return null;
+}
