@@ -54,7 +54,7 @@ export async function GET() {
   const keys = await redis.keys("cursor:*");
   if (keys.length === 0) return NextResponse.json({ cursors: [] });
 
-  const values = await redis.mget<CursorData>(...keys);
+  const values = await redis.mget<(CursorData | null)[]>(...keys);
   const cursors = keys
     .map((key, i) => {
       const data = values[i];

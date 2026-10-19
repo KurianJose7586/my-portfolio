@@ -92,7 +92,7 @@ export async function GET() {
   // Laser trails — each is its own TTL-backed key
   const laserKeys = await redis.keys("laser:*");
   const lasers: LaserTrail[] = laserKeys.length > 0
-    ? (await redis.mget<LaserTrail>(...laserKeys)).filter((l): l is LaserTrail => l !== null)
+    ? (await redis.mget<(LaserTrail | null)[]>(...laserKeys)).filter((l): l is LaserTrail => l !== null)
     : [];
 
   return NextResponse.json({ events, lasers });
