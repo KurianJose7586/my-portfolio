@@ -36,84 +36,149 @@ export const heroData = {
 export const bioData = {
   headline: "Beyond the Notebook.",
   content: [
-    "I build AI that actually works in the real world — not demo-ware, not generic chatbot wrappers. My focus is domain-specific: legal research, financial analysis, resume intelligence, business automation. If there's a messy, high-stakes workflow that professionals hate doing manually, that's where I want to put AI.",
-    "I'm a Computer Science student with deep experience in agentic workflows, RAG pipelines, and taking LLM ideas from prototype to deployed product. TwinlyAI, my AI-powered resume assistant, onboarded 100 users in its MVP launch and processed 500+ resumes during development. The AI Lawyer handles constitutional law queries over PDF — no hallucination safety net, just careful prompt engineering and retrieval.",
-    "I also published research: TriRank, a hybrid retrieval framework combining BM25, BGE-large-en-v1.5, and ColBERTv2, achieved 0.4638 nDCG@10 on MS MARCO — outperforming standalone dense retrieval pipelines without any task-specific training.",
+    "I build AI that actually works in the real world — not demo-ware, not generic chatbot wrappers. My focus is domain-specific: education, legal research, finance, business automation. If there's a messy, high-stakes workflow that professionals hate doing manually, that's where I want to put AI.",
+    "I'm a Computer Science student who ships. Huzuri, my all-in-one office platform, runs live with 3,000+ automated tests behind it. At LrnAi I built ELIE, an NCERT-grounded voice tutor now on Google Play. On the side, TwinlyAI turns resumes into AI twins recruiters can chat with, and Agent Notch keeps every coding agent on my machine in one Dynamic-Island-style notch.",
+    "I also do research: TriRank, a training-free retrieval pipeline that reranks fused BM25 + BGE-large candidates with ColBERTv2, reaches 0.3825 MRR@10 on MS MARCO.",
   ],
   footer: "(The only time my actual notebook comes out is during a 3am lightbulb moment when I'm supposed to be studying for midsems.)",
 };
 
-export const featuredProjects = [
+// Featured cards: keep this short. Everything else goes in moreProjects as a one-line row.
+export const featuredProjects: {
+  title: string;
+  tagline: string;
+  description: string;
+  tech: string[];
+  status?: string;
+  links: { label: string; href: string }[];
+  color: string;
+  logo?: string;
+}[] = [
+  {
+    title: "Huzuri",
+    tagline: "The whole office, in one app.",
+    description: "An all-in-one workspace for small Indian companies: tasks with automatic follow-ups, attendance, leave, meetings turned into minutes, AI email triage and resume screening. Its assistant runs on Claude tool use: every tool acts with the asking user's own permissions, and any citation no tool returned is dropped before it reaches you.",
+    tech: ["FastAPI", "Next.js", "PostgreSQL", "Claude API", "Kotlin"],
+    status: "Live with a demo login · team of 3, I wrote most of the backend",
+    links: [{ label: "Try the demo", href: "https://huzuri.in/login" }],
+    color: "cyber-yellow",
+  },
   {
     title: "TwinlyAI",
-    tagline: "Your resume, turned into an intelligent AI assistant.",
-    description: "Transforms resumes into personalized AI assistants using custom RAG pipelines. Onboarded 100 users at MVP launch, processed 500+ resumes during development.",
-    tech: ["Next.js", "JWT", "OAuth", "AWS", "Custom RAG"],
-    cta: "Try TwinlyAI",
-    link: "#",
+    tagline: "Your resume, turned into an AI twin recruiters can talk to.",
+    description: "Upload a resume and link your GitHub; TwinlyAI builds a chat-and-voice twin that answers recruiter questions from your actual work. Retrieval runs on MongoDB Atlas Vector Search, chat on Groq, and the backend ships to AWS App Runner through CI. 100+ users at MVP launch.",
+    tech: ["Next.js", "FastAPI", "MongoDB Vector Search", "Groq", "AWS"],
+    links: [
+      { label: "Try TwinlyAI", href: "https://www.twinlyai.app" },
+      { label: "GitHub", href: "https://github.com/KurianJose7586/TwinlyAI-frontend" },
+    ],
     color: "electric-cyan",
     logo: "/twinlyAIlogo.png",
   },
   {
-    title: "CursorOS",
-    tagline: "Your desktop, made agentic.",
-    description: "A context-aware AI overlay for Windows that understands semantic intent and automates complex file workflows — find, organize, summarize, and move files via a single hotkey. Dual-LLM stack (Gemini + Groq fallback), tri-stream parallel retrieval, and atomic rollback for safe file operations.",
-    tech: ["Python", "Gemini", "Groq", "Threading", "Ctypes"],
-    status: "v1.2 Stable — v2 (OmniParser) in progress",
-    cta: "View Project",
-    link: "#",
-    color: "cyber-yellow",
-    logo: "/CursorOS.png",
+    title: "Agent Notch",
+    tagline: "All your coding agents. One notch.",
+    description: "A Dynamic-Island-style notch for Windows that tracks every coding agent (Claude Code, Copilot, OpenCode, Antigravity), lets you approve their requests with one key or from your phone, and lets agents on different PCs message each other over git, no server needed.",
+    tech: ["Electron", "Node.js", "MCP", "PowerShell"],
+    status: "v0.3.11 · open source (MIT)",
+    links: [
+      { label: "Website", href: "https://agent-notch-nine.vercel.app" },
+      { label: "GitHub", href: "https://github.com/KurianJose7586/notch" },
+    ],
+    color: "white",
+    logo: "/agent-notch.png",
   },
   {
     title: "CabLite",
     tagline: "Ride-hailing that works when the internet doesn't.",
-    description: "Offline-first ride-hailing platform built for zero-connectivity environments. Uses local SQLite FTS5 search, SMS-based communication protocol, and a self-hosted ESP32 + SIM800L hardware gateway.",
-    tech: ["React Native", "Node.js", "PostGIS", "Prisma", "ESP32"],
-    status: "Phase 2 (hardware assembly) underway",
-    cta: "View Project",
-    link: "#",
+    description: "Book a cab with zero data: requests travel as SMS, places are searched from an on-device SQLite FTS5 index, and PostGIS matches the nearest driver. A built-in ghost-driver simulator makes it demoable anywhere.",
+    tech: ["React Native", "Node.js", "PostGIS", "SQLite FTS5", "SMS"],
+    status: "Next up: ESP32 + SIM800L gateway to replace the cloud SMS relay",
+    links: [
+      { label: "Landing page", href: "https://cablite.vercel.app" },
+      { label: "GitHub", href: "https://github.com/KurianJose7586/Cablite-offline" },
+    ],
     color: "punch-pink",
     logo: "/cabliteicon.png",
   },
+];
+
+// One line each. The first few show; the rest sit behind a "show more" toggle.
+export const moreProjects: { title: string; blurb: string; tech: string[]; href?: string; badge?: string }[] = [
   {
-    title: "AI Lawyer",
-    tagline: "Constitutional law, answered instantly from source documents.",
-    description: "PDF-based legal chatbot for constitutional law. Built with careful prompt engineering and retrieval — no hallucination safety net.",
-    tech: ["LangChain", "FAISS", "Node.js", "RAG", "Prompt Engineering"],
-    cta: "View Project",
-    link: "#",
-    color: "white",
-    logo: "/file.svg",
+    title: "CursorOS",
+    blurb: "A Windows overlay you talk to: ask for a file in plain English and it searches the Windows index and your open folders in parallel, or proposes a folder clean-up you approve first.",
+    tech: ["Python", "Gemini", "Groq"],
+    href: "https://github.com/KurianJose7586/CursorOS-backend",
   },
   {
-    title: "BeaconBRD",
-    tagline: "Transform unstructured comms into structured BRDs.",
-    description: "An automated intelligence engine that filters noise from Slack and Gmail, synthesizing high-confidence signals into multi-agent Business Requirement Documents.",
-    tech: ["FastAPI", "Python", "LLMs", "LangChain", "OAuth"],
-    cta: "View Project",
-    link: "#",
-    color: "electric-cyan",
+    title: "SentraSec AI",
+    blurb: "4-in-1 AI security toolkit: phishing, code vulnerabilities, config risk. Team build; I wrote the LLM tool router and the AI core.",
+    tech: ["Gemini", "Python", "Next.js"],
+    href: "https://github.com/Snehadas2005/devfest-security-suite",
+    badge: "🏆 2nd Runner-Up · GDG Noida Buildethon",
+  },
+  {
+    title: "SHIELD",
+    blurb: "Smart India Hackathon: an AI layer over border-post CCTV that flags intrusions, number plates and odd behaviour. Team build; I built the behaviour-anomaly engine and the plate-reader benchmarks.",
+    tech: ["YOLOv8", "OpenCV", "FastAPI", "Electron"],
+    href: "https://github.com/Sarthaksinghcse/IBVAP",
+  },
+  {
+    title: "Ops Desk",
+    blurb: "An ops work tracker built to survive concurrency: row locks, version checks, idempotency keys, an outbox worker and an append-only audit log, all tested under parallel load.",
+    tech: ["Node.js", "PostgreSQL", "React"],
+    badge: "take-home",
   },
   {
     title: "Build_Trust",
-    tagline: "Enterprise data marketplace with agentic workflows.",
-    description: "A production-ready CRM connecting 100k+ records via Dataverse. Features an interactive AI Project Manager that maps scoping to real specialists with live cost estimates.",
-    tech: ["FastAPI", "React", "Dataverse", "Gemma-2-9b", "OData"],
-    cta: "View Project",
-    link: "#",
-    color: "punch-pink",
+    blurb: "A specialist marketplace where an AI project manager scopes your job one question at a time, then gates the estimate behind OTP sign-in.",
+    tech: ["React", "FastAPI", "Groq", "Dataverse"],
+    href: "https://build-trust-frontend.vercel.app",
+  },
+  {
+    title: "BeaconBRD",
+    blurb: "Turns Slack and Gmail threads into business requirement documents. Team build; I wrote the BRD generation engine.",
+    tech: ["FastAPI", "Groq", "Google ADK"],
+    href: "https://beacon-brd.vercel.app",
+  },
+  {
+    title: "Sortpile",
+    blurb: "GST paperwork for CA offices: files every bill by GSTIN, builds the purchase register and flags input-tax-credit risk.",
+    tech: ["Flask", "Next.js", "Gemini"],
+  },
+  {
+    title: "GPT-2 on a DGX",
+    blurb: "Trained GPT-2 (124M) from scratch on FineWeb-Edu on the college DGX: val loss 3.03, HellaSwag 0.304.",
+    tech: ["PyTorch", "Kubernetes", "DDP"],
+  },
+  {
+    title: "VanDisha",
+    blurb: "Smart India Hackathon: maps Forest Rights Act claims from scanned PDFs and recommends welfare schemes using satellite vegetation data.",
+    tech: ["FastAPI", "PostGIS", "Sentinel-2", "Mapbox"],
+  },
+  {
+    title: "Varia",
+    blurb: "Scores how well a landing page matches its ad, then rewrites the copy above the fold: a six-agent pipeline with a validator.",
+    tech: ["FastAPI", "Playwright", "Gemini"],
+    badge: "take-home",
+  },
+  {
+    title: "AI Lawyer",
+    blurb: "RAG chatbot that answers questions from legal PDFs with DeepSeek-R1.",
+    tech: ["LangChain", "FAISS", "Streamlit"],
+    href: "https://github.com/KurianJose7586/Ai-lawyer-project",
   },
 ];
 
 export const researchData = {
   title: "THE TRIRANK PAPER",
-  subtitle: "PUBLISHED_RESEARCH / 2024",
+  subtitle: "RESEARCH PREPRINT / 2026",
   authors: ["Kurian Jose", "Jasith Kadian", "Shikhar Kulshreshtha", "Mohd Mohsin Ali", "Manish Raj", "Ankur Gogoi"],
-  description: "A training-free 3-stage hybrid retrieval framework combining BM25, BGE-large-en-v1.5, and ColBERTv2. Outperforms standalone dense pipelines on MS MARCO benchmark.",
+  description: "A training-free 3-stage retrieval pipeline: BM25 and BGE-large-en-v1.5 candidates fused with RRF, then reranked by ColBERTv2. Evaluated on all 8.8M MS MARCO passages.",
   benchmark: {
-    score: "0.4638",
-    metric: "nDCG@10 Score",
+    score: "0.3825",
+    metric: "MRR@10 Score",
     dataset: "MS MARCO Dataset",
   },
   tags: [
@@ -125,12 +190,6 @@ export const researchData = {
   cta: "GET THE FULL PDF",
   link: "https://drive.google.com/file/d/1szBawJBbm8d1DGUXkjNI1Z05Yz43rutk/view?usp=sharing",
 };
-
-export const labNotes = [
-  { id: "05", title: "BRD Generation Engine", color: "electric-cyan" },
-  { id: "06", title: "AICryptoBalancer", color: "punch-pink" },
-  { id: "07", title: "Case Text Finder", color: "cyber-yellow" },
-];
 
 export const techArsenal = [
   {
@@ -152,8 +211,33 @@ export const techArsenal = [
 
 export const experienceData = [
   {
-    role: "AI Intern",
-    company: "Astron Financial Solutions",
+    role: "Engineering Intern",
+    company: "Enestock",
+    period: "Sep 2026 – Present",
+    description: "Building the software side of AI smart glasses that help technicians inspect railway overhead power lines.",
+    highlights: [
+      "Wrote the Kotlin library that drives DPVR smart glasses: a Bluetooth command queue and framing, photo transfer over Wi-Fi Direct and photo reassembly, tested against a fake-glasses double.",
+      "Photos feed a vision-language model (Qwen3-VL on vLLM) that checks each mast against a 65-item checklist and speaks defects back to the technician.",
+    ],
+    tech: ["Kotlin", "Android", "Bluetooth LE", "Wi-Fi Direct", "vLLM"],
+    color: "cyber-yellow"
+  },
+  {
+    role: "AI and Product Engineering Intern",
+    company: "LrnAi Technologies",
+    period: "July 2026 – October 2026",
+    description: "Built ELIE, the NCERT-grounded chat and voice AI tutor in the LrnAi learning app, live on the web and Google Play.",
+    highlights: [
+      "Replaced regex intent routing with a state-constrained LLM router: 37/55 → 50/55 correct on hand-labelled Hinglish student messages.",
+      "Tuned pgvector search so textbook retrieval Recall@3 rose from 25% to 90% and empty results fell from 45% to 0%.",
+      "Added a blind-solve verifier that catches 12 of 13 wrong answer keys in AI-generated quizzes, and roughly halved AI cost per student.",
+    ],
+    tech: ["Node.js", "PostgreSQL + pgvector", "Gemini", "Redis", "React + Capacitor"],
+    color: "electric-cyan"
+  },
+  {
+    role: "AI/ML Developer Intern",
+    company: "Astron Financial Advisors",
     period: "June 2025 – August 2025",
     description: "My first dive into building AI systems that solved actual business problems instead of classroom assignments. I worked on legal-tech and financial automation tools, building everything from RAG pipelines to backend APIs.",
     highlights: [
@@ -163,7 +247,7 @@ export const experienceData = [
       "Containerized and deployed backend services using Flask and Docker, making deployments far less painful."
     ],
     tech: ["Python", "Flask", "Docker", "RAG", "LLMs", "FAISS", "PostgreSQL"],
-    color: "electric-cyan"
+    color: "white"
   },
   {
     role: "Tech Lead & Core Member",

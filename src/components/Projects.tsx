@@ -1,19 +1,42 @@
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
-import { accentBg, featuredProjects, labNotes } from "@/lib/data";
+import { ArrowUpRight, BookOpen } from "lucide-react";
+import { accentBg, featuredProjects, moreProjects } from "@/lib/data";
 import { projectDetails } from "@/lib/projectDetails";
 import ProjectModal from "./ProjectModal";
 import SectionHeader from "./SectionHeader";
 
-export default function Projects() {
-  const [selectedProject, setSelectedProject] = useState<{ title: string; markdown: string } | null>(null);
+// Rows shown before the "show all" toggle — keeps the section short.
+const VISIBLE_ROWS = 5;
 
-  const openProjectDetails = (title: string) => {
-    // AI Lawyer is written up as part of the internship project
-    const detailsKey = title === "AI Lawyer" ? "Internship Project" : title;
-    setSelectedProject({ title, markdown: projectDetails[detailsKey] || "" });
-  };
+function ProjectRow({ project }: { project: (typeof moreProjects)[number] }) {
+  const title = <span className="font-bold text-lg">{project.title}</span>;
+  return (
+    <li className="flex flex-col md:flex-row md:items-center gap-2 md:gap-5 px-5 py-4">
+      <div className="flex-1 min-w-0">
+        <p className="flex flex-wrap items-center gap-2">
+          {project.href ? (
+            <a href={project.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:underline">
+              {title} <ArrowUpRight size={16} strokeWidth={3} />
+            </a>
+          ) : (
+            title
+          )}
+          {project.badge && <span className="chip bg-cyber-yellow">{project.badge}</span>}
+        </p>
+        <p className="text-ink/70 leading-snug mt-1">{project.blurb}</p>
+      </div>
+      <div className="flex flex-wrap gap-2 md:justify-end md:max-w-[40%]">
+        {project.tech.map((t) => (
+          <span key={t} className="chip">{t}</span>
+        ))}
+      </div>
+    </li>
+  );
+}
+
+export default function Projects() {
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   return (
     <section id="work" className="scroll-mt-32">
@@ -21,7 +44,8 @@ export default function Projects() {
 
       <div className="grid md:grid-cols-2 gap-8">
         {featuredProjects.map((project, i) => {
-          const featured = i === 0;
+          // First card spans both columns; so does the last one when the count is even, so no card sits alone.
+          const featured = i === 0 || (i === featuredProjects.length - 1 && featuredProjects.length % 2 === 0);
           return (
             <article
               key={project.title}
@@ -58,12 +82,24 @@ export default function Projects() {
                     <span key={tech} className="chip">{tech}</span>
                   ))}
                 </div>
-                <button
-                  onClick={() => openProjectDetails(project.title)}
-                  className="mechanical-button bg-white px-6 py-3.5 text-sm mt-auto self-start"
-                >
-                  {project.cta} <ArrowUpRight size={18} strokeWidth={3} />
-                </button>
+                <div className="flex flex-wrap gap-3 mt-auto">
+                  {project.links.map((link, j) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`mechanical-button px-5 py-3 text-sm ${j === 0 ? "bg-ink text-white" : "bg-white"}`}
+                    >
+                      {link.label} <ArrowUpRight size={18} strokeWidth={3} />
+                    </a>
+                  ))}
+                  {projectDetails[project.title] && (
+                    <button onClick={() => setSelectedProject(project.title)} className="mechanical-button bg-white px-5 py-3 text-sm">
+                      Write-up <BookOpen size={18} strokeWidth={3} />
+                    </button>
+                  )}
+                </div>
               </div>
             </article>
           );
@@ -71,23 +107,32 @@ export default function Projects() {
       </div>
 
       <div className="mt-16">
-        <p className="eyebrow text-ink/60 mb-4">Side builds</p>
+        <p className="eyebrow text-ink/60 mb-4">More builds</p>
         <ul className="bg-white border-3 border-ink divide-y-3 divide-ink">
-          {labNotes.map((note) => (
-            <li key={note.id} className="flex items-center gap-5 px-5 py-4">
-              <span className="font-mono text-sm font-bold text-ink/40">{note.id}</span>
-              <span className="font-bold text-lg">{note.title}</span>
-              <span className={`ml-auto w-3 h-3 border-2 border-ink ${accentBg[note.color]}`} />
-            </li>
+          {moreProjects.slice(0, VISIBLE_ROWS).map((p) => (
+            <ProjectRow key={p.title} project={p} />
           ))}
         </ul>
+        {moreProjects.length > VISIBLE_ROWS && (
+          <details className="group">
+            <summary className="mechanical-button bg-white px-5 py-3 text-sm mt-4 list-none [&::-webkit-details-marker]:hidden">
+              <span className="group-open:hidden">Show {moreProjects.length - VISIBLE_ROWS} more</span>
+              <span className="hidden group-open:inline">Show less</span>
+            </summary>
+            <ul className="bg-white border-3 border-ink divide-y-3 divide-ink mt-4">
+              {moreProjects.slice(VISIBLE_ROWS).map((p) => (
+                <ProjectRow key={p.title} project={p} />
+              ))}
+            </ul>
+          </details>
+        )}
       </div>
 
       <ProjectModal
         isOpen={selectedProject !== null}
         onClose={() => setSelectedProject(null)}
-        title={selectedProject?.title || ""}
-        markdownContent={selectedProject?.markdown || ""}
+        title={selectedProject || ""}
+        markdownContent={selectedProject ? projectDetails[selectedProject] : ""}
       />
     </section>
   );

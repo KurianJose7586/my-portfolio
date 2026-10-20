@@ -48,11 +48,11 @@ export default function ResearchModal({ isOpen, onClose }: ResearchModalProps) {
               </div>
 
               <p className="text-xl md:text-2xl font-medium leading-relaxed text-ink/90 mb-12">
-                A training-free 3-stage hybrid retrieval framework combining{" "}
+                A training-free 3-stage retrieval pipeline combining{" "}
                 <span className="font-bold underline decoration-cyber-yellow decoration-[6px] underline-offset-2">
                   BM25, BGE-large-en-v1.5, and ColBERTv2
                 </span>
-                . Outperforms standalone dense pipelines on the MS MARCO benchmark.
+                , evaluated on all 8.8M MS MARCO passages.
               </p>
 
               <div className="grid lg:grid-cols-5 gap-8">
