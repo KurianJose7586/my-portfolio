@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { getOrCreateSessionId, presenceFetch } from "@/lib/session";
+import { getOrCreateSessionId, presenceActive, presenceFetch } from "@/lib/session";
 
 interface RemoteCursor {
   sessionId: string;
@@ -48,6 +48,7 @@ export default function RemoteCursors() {
     let lastSend = 0;
 
     function handleMouseMove(e: MouseEvent) {
+      if (!presenceActive()) return;
       const now = Date.now();
       if (now - lastSend < 60) return; // ~16 fps
       lastSend = now;
@@ -78,6 +79,10 @@ export default function RemoteCursors() {
   // Poll for other cursors every 200ms (was 150ms — slightly less aggressive)
   useEffect(() => {
     async function fetchCursors() {
+      if (!presenceActive()) {
+        setCursors((prev) => (prev.length ? [] : prev));
+        return;
+      }
       const data = await presenceFetch("/api/cursors");
       if (!Array.isArray(data?.cursors)) return;
       const myId = mySessionId.current;

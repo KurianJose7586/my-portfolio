@@ -39,3 +39,25 @@ export async function presenceFetch(url: string, init?: RequestInit) {
   presenceFailures++;
   return null;
 }
+
+// Live cursors and interactions only sync while someone else is online and this tab is visible.
+// Polling Redis for an audience of one burned the free Upstash quota (~60K commands/hour per tab).
+let othersOnline = false;
+
+// Registers this tab as online and returns the live count (null if hidden or presence is down).
+// Pages call it every 8s; hidden tabs stay quiet and drop off after the server's 20s timeout.
+export async function presenceHeartbeat(): Promise<number | null> {
+  if (document.visibilityState !== "visible") return null;
+  const data = await presenceFetch("/api/active-users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sessionId: getOrCreateSessionId() }),
+  });
+  if (typeof data?.count !== "number") return null;
+  othersOnline = data.count > 1;
+  return data.count;
+}
+
+export function presenceActive() {
+  return othersOnline && document.visibilityState === "visible";
+}

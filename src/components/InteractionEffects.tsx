@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { getOrCreateSessionId, presenceFetch, sessionColor } from "@/lib/session";
+import { getOrCreateSessionId, presenceActive, presenceFetch, sessionColor } from "@/lib/session";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const EMOJIS = ["⚡", "👾", "🛠️", "🔥", "🎯", "💡"];
@@ -129,6 +129,7 @@ export default function InteractionEffects() {
 
   // ── API helper ────────────────────────────────────────────────────────────
   const postInteraction = useCallback(async (body: object) => {
+    if (!presenceActive()) return; // local effects still render; nobody else to send them to
     await presenceFetch("/api/interactions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -246,6 +247,10 @@ export default function InteractionEffects() {
   // ── Poll for remote events ────────────────────────────────────────────────
   useEffect(() => {
     async function poll() {
+      if (!presenceActive()) {
+        setRemoteLasers((prev) => (prev.length ? [] : prev));
+        return;
+      }
       try {
         const data = await presenceFetch("/api/interactions");
         if (!data) return;

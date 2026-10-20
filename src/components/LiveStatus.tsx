@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getOrCreateSessionId, presenceFetch } from "@/lib/session";
+import { getOrCreateSessionId, presenceHeartbeat } from "@/lib/session";
 
 export default function LiveStatus() {
   // null = not yet loaded (prevents flicker from hardcoded "1")
@@ -10,26 +10,15 @@ export default function LiveStatus() {
   useEffect(() => {
     const sessionId = getOrCreateSessionId();
 
+    // The heartbeat returns the live count, so one call every 8s keeps both fresh.
     async function heartbeat() {
-      const data = await presenceFetch("/api/active-users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
-      });
-      if (typeof data?.count === "number") setOnlineCount(data.count);
+      const count = await presenceHeartbeat();
+      if (count !== null) setOnlineCount(count);
     }
 
-    async function poll() {
-      const data = await presenceFetch("/api/active-users");
-      if (typeof data?.count === "number") setOnlineCount(data.count);
-    }
-
-    // Register immediately, then heartbeat every 8s
     heartbeat();
     const heartbeatInterval = setInterval(heartbeat, 8_000);
-
-    // Poll for count changes every 5s
-    const pollInterval = setInterval(poll, 5_000);
+    document.addEventListener("visibilitychange", heartbeat);
 
     // Clean up on tab close
     function handleUnload() {
@@ -45,7 +34,7 @@ export default function LiveStatus() {
 
     return () => {
       clearInterval(heartbeatInterval);
-      clearInterval(pollInterval);
+      document.removeEventListener("visibilitychange", heartbeat);
       window.removeEventListener("pagehide", handleUnload);
     };
   }, []);
