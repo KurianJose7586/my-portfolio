@@ -359,8 +359,9 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
         setInput('');
 
         // 3. Context Awareness: Get recent terminal history
+        // 40 lines so the previous question survives a full reply; the server keeps the last 4000 chars.
         const recentHistory = output
-          .slice(-10)
+          .slice(-40)
           .map(o => o.type === 'command' ? `User ran: ${o.content}` : `Terminal: ${o.content.replace(/<[^>]*>?/gm, '')}`)
           .join('\n');
 
@@ -390,17 +391,11 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
           });
         }, 120);
 
-        // Inject strict TUI formatting rules silently
-        const systemPrompt = `\n\n[SYSTEM RULES: You are a CLI tool outputting to a terminal. 
-1. DO NOT write paragraphs. Give a 1-line direct answer, then structured data (lists/tables), then stop.
-2. DO NOT ask conversational questions ("Let me know if...").
-3. ALWAYS end with exactly one suggested command starting with "→ run \`" (e.g. "→ run \`open twinlyai\` to go deeper" or "→ run \`research\`").
-4. Keep it extremely brief, brutalist, and scannable.]`;
-
+        // Formatting rules live server-side in /api/chat, so visitors can't override them.
         fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: query + systemPrompt, history: recentHistory }),
+          body: JSON.stringify({ message: query, history: recentHistory }),
         })
           .then(async (res) => {
             const data = await res.json();
@@ -445,11 +440,12 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
             streamLine();
           })
           .catch((err: Error) => {
+            clearInterval(loadingInterval);
             setOutput((prev) => {
               const withoutThinking = prev.slice(0, -1);
               return [
                 ...withoutThinking,
-                { type: 'error', content: `KurianGPT > error: ${err.message}\nhint: the HF Space may be cold-starting — try again in ~30s` },
+                { type: 'error', content: `KurianGPT > error: ${err.message}` },
               ];
             });
             setIsLoading(false);

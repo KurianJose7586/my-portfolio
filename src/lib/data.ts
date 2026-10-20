@@ -21,6 +21,8 @@ export const siteConfig = {
   linkedin: "https://www.linkedin.com/in/kurianjose316",
   resume: "https://drive.google.com/file/d/1vW57HLq8cGeJr4fKsaDo_qvrBSRrcoGm/view?usp=sharing",
   timezone: "IST (India)",
+  availability: "Open to internships, freelance AI projects and collaborations",
+  education: "B.Tech in Computer Science and Engineering (AI & ML specialization), Galgotias University, Greater Noida — started 2023",
 };
 
 export const heroData = {
@@ -57,7 +59,7 @@ export const featuredProjects: {
   {
     title: "Huzuri",
     tagline: "The whole office, in one app.",
-    description: "An all-in-one workspace for small Indian companies: tasks with automatic follow-ups, attendance, leave, meetings turned into minutes, AI email triage and resume screening. Its assistant runs on Claude tool use: every tool acts with the asking user's own permissions, and any citation no tool returned is dropped before it reaches you.",
+    description: "An all-in-one workspace for small Indian companies: tasks with automatic follow-ups, attendance, leave, meetings turned into minutes, AI email triage and resume screening. Its assistant runs on Claude tool use: every tool acts with the asking user's own permissions, and any citation that didn't come from a tool's results is dropped before it reaches you.",
     tech: ["FastAPI", "Next.js", "PostgreSQL", "Claude API", "Kotlin"],
     status: "Live with a demo login · team of 3, I wrote most of the backend",
     links: [{ label: "Try the demo", href: "https://huzuri.in/login" }],
@@ -263,4 +265,17 @@ export const experienceData = [
     tech: ["Leadership", "Mentorship", "System Design", "Event Organization"],
     color: "punch-pink"
   }
+];
+
+// Extra facts for KurianGPT (/api/chat) that the page doesn't show.
+export const assistantNotes = [
+  "Huzuri is Kurian's own project, separate from his Enestock internship. Its parts: a FastAPI + PostgreSQL backend, a Next.js web app, a Kotlin Android app, and an assistant on the Claude API.",
+  "TwinlyAI internals: a LangGraph ReAct agent on Groq; GitHub code indexed in Qdrant; voice via Groq Whisper speech-to-text and edge-tts; CI/CD with GitHub Actions to Amazon ECR and AWS App Runner.",
+  "At LrnAi, Kurian also built a Bayesian Knowledge Tracing model of what each student has mastered.",
+  "Agent Notch is a solo project.",
+  "Hackathon results: Kurian's team placed 2nd Runner-Up (third place) at GDG Noida Buildethon with SentraSec AI; Kurian wrote its AI core. He also built SHIELD and VanDisha for Smart India Hackathon.",
+  "TriRank's status: a research preprint (2026), not yet published at a venue.",
+  "TriRank: Kurian is first author. The work was done at Galgotias University and run on the college DGX, using bm25s and chunked exact GPU search over all 8.8M MS MARCO passages.",
+  "At GDG on Campus, Kurian runs workshops, including 'Build Your Own Copilot' (FastAPI, LangChain, Ollama, Chroma RAG, CrewAI).",
+  "Other skills: Python, TypeScript, Java, C, SQL, LangGraph, Qdrant, pgvector, OpenRouter, JWT/OAuth, Twilio, GitHub Actions, Expo, Streamlit, Electron, Kotlin.",
 ];

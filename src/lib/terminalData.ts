@@ -1,4 +1,4 @@
-import { featuredProjects, moreProjects } from "./data";
+import { experienceData, featuredProjects, moreProjects } from "./data";
 
 // Terminal project data is derived from data.ts so the two never drift.
 const slug = (title: string) => title.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -130,20 +130,9 @@ if the problem is hard and the use case is real, let's talk.`,
     },
     'experience.txt': {
       type: 'file',
-      content: `WORK HISTORY:
-
-1. AI Intern @ Astron Financial Solutions (June 2025 – August 2025)
-   - Built a Legal Case Brief Generator (cut review time by 40%)
-   - Developed an AI legal research assistant (85% relevance accuracy)
-   - Automated GST reconciliation for 1,200+ invoices
-   - Containerized backend services with Flask & Docker
-
-2. Tech Lead & Core Member @ GDG on Campus — Galgotias University (2025 – Present)
-   - Co-founded the GDG chapter and organized a 100+ participant hackathon
-   - Mentored students in AI, backend engineering, and system design
-   - Turned ideas into working products
-
-(Run \`open experience\` to view the full dossier on the site, or scroll down!)`,
+      content: `WORK HISTORY:\n\n${experienceData
+        .map((job, i) => `${i + 1}. ${job.role} @ ${job.company} (${job.period})\n${job.highlights.map((h) => `   - ${h}`).join('\n')}`)
+        .join('\n\n')}\n\n(scroll to the Experience section on the site for the full dossier)`,
     },
     'roll': {
       type: 'dir',
@@ -312,7 +301,7 @@ export const bootSequence: [string, number][] = [
 
   // AI assistant
   [`[ SYS ] initializing KurianGPT...`, 260],
-  [`[ OK  ] llm:       gemini-primary + groq-llama-3 fallback`, 100],
+  [`[ OK  ] llm:       gpt-oss-120b on groq`, 100],
   [`[ OK  ] context:   ${allProjects.length} projects · 1 paper · ∞ opinions on RAG`, 100],
   [`[ OK  ] KurianGPT online. try: ask "what makes you different?"`, 100],
   [``, 60],
