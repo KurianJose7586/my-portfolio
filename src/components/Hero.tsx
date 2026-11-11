@@ -1,7 +1,7 @@
 "use client";
 
 import { heroData, siteConfig } from "@/lib/data";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type PointerEvent } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { ArrowDown, Mail } from "lucide-react";
@@ -31,67 +31,96 @@ export default function Hero() {
     return () => clearTimeout(t);
   }, [text, isDeleting, textIndex]);
 
+  // Pointer position drives the pink grid spotlight (.hero-spot in globals.css)
+  const track = (e: PointerEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+
   return (
-    <section id="top" className="scroll-mt-32 grid lg:grid-cols-[1fr_auto] gap-14 lg:gap-20 items-center py-12 md:py-20 lg:min-h-[calc(100svh-6rem)]">
-      <div className="max-w-2xl">
-        <p className="eyebrow text-ink/60 mb-6">AI &amp; Systems Engineer · {siteConfig.timezone}</p>
-
-        <h1 className="text-display">
-          Kurian <span className="text-punch-pink">Jose.</span>
-        </h1>
-
-        <p className="font-mono text-lg md:text-xl mt-6 min-h-[3.5rem] md:min-h-[2rem]" aria-live="polite">
-          {text}
-          <span className="animate-pulse">▍</span>
-        </p>
-
-        <div className="flex flex-wrap gap-4 mt-10">
-          <a href="#work" className="mechanical-button bg-cyber-yellow px-7 py-4 text-base">
-            See the work <ArrowDown size={18} strokeWidth={3} />
-          </a>
-          <a href="#contact" className="mechanical-button bg-white px-7 py-4 text-base">
-            Get in touch
-          </a>
-        </div>
-
-        <div className="flex items-center gap-3 mt-8">
-          <a href={siteConfig.github} target="_blank" rel="noreferrer" aria-label="GitHub" className={socialClass}>
-            <GithubIcon size={20} />
-          </a>
-          <a href={siteConfig.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className={socialClass}>
-            <LinkedinIcon size={20} />
-          </a>
-          <a href={`mailto:${siteConfig.email}`} aria-label="Email" className={socialClass}>
-            <Mail size={20} />
-          </a>
-        </div>
-
-        <div className="mt-10 inline-flex border-3 border-ink bg-white font-mono text-xs font-bold uppercase tracking-wider divide-x-3 divide-ink">
-          {/* only:flex — on mobile, show this when presence cells are absent so the strip isn't empty */}
-          <span className="hidden sm:flex only:flex items-center gap-2 px-3 py-2">
-            <span className="w-2.5 h-2.5 bg-green-500 border border-ink" />
-            Operational
-          </span>
-          <LiveStatus />
-          <VisitsCounter />
-        </div>
+    <div
+      className="hero-sheet relative isolate overflow-clip"
+      onPointerMove={track}
+      onPointerLeave={(e) => e.currentTarget.style.removeProperty("--mx")}
+    >
+      <div className="hero-spot" aria-hidden />
+      <div className="hero-ghost hidden lg:block absolute -right-4 -bottom-[0.2em] z-[-2] font-sans font-black leading-none tracking-tighter text-[22rem] select-none" aria-hidden>
+        KJ
       </div>
+      <p className="eyebrow hidden lg:block absolute right-6 bottom-4 text-[10px] text-ink/40" aria-hidden>
+        Fig. 01 — Hero / portrait · Grid 96 / 24 px
+      </p>
 
-      <div className="relative w-60 md:w-80 mx-auto lg:mx-0 rotate-2 group">
-        <div className="absolute inset-0 translate-x-4 translate-y-4 bg-electric-cyan border-3 border-ink transition-transform duration-300 ease-out-quint group-hover:translate-x-5 group-hover:translate-y-5" />
-        <div className="relative bg-white border-3 border-ink p-3 pb-14">
-          <div className="tape-accent -top-4 left-1/2 -translate-x-1/2 -rotate-3 w-28" />
-          <Image
-            src="/profile.png"
-            alt={siteConfig.name}
-            width={320}
-            height={400}
-            priority
-            className="w-full object-contain border-2 border-ink grayscale group-hover:grayscale-0 transition-[filter] duration-500"
-          />
-          <p className="absolute bottom-3 inset-x-0 text-center font-caveat font-bold text-2xl -rotate-2">Me at work!</p>
-        </div>
+      <div className="max-w-6xl mx-auto px-5 md:px-8">
+        <section id="top" className="scroll-mt-32 grid lg:grid-cols-[1fr_auto] gap-14 lg:gap-20 items-center py-12 md:py-20 lg:min-h-[calc(100svh-6rem)]">
+          <div className="max-w-2xl">
+            <p className="eyebrow text-ink/60 mb-6">AI &amp; Systems Engineer · {siteConfig.timezone}</p>
+
+            <h1 className="text-display">
+              Kurian <span className="text-punch-pink">Jose.</span>
+            </h1>
+
+            <p className="font-mono text-lg md:text-xl mt-6 min-h-[3.5rem] md:min-h-[2rem]" aria-live="polite">
+              {text}
+              <span className="animate-pulse">▍</span>
+            </p>
+
+            <div className="flex flex-wrap gap-4 mt-10">
+              <a href="#work" className="mechanical-button bg-cyber-yellow px-7 py-4 text-base">
+                See the work <ArrowDown size={18} strokeWidth={3} />
+              </a>
+              <a href="#contact" className="mechanical-button bg-white px-7 py-4 text-base">
+                Get in touch
+              </a>
+            </div>
+
+            <div className="flex items-center gap-3 mt-8">
+              <a href={siteConfig.github} target="_blank" rel="noreferrer" aria-label="GitHub" className={socialClass}>
+                <GithubIcon size={20} />
+              </a>
+              <a href={siteConfig.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className={socialClass}>
+                <LinkedinIcon size={20} />
+              </a>
+              <a href={`mailto:${siteConfig.email}`} aria-label="Email" className={socialClass}>
+                <Mail size={20} />
+              </a>
+            </div>
+
+            <div className="mt-10 inline-flex border-3 border-ink bg-white font-mono text-xs font-bold uppercase tracking-wider divide-x-3 divide-ink">
+              {/* only:flex — on mobile, show this when presence cells are absent so the strip isn't empty */}
+              <span className="hidden sm:flex only:flex items-center gap-2 px-3 py-2">
+                <span className="w-2.5 h-2.5 bg-green-500 border border-ink" />
+                Operational
+              </span>
+              <LiveStatus />
+              <VisitsCounter />
+            </div>
+          </div>
+
+          <div className="relative w-60 md:w-80 mx-auto lg:mx-0 rotate-2 group">
+            <span className="hidden lg:block absolute -top-14 -left-52 font-caveat font-bold text-2xl -rotate-6 whitespace-nowrap" aria-hidden>
+              me, allegedly
+            </span>
+            <svg className="hidden lg:block absolute -top-12 -left-24 w-24 h-14" viewBox="0 0 96 56" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M2 6c34 2 60 16 86 44M78 47l10 3-3-10" />
+            </svg>
+            <div className="absolute inset-0 translate-x-4 translate-y-4 bg-electric-cyan border-3 border-ink transition-transform duration-300 ease-out-quint group-hover:translate-x-5 group-hover:translate-y-5" />
+            <div className="relative bg-white border-3 border-ink p-3 pb-14">
+              <div className="tape-accent -top-4 left-1/2 -translate-x-1/2 -rotate-3 w-28" />
+              <Image
+                src="/profile.png"
+                alt={siteConfig.name}
+                width={320}
+                height={400}
+                priority
+                className="w-full object-contain border-2 border-ink grayscale group-hover:grayscale-0 transition-[filter] duration-500"
+              />
+              <p className="absolute bottom-3 inset-x-0 text-center font-caveat font-bold text-2xl -rotate-2">Me at work!</p>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
 }

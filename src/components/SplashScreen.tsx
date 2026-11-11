@@ -30,7 +30,9 @@ export default function SplashScreen({ finishLoading }: { finishLoading: () => v
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  const [quote] = useState(() => BIBLE_QUOTES[Math.floor(Math.random() * BIBLE_QUOTES.length)]);
+  // Server and client both render quote 0, then the client swaps in a random one before it fades in (avoids a hydration mismatch)
+  const [quote, setQuote] = useState(BIBLE_QUOTES[0]);
+  useEffect(() => setQuote(BIBLE_QUOTES[Math.floor(Math.random() * BIBLE_QUOTES.length)]), []);
 
   useEffect(() => {
     const stepInterval = setInterval(() => {

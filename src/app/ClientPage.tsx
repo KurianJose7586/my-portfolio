@@ -57,9 +57,7 @@ export default function ClientPage({ initialShowSplash }: { initialShowSplash: b
 
         <Navbar />
 
-        <div className="max-w-6xl mx-auto px-5 md:px-8">
-          <Hero />
-        </div>
+        <Hero />
 
         <Marquee />
 
