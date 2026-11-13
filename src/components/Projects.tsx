@@ -42,41 +42,44 @@ export default function Projects() {
     <section id="work" className="scroll-mt-32">
       <SectionHeader index="01" label="Work" title="Selected Work" subtitle="Shipped products, research, and things still on the bench" />
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <p className="md:hidden eyebrow text-ink/50 -mt-6 mb-4">Swipe for all {featuredProjects.length} →</p>
+
+      {/* Mobile: a swipeable row where the next card peeks in. md+: the grid. pb-3 keeps the hard shadow from being clipped. */}
+      <div className="flex md:grid md:grid-cols-2 gap-4 md:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-5 -mx-5 px-5 pb-3 md:m-0 md:p-0 [scrollbar-width:none]">
         {featuredProjects.map((project, i) => {
           // First card spans both columns; so does the last one when the count is even, so no card sits alone.
           const featured = i === 0 || (i === featuredProjects.length - 1 && featuredProjects.length % 2 === 0);
           return (
             <article
               key={project.title}
-              className={`brutalist-card lift flex flex-col ${featured ? "md:col-span-2 md:flex-row" : ""}`}
+              className={`brutalist-card lift flex flex-col w-[85%] shrink-0 snap-start md:w-auto ${featured ? "md:col-span-2 md:flex-row" : ""}`}
             >
               <div
-                className={`${accentBg[project.color]} border-ink p-6 md:p-8 flex flex-col gap-5 ${
+                className={`${accentBg[project.color]} border-ink p-5 md:p-8 flex items-center gap-4 md:flex-col md:items-start md:gap-5 ${
                   featured ? "border-b-3 md:border-b-0 md:border-r-3 md:w-2/5 md:justify-between" : "border-b-3"
                 }`}
               >
                 {project.logo && (
-                  <div className="w-14 h-14 bg-white border-2 border-ink p-1.5 shrink-0">
+                  <div className="w-12 h-12 md:w-14 md:h-14 bg-white border-2 border-ink p-1.5 shrink-0">
                     <Image src={project.logo} alt="" width={56} height={56} className="w-full h-full object-contain" />
                   </div>
                 )}
-                <div>
-                  <h3 className={`font-black uppercase tracking-tight leading-none ${featured ? "text-4xl md:text-5xl" : "text-3xl"}`}>
+                <div className="min-w-0">
+                  <h3 className={`font-black uppercase tracking-tight leading-none text-3xl ${featured ? "md:text-5xl" : ""}`}>
                     {project.title}
                   </h3>
                   <p className="font-mono text-xs font-bold uppercase tracking-wider mt-3 text-ink/80">{project.tagline}</p>
                 </div>
               </div>
 
-              <div className="p-6 md:p-8 flex flex-col gap-6 flex-1">
+              <div className="p-5 md:p-8 flex flex-col gap-5 md:gap-6 flex-1">
                 {project.status && (
                   <p className="eyebrow flex items-center gap-2 text-ink/70">
                     <span className="w-2 h-2 bg-green-500 border border-ink" />
                     {project.status}
                   </p>
                 )}
-                <p className="text-lg leading-relaxed">{project.description}</p>
+                <p className="md:text-lg leading-relaxed">{project.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((tech) => (
                     <span key={tech} className="chip">{tech}</span>
@@ -89,13 +92,13 @@ export default function Projects() {
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
-                      className={`mechanical-button px-5 py-3 text-sm ${j === 0 ? "bg-ink text-white" : "bg-white"}`}
+                      className={`mechanical-button px-4 md:px-5 py-3 text-sm ${j === 0 ? "bg-ink text-white" : "bg-white"}`}
                     >
                       {link.label} <ArrowUpRight size={18} strokeWidth={3} />
                     </a>
                   ))}
                   {projectDetails[project.title] && (
-                    <button onClick={() => setSelectedProject(project.title)} className="mechanical-button bg-white px-5 py-3 text-sm">
+                    <button onClick={() => setSelectedProject(project.title)} className="mechanical-button bg-white px-4 md:px-5 py-3 text-sm">
                       Write-up <BookOpen size={18} strokeWidth={3} />
                     </button>
                   )}

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FileText, FolderOpen, Gamepad2, House, Mail, Terminal, User } from "lucide-react";
+import { Briefcase, FileText, FolderOpen, Gamepad2, Mail, Terminal, User } from "lucide-react";
 import { siteConfig } from "@/lib/data";
 
 const LINKS = [
@@ -13,8 +13,8 @@ const LINKS = [
 ];
 
 const TABS = [
-  { id: "top", label: "Home", Icon: House },
   { id: "work", label: "Work", Icon: FolderOpen },
+  { id: "experience", label: "Career", Icon: Briefcase },
   { id: "about", label: "About", Icon: User },
   { id: "contact", label: "Contact", Icon: Mail },
 ];
@@ -85,20 +85,32 @@ export default function Navbar() {
       </div>
 
       {/* Mobile bottom tab bar */}
-      <nav className="md:hidden fixed bottom-4 left-4 right-4 z-[90] bg-white border-3 border-ink shadow-brutal-sm p-1.5 flex gap-1">
-        {TABS.map(({ id, label, Icon }) => (
-          <a
-            key={id}
-            href={`#${id}`}
-            onClick={() => navigator.vibrate?.(30)}
-            className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 transition-colors ${
-              active === id ? "bg-ink text-white" : "text-ink active:bg-ink/10"
-            }`}
-          >
-            <Icon size={20} strokeWidth={2.5} />
-            <span className="font-mono text-[10px] font-bold uppercase">{label}</span>
-          </a>
-        ))}
+      <nav className="md:hidden fixed bottom-4 left-4 right-4 z-[90] bg-white border-3 border-ink shadow-brutal-sm flex">
+        <div className="flex-1 flex gap-1 p-1.5">
+          {TABS.map(({ id, label, Icon }) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              onClick={() => navigator.vibrate?.(30)}
+              className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 transition-colors ${
+                active === id ? "bg-ink text-white" : "text-ink active:bg-ink/10"
+              }`}
+            >
+              <Icon size={20} strokeWidth={2.5} />
+              <span className="font-mono text-[10px] font-bold uppercase">{label}</span>
+            </a>
+          ))}
+        </div>
+        {/* Replaces the floating chat orb on mobile (Terminal.tsx listens for this event) */}
+        <button
+          onClick={() => window.dispatchEvent(new Event("open-kurian-gpt"))}
+          aria-label="Ask KurianGPT"
+          className="relative w-16 shrink-0 border-l-3 border-ink bg-ink text-green-400 flex flex-col items-center justify-center gap-0.5 active:bg-ink/85"
+        >
+          <span className="font-mono font-bold text-base leading-5">&gt;_</span>
+          <span className="font-mono text-[10px] font-bold uppercase">Ask</span>
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-green-400 animate-pulse" />
+        </button>
       </nav>
     </>
   );

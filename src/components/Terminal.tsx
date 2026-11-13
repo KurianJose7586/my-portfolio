@@ -236,6 +236,10 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
       }
     }, 12000);
 
+    // The mobile tab bar's "Ask" button opens the chat this way (Navbar.tsx)
+    const open = () => setWindowState('normal');
+    window.addEventListener('open-kurian-gpt', open);
+
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
@@ -251,6 +255,7 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => {
       window.removeEventListener('keydown', handleGlobalKeyDown);
+      window.removeEventListener('open-kurian-gpt', open);
       clearTimeout(tipTimer);
     };
   }, [isGlobalWidget, windowState]);
@@ -636,7 +641,8 @@ export default function Terminal({ initialState = 'normal', isGlobalWidget = fal
   if (isClosed) {
     if (isGlobalWidget) {
       return (
-        <div className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-[100] flex flex-col items-end pointer-events-none">
+        // Desktop only: on mobile the tab bar carries this button so nothing floats over content
+        <div className="hidden md:flex fixed bottom-8 right-8 z-[100] flex-col items-end pointer-events-none">
           {showTip && (
             <div className="mb-3 bg-ink text-white p-4 border-3 border-ink shadow-brutal-sm shadow-electric-cyan max-w-xs pointer-events-auto flex items-start gap-3">
               <div>

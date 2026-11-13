@@ -66,11 +66,12 @@ export default function Hero() {
               <span className="animate-pulse">▍</span>
             </p>
 
-            <div className="flex flex-wrap gap-4 mt-10">
-              <a href="#work" className="mechanical-button bg-cyber-yellow px-7 py-4 text-base">
+            {/* Mobile: two equal buttons side by side instead of a ragged stack */}
+            <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-4 mt-8 sm:mt-10">
+              <a href="#work" className="mechanical-button bg-cyber-yellow px-3 sm:px-7 py-4 text-sm sm:text-base">
                 See the work <ArrowDown size={18} strokeWidth={3} />
               </a>
-              <a href="#contact" className="mechanical-button bg-white px-7 py-4 text-base">
+              <a href="#contact" className="mechanical-button bg-white px-3 sm:px-7 py-4 text-sm sm:text-base">
                 Get in touch
               </a>
             </div>
