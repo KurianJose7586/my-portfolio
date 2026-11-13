@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { accentText, bioData, techArsenal } from "@/lib/data";
 import SectionHeader from "./SectionHeader";
+import GithubActivity from "./GithubActivity";
 
 // Keyword highlights sweep in once the paragraph is on screen
 const HIGHLIGHTS: [RegExp, string, string][] = [
@@ -36,8 +37,9 @@ export default function About() {
       <SectionHeader index="03" label="About" title={bioData.headline} />
 
       <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-        <div className="lg:col-span-7 brutalist-card p-6 md:p-10">
-          <div className={`relative text-lg md:text-xl leading-relaxed space-y-6 ${!isExpanded ? "max-h-72 md:max-h-none overflow-hidden" : ""}`}>
+        {/* Stretches to the right column's height so the note sits on the same baseline as the GitHub card */}
+        <div className="lg:col-span-7 lg:self-stretch lg:flex lg:flex-col brutalist-card p-6 md:p-10">
+          <div className={`relative lg:flex-1 text-lg md:text-xl leading-relaxed space-y-6 ${!isExpanded ? "max-h-72 md:max-h-none overflow-hidden" : ""}`}>
             {bioData.content.map((paragraph) => (
               <AnimatedParagraph key={paragraph} text={paragraph} />
             ))}
@@ -56,21 +58,24 @@ export default function About() {
           </p>
         </div>
 
-        <div className="lg:col-span-5 bg-ink text-white border-3 border-ink shadow-brutal shadow-cyber-yellow p-6 md:p-8">
-          <p className="eyebrow text-white/50 mb-2">Loaded modules</p>
-          <h3 className="text-3xl font-black tracking-tight mb-8">Tech Arsenal</h3>
-          <div className="space-y-8">
-            {techArsenal.map((category) => (
-              <div key={category.category}>
-                <h4 className={`eyebrow mb-3 ${accentText[category.color]}`}>{category.category}</h4>
-                <div className="flex flex-wrap gap-2">
-                  {category.skills.map((skill) => (
-                    <span key={skill} className="chip">{skill}</span>
-                  ))}
+        <div className="lg:col-span-5 flex flex-col gap-8">
+          <div className="bg-ink text-white border-3 border-ink shadow-brutal shadow-cyber-yellow p-6 md:p-8">
+            <p className="eyebrow text-white/50 mb-2">Loaded modules</p>
+            <h3 className="text-3xl font-black tracking-tight mb-8">Tech Arsenal</h3>
+            <div className="space-y-8">
+              {techArsenal.map((category) => (
+                <div key={category.category}>
+                  <h4 className={`eyebrow mb-3 ${accentText[category.color]}`}>{category.category}</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {category.skills.map((skill) => (
+                      <span key={skill} className="chip">{skill}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+          <GithubActivity />
         </div>
       </div>
     </section>
