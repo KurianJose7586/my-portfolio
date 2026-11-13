@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { getOrCreateSessionId, presenceActive, presenceFetch } from "@/lib/session";
+import { getOrCreateSessionId, isTouchDevice, presenceActive, presenceFetch } from "@/lib/session";
 
 interface RemoteCursor {
   sessionId: string;
@@ -10,7 +10,12 @@ interface RemoteCursor {
   color: string;
 }
 
+// Client-only (loaded with ssr: false), so checking the pointer during render is safe
 export default function RemoteCursors() {
+  return isTouchDevice() ? null : <Cursors />;
+}
+
+function Cursors() {
   const [cursors, setCursors] = useState<RemoteCursor[]>([]);
   const [scrollX, setScrollX] = useState(0);
   const [scrollY, setScrollY] = useState(0);

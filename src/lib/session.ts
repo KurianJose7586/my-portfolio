@@ -58,6 +58,10 @@ export async function presenceHeartbeat(): Promise<number | null> {
   return data.count;
 }
 
+// Phones skip live cursors and remote effects: positions come from other visitors' layouts,
+// which don't line up with a phone's, and polling several times a second drains battery and data.
+export const isTouchDevice = () => window.matchMedia("(pointer: coarse)").matches;
+
 export function presenceActive() {
   return othersOnline && document.visibilityState === "visible";
 }

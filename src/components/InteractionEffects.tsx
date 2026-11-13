@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { getOrCreateSessionId, presenceActive, presenceFetch, sessionColor } from "@/lib/session";
+import { getOrCreateSessionId, isTouchDevice, presenceActive, presenceFetch, sessionColor } from "@/lib/session";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const EMOJIS = ["⚡", "👾", "🛠️", "🔥", "🎯", "💡"];
 const LASER_FADE_MS = 2500;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function sessionShapeVariant(id: string): 0 | 1 | 2 {
+// No cross shape: a popping ✕ on every click reads as an error
+function sessionShapeVariant(id: string): 0 | 1 {
   let hash = 0;
   for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-  return (hash % 3) as 0 | 1 | 2;
+  return (hash % 2) as 0 | 1;
 }
 
 
@@ -74,22 +75,8 @@ function CircleShape({ color }: { color: string }) {
   );
 }
 
-function CrossShape({ color }: { color: string }) {
-  return (
-    <svg width="44" height="44" viewBox="0 0 40 40" fill="none">
-      <line x1="7" y1="7" x2="33" y2="33" stroke="black" strokeWidth="9" strokeLinecap="round" />
-      <line x1="33" y1="7" x2="7" y2="33" stroke="black" strokeWidth="9" strokeLinecap="round" />
-      <line x1="7" y1="7" x2="33" y2="33" stroke={color} strokeWidth="6" strokeLinecap="round" />
-      <line x1="33" y1="7" x2="7" y2="33" stroke={color} strokeWidth="6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function ClickShape({ sessionId, color }: { sessionId: string; color: string }) {
-  const v = sessionShapeVariant(sessionId);
-  if (v === 0) return <StarShape color={color} />;
-  if (v === 1) return <CircleShape color={color} />;
-  return <CrossShape color={color} />;
+  return sessionShapeVariant(sessionId) === 0 ? <StarShape color={color} /> : <CircleShape color={color} />;
 }
 
 // ── Main Component ────────────────────────────────────────────────────────────
@@ -117,6 +104,7 @@ export default function InteractionEffects() {
 
   // ── Track scroll (needed for laser viewport conversion) ───────────────────
   useEffect(() => {
+    if (isTouchDevice()) return; // lasers are keyboard-driven and remote ones aren't polled on phones
     const onScroll = () => {
       setScrollX(window.scrollX);
       setScrollY(window.scrollY);
@@ -246,6 +234,7 @@ export default function InteractionEffects() {
 
   // ── Poll for remote events ────────────────────────────────────────────────
   useEffect(() => {
+    if (isTouchDevice()) return; // see isTouchDevice; local tap stamps still render
     async function poll() {
       if (!presenceActive()) {
         setRemoteLasers((prev) => (prev.length ? [] : prev));
